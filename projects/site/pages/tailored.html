@@ -8,10 +8,16 @@
 <script type="text/javascript" src="../../../build/site/build.js"></script>
 <link type="text/css" rel="stylesheet" href="../../../build/site/build.css">
 
+<script type="text/javascript">
+      (function() {
+      emailjs.init("user_CW02cvPSzUjSVMIarplV5");
+      })();
+</script>
+
 <title>LFCS — Документы</title> 
 
 <script type="bml">
-    <App color="#B2B2B2" text="#B2B2B2">
+    <App color="#C24035" text="#B2B2B2">
 
         <Head>
             <logo>/assets/logo.svg</logo>
@@ -20,32 +26,42 @@
             <menu-item>Связь</menu-item>
         </Head>
 
-        <Title>Документы</Title>
+        <Title>Индивидуальный дизайн</Title>
 
-        <Text>
-            Превратим обычный документ в безупречный. От редакторской вычитки до инфографики и индивидуального дизайна.
+        <Text Size="M">
+            Внедрение в документ графических и интерактивных элементов с использованием графического и веб-дизайна.
         </Text>
 
-        <Cards>
-            <item color="#D2D2D2" text="#6F6F6F">
-                <hint>Silver</hint>
-                <elem>Ag</elem>
-                <title>Редакторская вычитка</title>
-                <price>от 500₽</price>
+        <Example/>
+
+        <Steps color="#B2B2B2" text="#C24035">
+            <step>
+                <num>1</num>
+                <text>рассчитайте стоимость и отправьте заявку бесплатно</text>
+            </step>
+            <step>
+                <num>2</num>
+                <text>менеджер обсудит детали и отправит счет на оплату</text>
+            </step>
+            <step>
+                <num>3</num>
+                <text>готовый документ вернется на почту в оговоренный срок</text>
+            </step>
+        </Steps>
+
+        <Form action="#send" id="request-service-form" color="#B2B2B2" text="#676767" action="#B2B2B2" actionText="#676767">
+
+            <item>
+                <input type="text" id="name" requred placeholder="Имя"></input>
+                <input type="email" id="email" requred placeholder="Почта"></input>
+                <input type="phone" id="phone" requred placeholder="Телефон"></input>
             </item>
-            <item color="#C49B72" text="#D8D8D8">
-                <hint>Gold</hint>
-                <elem>Au</elem>
-                <title>Юридический дизайн документа</title>
-                <price>от 3750₽</price>
+
+            <item>
+                <action>Отправить заявку</action>
             </item>
-            <item color="#C24035" text="#B2B2B2">
-                <hint>Tailored</hint>
-                <elem>Xx</elem>
-                <title>Индивидуальный заказна дизайн</title>
-                <price>₽₽₽</price>
-            </item>
-        </Cards>
+
+        </Form>
 
     </App>
 </script>

@@ -6,8 +6,6 @@ let uploadedDocument = false;
 let linkToTheDocument = "";
 let calculatedPrice;
 
-
-
 const emailJsService = "service_5zbkh3r";
 const emailJsTemplate = "template_mjdi55g";
 
@@ -45,7 +43,6 @@ let pricingParams = {
   "language" : null,
   "time": null
 }
-
 
 Beast.decl({
     Form: {
@@ -316,6 +313,8 @@ Beast.decl({
         expand: function () {
             this.domAttr('type', 'submit')
             this.domAttr('value', this.text())
+            this.css('background', this.parentBlock().param('action'))
+            this.css('color', this.parentBlock().param('actionText'))
         }
     },
 
@@ -328,6 +327,10 @@ Beast.decl({
             this.domAttr('required', true)
             this.css('background', this.parentBlock().param('color'))
             this.css('color', this.parentBlock().param('text'))
+
+            let root = document.documentElement;
+            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
+            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
             
         }
     },

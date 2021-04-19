@@ -7,6 +7,15 @@
     font-size 28px
     letter-spacing -1.4px
     
+    ::placeholder
+        color var(--formPlaceholder)
+
+    :-ms-input-placeholder
+        color var(--formPlaceholder)
+
+    ::-ms-input-placeholder
+        color var(--formPlaceholder)
+    
     form
         margin 0
         
@@ -49,7 +58,7 @@
         cursor pointer
         &_select
             &[active="true"]
-                background #005537 !important
+                background var(--formHighlight) !important
                 color #fff !important
             
         & + &
@@ -60,8 +69,8 @@
         & + &
             margin-top gap
     &__action
-        background-color #222222
-        color #D4D4D4
+        // background-color #222222
+        // color #D4D4D4
         width 100%
         border-radius 20px
         line-height 213px

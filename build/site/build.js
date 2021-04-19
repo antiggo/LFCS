@@ -6007,8 +6007,6 @@ let uploadedDocument = false;
 let linkToTheDocument = "";
 let calculatedPrice;
 
-
-
 const emailJsService = "service_5zbkh3r";
 const emailJsTemplate = "template_mjdi55g";
 
@@ -6046,7 +6044,6 @@ let pricingParams = {
   "language" : null,
   "time": null
 }
-
 
 Beast.decl({
     Form: {
@@ -6315,6 +6312,8 @@ Beast.decl({
         expand: function () {
             this.domAttr('type', 'submit')
             this.domAttr('value', this.text())
+            this.css('background', this.parentBlock().param('action'))
+            this.css('color', this.parentBlock().param('actionText'))
         }
     },
 
@@ -6327,6 +6326,10 @@ Beast.decl({
             this.domAttr('required', true)
             this.css('background', this.parentBlock().param('color'))
             this.css('color', this.parentBlock().param('text'))
+
+            let root = document.documentElement;
+            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
+            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
             
         }
     },
@@ -6368,56 +6371,6 @@ Beast.decl({
         }
     },
 })
-
-
-
-
-
-Beast.decl({
-    Cards: {
-
-        expand: function () {
-            
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
-
-                
-            )
-
-        }
-    },
-    
-    Cards__item: {
-
-        expand: function () {
-            this.css('background', this.param('color'))
-            this.css('color', this.param('text'))
-            
-            this.append(
-                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
-                this.get('title'),
-                Beast.node("cross",{__context:this},"+"),
-                this.get('price')
-                
-            )
-
-        }
-    },
-
-    Shelf__dot: {
-
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-    
-
-})
-
 
 
 
@@ -6543,6 +6496,56 @@ function grid (num, col, gap, margin) {
     return gridWidth
 }
 Beast.decl({
+    Cards: {
+
+        expand: function () {
+            
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+
+                
+            )
+
+        }
+    },
+    
+    Cards__item: {
+
+        expand: function () {
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
+            
+            this.append(
+                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
+                this.get('title'),
+                Beast.node("cross",{__context:this},"+"),
+                this.get('price')
+                
+            )
+
+        }
+    },
+
+    Shelf__dot: {
+
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            
+            
+
+        }
+    },
+    
+
+})
+
+
+
+
+
+
+Beast.decl({
     Head: {
         expand: function () {
             this.append(
@@ -6656,6 +6659,24 @@ Beast.decl({
 
 
 
+/**
+ * @block Typo Типографика
+ * @tag base
+ */
+
+Beast.decl({
+    Typo: {
+        // finalMod: true,
+        mod: {
+            text: '',       // @mod Text    {S M L XL}  Размер текста
+            line: '',       // @mod Line    {S M L}     Высота строки
+            caps: false,    // @mod Caps    {boolean}   Капслок
+            light: false,   // @mod Light   {boolean}   Light-начертание
+            medium: false,  // @mod Medium  {boolean}   Medium-начертание
+            bold: false,    // @mod Bold    {boolean}   Bold-начертание
+        }
+    }
+})
 /**
  * @block Thumb Тумбнеил
  * @dep grid link
@@ -6963,21 +6984,3 @@ Beast.decl({
 // @example <Thumb Ratio="1x1" Col="3" Shadow src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Grid src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Rounded src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
-/**
- * @block Typo Типографика
- * @tag base
- */
-
-Beast.decl({
-    Typo: {
-        // finalMod: true,
-        mod: {
-            text: '',       // @mod Text    {S M L XL}  Размер текста
-            line: '',       // @mod Line    {S M L}     Высота строки
-            caps: false,    // @mod Caps    {boolean}   Капслок
-            light: false,   // @mod Light   {boolean}   Light-начертание
-            medium: false,  // @mod Medium  {boolean}   Medium-начертание
-            bold: false,    // @mod Bold    {boolean}   Bold-начертание
-        }
-    }
-})
