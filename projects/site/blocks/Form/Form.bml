@@ -1,0 +1,375 @@
+// global variables for calculations
+let price;
+let characterNumber = 2500;
+let currrentType = "silver";
+let uploadedDocument = false;
+let linkToTheDocument = "";
+let calculatedPrice;
+
+
+
+const emailJsService = "service_5zbkh3r";
+const emailJsTemplate = "template_mjdi55g";
+
+const sanityTokenWithWriteAccess = 'skmAQVJjHdsVFKS4TCsoiVvZIeEUN9qFw545I0JD4YSoBrD80kryUFXitu2g1peNqfrVZA1Mwcq48Sk0KOXCt8b8KnLIRAtNuDbwrAq6YoxsJFw2KtFhVYbQDGFEQNzLDCJTJaBYa4HfdL7wmz7H5FgAGtax1MlUdusEBfkeQsNvegVVlwPw';
+const sanityFetchUrl = 'https://spfa8rwc.api.sanity.io/v1/assets/files/production';
+
+const pageCharacterNumber = 2500;
+
+const prices = {
+  silver: {
+    russian: {
+      regular: 500,
+      urgent: 750
+    },
+    english: {
+      regular: 2000,
+      urgent: 3000
+    }
+  },
+  gold: {
+    russian: {
+      price: 2500,
+      regular: 3750
+    },
+    english: {
+      regular: 5000,
+      urgent: 7500
+    }
+  }
+}
+
+// variable holding current selection
+let pricingParams = {
+  "type": "silver",
+  "language" : null,
+  "time": null
+}
+
+
+Beast.decl({
+    Form: {
+
+        //set one of the params
+        setPricingParam: function (key, value) {
+            pricingParams[key] = value;
+            this.calculateFinalPrice();
+
+        },
+
+        //calculate final price
+        calculateFinalPrice: function () {
+            if (pricingParams["language"] && pricingParams["time"]) {
+                price = prices[pricingParams["type"]][pricingParams["language"]][pricingParams["time"]];
+
+                let tmpPageCounterFloat = characterNumber/pageCharacterNumber;
+                let pageCount;
+                if (Number.isInteger(tmpPageCounterFloat)) {
+                  pageCount = Math.floor(characterNumber/pageCharacterNumber);
+                } else {
+                  pageCount = Math.floor(1 + characterNumber/pageCharacterNumber);
+                }
+
+                document.querySelector(".form__action").value = price*pageCount + "₽ — отправить заявку";
+
+                calculatedPrice = price*pageCount;
+
+            }
+        },
+
+        calculateCharNumber: function() {
+
+            var self = this
+            // input for files
+            var docs = document.querySelector("#file-upload");
+
+            // define reader
+            var reader = new FileReader();
+
+            // if files are not selected stop
+            if (docs.files.length === 0) {
+                return;
+            }
+
+            //check extension
+            let documentName = docs.files.item(0).name;
+            let ext = documentName.split('.').pop().toLowerCase();
+
+            // supported extensions
+            if (ext == "docx" || ext == "txt") {
+                let documentNameContainer = document.querySelector(".form__upload-doc-name");
+                documentNameContainer.innerHTML = documentName;
+
+                let documentUploadLabel = document.querySelector(".form__upload-label");
+                documentUploadLabel.innerHTML = "Загрузить другой документ";
+            }
+
+            // if it's DOCX
+            if (ext == "docx") {
+
+                this.updloadDocumentToSanity(docs.files.item(0));
+
+                reader.readAsBinaryString(docs.files.item(0));
+
+                // on error
+                reader.onerror = function (evt) {
+                    console.log("error reading file", evt);
+                    alert("Не удалось прочитать документ. Укажите количество символов вручную")
+                }
+
+                // on success
+                reader.onload = function (evt) {
+                    const content = evt.target.result;
+                    var zip = new PizZip(content);
+                    var doc = new Docxtemplater().loadZip(zip);
+
+                    self.setCharactedNum(doc.getFullText());
+                }
+            } else if (ext == "txt") { 
+
+                this.updloadDocumentToSanity(docs.files.item(0));
+
+                reader.onload = function(evt) {
+                    self.setCharactedNum(evt.target.result)
+                };
+                
+                reader.readAsText(docs.files[0], "UTF-8");
+                
+            } else {
+                alert('Пожалуйста, загрузите DOCX или TXT файл.')
+            }
+          
+        },
+
+        setCharactedNum: function (text) {
+            // element to display char number
+            var charNumber = document.querySelector(".form__hint");
+
+            if (text && text.length > 0) {
+                // show character number
+                charNumber.innerHTML = text.length + " знаков";
+
+                //set variable for char number 
+                characterNumber = text.length;
+
+                //calculate the price
+                this.calculateFinalPrice();
+
+                uploadedDocument = true;
+            }
+        },
+
+        //upload documnent to Sanity
+        updloadDocumentToSanity: function (file){
+
+            // create reference to the file
+            var src = URL.createObjectURL(file);
+
+            //fetching
+            fetch(sanityFetchUrl, {
+                method: 'post',
+                headers: {
+                    'Content-type': file.type,
+                    Authorization: 'Bearer ' + sanityTokenWithWriteAccess
+                },
+                body: file
+              })
+              .then(response => response.json())
+              .then(function(data) {      
+                    //set public URL link to the document in the following variable
+                    if (data && data.document) {
+                        linkToTheDocument = data.document.url;
+                    }
+                });
+        },
+
+        expand: function () {
+
+            this.append(
+                <form>
+                    {this.get('head', 'item')}
+                </form>
+                
+            )
+
+        },
+
+        domInit: function () {
+
+            let selectors = document.querySelectorAll(".form__button_select");
+            var self = this
+
+            if (selectors) {
+              for (var i = 0; i < selectors.length; i++) {
+
+                //when click on selector
+                selectors[i].onclick = function(evt) {
+                  //manupulations for visual selection
+                  let selectorButtons = evt.target.parentNode.querySelectorAll(".form__button_select");
+                  for (var j = 0; j < selectorButtons.length; j++) {
+                    selectorButtons[j].setAttribute("active", false);
+                  }
+                  evt.target.setAttribute("active", true);
+                  
+                  // set price depending on selection
+                  self.setPricingParam(evt.target.parentNode.getAttribute("param"), evt.target.getAttribute("data-param"));
+                }
+              }
+            }
+
+            let requestForm = document.querySelector("#request-service-form");
+
+            requestForm.onsubmit = function(event) {
+              event.preventDefault();
+              // if all validation goes well
+              if (validateForm()) {
+                sendRquestEmail(
+                  document.querySelector("#name").value,
+                  document.querySelector("#email").value,
+                  document.querySelector("#phone").value
+                );
+              } else return false;
+            }
+
+            function sendRquestEmail(name, email, phone) {
+
+              let type = pricingParams["type"] == "silver" ? "Пакет Silver | " : "Пакет Gold | ";
+              let language = pricingParams["language"] == "english" ? "Документ на английском |" : "Документ на русском |";
+              let time = pricingParams["time"] == "urgent" ? " 24 часа" : " 2 дня";
+
+              emailjs.send(emailJsService, emailJsTemplate, {
+                name: name,
+                email: email,
+                phone: phone,
+                type: type + language + time,
+                link: linkToTheDocument,
+                price: calculatedPrice
+              })
+              .then(function() {
+                  alert('Ваша заявка успешно оправлена');
+                  location.reload();
+              }, function(error) {
+                  console.log('Failed sendig email', error);
+              });
+            }
+
+            //validation of all input fields
+            function validateForm() {
+              if (!pricingParams["language"] || !pricingParams["time"]) {
+                alert('Для отправки формы вам необходимо указать язык документа и срок')
+                return false;
+              }
+              if (!uploadedDocument) {
+                alert('Для отправки формы вам необходимо загрузить документ, с которым необходимо будет работать')
+                return false;
+              }
+              let nameField = document.querySelector("#name");
+              if (nameField.value.trim() == "") {
+                alert('Пожалуйста, укажите ваше имя, чтобы мы знали как к вам обращаться');
+                return false;
+              }
+
+              let emailField = document.querySelector("#email");
+              if (emailField.value.trim() == "") {
+                alert('Пожалуйста, укажите ваш адрес электронной почта, чтобы мы знали как с вами связаться');
+                return false;
+              }
+
+              let phoneField = document.querySelector("#phone");
+              if (phoneField.value.trim() == "") {
+                alert('Пожалуйста, укажите ваш телефонный номер, чтобы мы знали как с вами связаться');
+                return false;
+              }
+
+              return true;
+            }
+
+        }
+    },
+
+    Form__form: {
+        tag: 'form',
+        expand: function () {
+
+            this.domAttr('action', this.parentBlock().param('action'))
+            this.domAttr('id', this.parentBlock().param('id'))
+
+        }
+    },
+
+    Form__item: {
+        expand: function () {
+            this.domAttr('param', this.param('param'))
+        }
+    },
+
+    Form__button: {
+        expand: function () {
+            this.domAttr('data-param', this.param('data-param'))
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+        }
+    },
+
+    Form__action: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', 'submit')
+            this.domAttr('value', this.text())
+        }
+    },
+
+    Form__input: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+            
+        }
+    },
+
+    Form__upload: {
+        expand: function () {
+            this.append(
+                <upload-label for="file-upload">Загрузить документ</upload-label>,
+                <upload-doc-name></upload--doc-name>,
+                <upload-input id="file-upload" type="file"></upload-input>
+            )
+        }
+    },
+
+    'Form__upload-label': {
+        tag: 'label',
+        expand: function () {
+            this.domAttr('for', this.param('for'))
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+        }
+    },
+
+    'Form__upload-input': {
+        tag: 'input',
+        on: {
+            // Listen to change event on file input
+            change: function () {
+                // add and remove modificator for every change
+                this.parentBlock().calculateCharNumber()
+
+            }
+        },
+
+        expand: function () {
+            this.domAttr('id', this.param('id'))
+            this.domAttr('type', this.param('type'))
+            // this.domAttr('onchnage', 'calculateCharNumber()')
+        }
+    },
+})
+
+
+
+

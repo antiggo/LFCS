@@ -1,0 +1,48 @@
+Beast.decl({
+    Steps: {
+
+        expand: function () {
+
+            this.append(
+                <items>
+                    {this.get('step')}
+                </items>
+                
+            )
+
+        }
+    },
+    
+    Steps__step: {
+
+        expand: function () {
+            
+            this.append(
+                <num>{this.get('num')}</num>,
+                this.get('text')
+
+                
+            )
+
+        }
+    },
+
+    Steps__num: {
+
+        expand: function () {
+
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+            
+
+        }
+    },
+
+    
+    
+
+})
+
+
+
+

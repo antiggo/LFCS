@@ -1,0 +1,136 @@
+GridDefine(colNum, col, gap, marginX, marginY = marginX * 1.5)
+    .Grid
+        gridWidth = colNum * col + (colNum - 1) * gap
+
+        inCols(prop = '', num, extra = 0)
+            {prop} num * col + (num - 1) * gap + extra
+
+        for i in 1..colNum
+            &_col_{i}
+                inCols(width, i)
+                &.Grid_square
+                    inCols(height, i)
+
+        &_colCheck
+            content join(' ', col, gap, colNum, marginX, marginY)
+
+        &_col
+            &_1Extra // На одну колонку больше, чем в сетке
+                inCols(width, colNum + 1)
+
+            for i in 1..2 // Число колонок плюс поле
+                &_{i}Margin
+                    inCols(width, i, marginX)
+
+            for i in 1..6 // Ширина сетки минус число колонок
+                &_{i}Left
+                    inCols(width, colNum - i)
+                for j in 1..4
+                    .Grid_col_{colNum - j} &_{i}Left
+                        inCols(width, colNum - j - i)
+
+            &_1LeftMargins // Ширина сетки минус колонка плюс поля
+                inCols(width, colNum - 1, marginX * 2)
+
+            &_third // Треть ширины сетки
+                width floor((gridWidth - (2 * gap)) / 3)
+
+            &_half // Половина ширины сетки
+                width (gridWidth / 2) - (gap / 2)
+                .Grid_col_9 &
+                    width (inCols('', 9) / 2) - (gap / 2)
+
+            &_max  // Ширина по максимальному числу колонок
+                inCols(width, colNum)
+
+        &_wrap // контейнер сетки
+            inCols(width, colNum, marginX * 2)
+            margin-left auto
+            margin-right auto
+
+        &_margin // поля со всех сторон
+            padding marginY marginX
+
+        &_marginPage
+            padding marginY marginX
+            padding-bottom marginY * 3
+
+        &_marginX // поля слева и справа
+            padding-left marginX
+            padding-right marginX
+
+        &_marginY // поля сверху и снизу
+            padding-top marginY
+            padding-bottom marginY
+
+        &_unmargin // отрицательные поля со всех сторон
+            margin (- marginY) (- marginX)
+
+        &_unmarginX // отрицательные поля слева и справа
+            margin-left - marginX
+            margin-right - marginX
+
+        &_marginRightGap // правое поле - межколонник
+            margin-right gap
+
+        &_marginLeftGap // левое поле - межколонник
+            margin-left gap
+
+        &_cell // горизонтальный отступ между компонентами - межколонник
+            display inline-block
+            vertical-align top
+            & + &
+                margin-left gap
+
+        &_tiles // горизонтальные и вертикальные отступы между компонентами - межколонник
+            margin-left - gap
+            margin-top - gap
+            .grid_tile
+                display inline-block
+                vertical-align top
+                margin-left gap
+                margin-top gap
+
+        &_row // отступ сверху между компонентами - вертикальное поле
+            &:not(:first-child)
+                margin-top marginY
+
+.Grid
+    &_center
+        margin-left auto
+        margin-right auto
+        display block
+
+    &_hidden
+        display none
+
+    &_margin
+    &_marginX
+    &_marginY
+    &_marginPage
+        box-sizing border-box
+
+    &_col_stretch // Ширина 100%
+        width 100%
+
+
+    ratios = {
+        '1x1': 100%,
+        '1x2': 200%,
+        '2x1': 50%,
+        '2x3': 150%,
+        '3x2': 66.67%,
+        '3x4': 133.33%,
+        '4x3': 75%,
+        '16x10': 62.5%,
+        '16x9': 56.25%
+    }
+
+    for ratio in ratios
+        &_ratio_{ratio}
+            position relative
+            &:after
+                content ''
+                display block
+                padding-bottom ratios[ratio]
+

@@ -1,0 +1,60 @@
+.Cards
+    margin 20px 20px 0 20px
+    &__items
+        display inline-flex
+        width 100%
+    &__item
+        width 100%
+        border-radius 20px
+        padding 30px
+        position relative
+        cursor pointer
+        & + &
+            margin-left 2px
+        &:after
+            content ''
+            display block
+            padding-bottom 70%
+            
+    &__hint
+        font-size 30px
+        line-height 34px
+        text-transform uppercase
+        letter-spacing -1.4px
+        float left
+        margin-top 14px
+        
+    &__elem
+        font-size 30px
+        line-height 34px
+        letter-spacing -1.4px
+        border 3px solid
+        width 69px
+        height 60px
+        text-align center
+        display table-cell
+        vertical-align middle
+
+    &__title
+        font-size 32px
+        line-height 36px
+        letter-spacing -1.4px
+        margin-top 42px
+        height 90px
+        
+    &__price
+        font-size 50px
+        line-height 39px
+        letter-spacing -1.4px
+        position absolute
+        bottom 30px
+        
+    &__cross
+        font-size 220px
+        line-height 39px
+        text-align center
+        margin 170px 0 0 0
+    
+    &__head
+        display table
+        width 100%

@@ -1,0 +1,52 @@
+Beast.decl({
+    Cards: {
+
+        expand: function () {
+            
+            this.append(
+                <items>
+                    {this.get('item')}
+                </items>
+
+                
+            )
+
+        }
+    },
+    
+    Cards__item: {
+
+        expand: function () {
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
+            
+            this.append(
+                <head>
+                    {this.get('hint', 'elem')}
+                </head>,
+                this.get('title'),
+                <cross>+</cross>,
+                this.get('price')
+                
+            )
+
+        }
+    },
+
+    Shelf__dot: {
+
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            
+            
+
+        }
+    },
+    
+
+})
+
+
+
+

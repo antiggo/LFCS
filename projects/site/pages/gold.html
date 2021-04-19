@@ -1,0 +1,86 @@
+<meta charset="utf8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, userpic-scalable=0, viewport-fit=cover">
+<meta property="og:title" content="REKKI – Reinventing Ordering for Chefs and Suppliers">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="../../../assets/favicon/red-black-rekki.png"/>
+
+<script type="text/javascript" src="../../../build/site/build.js"></script>
+<link type="text/css" rel="stylesheet" href="../../../build/site/build.css">
+
+<script type="text/javascript">
+      (function() {
+      emailjs.init("user_CW02cvPSzUjSVMIarplV5");
+      })();
+</script>
+
+<title>LFCS — Документы</title> 
+
+<script type="bml">
+    <App color="#C49B72" text="#D8D8D8">
+
+        <Head>
+            <logo>/assets/logo.svg</logo>
+            <menu-item>Команда</menu-item>
+            <menu-item>Студия</menu-item>
+            <menu-item>Связь</menu-item>
+        </Head>
+
+        <Title>Редакторская вычитка</Title>
+
+        <Text Size="M">
+            Сделаем из документа эталон грамотного языка — редактор исправит ошибки и облегчит восприятие текста.
+        </Text>
+
+        <Example/>
+
+        <Steps color="#F2F2F2" text="#b6b6b6">
+            <step>
+                <num>1</num>
+                <text>рассчитайте стоимость и отправьте заявку бесплатно</text>
+            </step>
+            <step>
+                <num>2</num>
+                <text>менеджер обсудит детали и отправит счет на оплату</text>
+            </step>
+            <step>
+                <num>3</num>
+                <text>готовый документ вернется на почту в оговоренный срок</text>
+            </step>
+        </Steps>
+
+        <Form action="#send" id="request-service-form" color="#F2F2F2" text="#6F6F6F">
+
+            <head>
+                <title>Рассчитать стоимость</title>
+                <hint>2500 знаков</hint>
+            </head>
+
+            <item param="language">
+                <button data-param="russian" Select>русский язык</button>
+                <button data-param="english" Select>английский язык</button>
+            </item>
+
+            <item param="time">
+                <button data-param="urgent" Select>24 часа</button>
+                <button data-param="regular" Select>2 дня</button>
+            </item>
+
+            <item>
+                <upload/>
+            </item>
+
+            <item>
+                <input type="text" id="name" requred placeholder="Имя"></input>
+                <input type="email" id="email" requred placeholder="Почта"></input>
+                <input type="phone" id="phone" requred placeholder="Телефон"></input>
+            </item>
+
+            <item>
+                <action>Отправить заявку</action>
+            </item>
+
+        </Form>
+
+    </App>
+</script>

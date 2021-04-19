@@ -1,0 +1,46 @@
+Beast.decl({
+    Shelf: {
+
+        expand: function () {
+
+            this.append(
+                this.get('item', 'cols')
+                
+            )
+
+        }
+    },
+    
+    Shelf__item: {
+
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
+            var dot = this.param('dot')
+            this.append(
+                <dot color="{dot}"/>,
+                this.get('num', 'title', 'subtitle')
+                
+            )
+
+        }
+    },
+
+    Shelf__dot: {
+
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            
+            
+
+        }
+    },
+    
+
+})
+
+
+
+

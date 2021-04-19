@@ -1,0 +1,22 @@
+Beast.decl({
+    Head: {
+        expand: function () {
+            this.append(
+                this.get('logo'),
+                <menu>
+                    {this.get('menu-item')}
+                </menu>
+            )
+
+        }
+    },
+
+    Head__logo: {
+        expand: function () {
+            
+
+        }
+    },
+    
+
+})

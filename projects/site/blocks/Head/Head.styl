@@ -1,0 +1,28 @@
+.Head
+    
+    padding-top 20px
+    background #11111
+    z-index 300
+
+    &__menu
+        font-size 18px
+        position absolute
+        right 60px
+        top 47px
+        &-item
+            display inline-block
+            cursor pointer
+            color inherit
+            letter-spacing -1px
+            & + &
+                margin-left 44px
+            
+
+    &__logo
+        margin-top 12px
+        height 60px
+        margin-left 20px
+        mask-image url('/assets/logo.svg')
+        mask-size 180px
+        mask-repeat no-repeat
+        background-color var(--text)

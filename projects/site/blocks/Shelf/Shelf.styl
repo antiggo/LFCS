@@ -1,0 +1,62 @@
+.Shelf
+   margin 0px 4px
+   
+   &__cols
+       display table
+       width 100%
+   
+   &__dot
+        height 26px
+        width 26px
+        border-radius 100%
+        left 16px
+        top 16px
+        position absolute
+   &__num
+        position absolute
+        right 16px
+        top 16px
+        z-index 9999
+   &__item
+        padding 70px 22px 66px 22px
+        border-radius 20px 20px 0 0
+        position relative
+        margin-top 2px
+        
+        &:hover
+            cursor pointer
+       
+        &_size
+            &_L
+                padding 300px 22px 36px 22px
+                border-radius 20px
+            &_High
+                width 30.1%
+                display inline-block
+                padding 180px 20px 180px 20px
+                border-radius 20px
+                margin-bottom 2px
+                & + &
+                    margin-left 2px
+                    
+                .Shelf
+                    &__title
+                        text-align center
+                        font-size 50px
+                        
+                        
+        
+                   
+       
+        &_Last
+            border-radius 20px 20px 20px 20px
+        &_Margin
+            & + &
+                margin-top -30px
+           
+   &__title
+       font-size 70px
+       letter-spacing -1px
+    &__subtitle
+        font-size 22px
+        letter-spacing -1px
