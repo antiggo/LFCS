@@ -56,6 +56,10 @@ Beast.decl({
 
         //calculate final price
         calculateFinalPrice: function () {
+
+            // Gold or Silver type
+            // let type = this.param('type')
+
             if (pricingParams["language"] && pricingParams["time"]) {
                 price = prices[pricingParams["type"]][pricingParams["language"]][pricingParams["time"]];
 
