@@ -27,8 +27,8 @@ const prices = {
   },
   gold: {
     russian: {
-      price: 2500,
-      regular: 3750
+      regular: 2500,
+      urgent: 3750
     },
     english: {
       regular: 5000,
