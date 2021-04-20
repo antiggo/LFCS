@@ -446,14 +446,16 @@ html
 
 .uinavigation_popping .uistacknavigation__layer_root
     transform translateX(0) !important
-    transition transform .200s
+    transition transform .400s
     animation-timing-function cubic-bezier(0.10, 0.70, 0.10, 1)
     
 
 .uinavigation_pushed .uistacknavigation__layer_root
     transform translateX(-120px)
-    transition transform .200s
+    transition transform .400s
     animation-timing-function cubic-bezier(0.10, 0.70, 0.10, 1)
+    
+    // (.18,.8,.19,1)
 
 @keyframes ContentOut
     0%

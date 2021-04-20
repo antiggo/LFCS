@@ -24,6 +24,31 @@ Beast.decl({
                 
             )
 
+
+            let chatPage = (
+                <DocScreen />
+            )
+
+            this.on('click', function () {
+                if (history.pushState) {
+                    history.pushState(null, null, this.param('href'));
+                }
+
+                <Overlay Type="side">
+                    {chatPage}
+                </Overlay>
+                    .param({
+                        topBar: true,
+                        scrollContent: true
+                    })
+                    .pushToStackNavigation({
+                        context: this,
+                        onDidPop: function () {
+                            chatPage.detach()
+                        }
+                    })
+            })
+
         }
     },
 

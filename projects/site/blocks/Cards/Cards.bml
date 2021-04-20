@@ -15,10 +15,11 @@ Beast.decl({
     },
     
     Cards__item: {
-
+        tag: 'a',
         expand: function () {
             this.css('background', this.param('color'))
             this.css('color', this.param('text'))
+            this.domAttr('href', this.param('href'))
             
             this.append(
                 <head>

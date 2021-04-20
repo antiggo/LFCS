@@ -2,7 +2,9 @@ Beast.decl({
     Head: {
         expand: function () {
             this.append(
-                this.get('logo'),
+                <link>
+                    {this.get('logo')}
+                </link>,
                 <menu>
                     {this.get('menu-item')}
                 </menu>
@@ -11,8 +13,18 @@ Beast.decl({
         }
     },
 
+    Head__link: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', 'main.html')
+
+
+        }
+    },
+
     Head__logo: {
         expand: function () {
+            this.empty()
             
 
         }
