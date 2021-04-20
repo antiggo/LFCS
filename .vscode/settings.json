@@ -1,0 +1,8 @@
+{
+    "xml.fileAssociations": [
+    
+    ],
+    "files.associations": {
+        "*.bml": "javascript"
+      }
+}

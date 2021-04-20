@@ -681,6 +681,12 @@ html {
   width: 100%;
 }
 /* CUT THE FILE HERE */
+.Example {
+  background: #000;
+  height: 600px;
+  margin-bottom: 40px;
+}
+/* CUT THE FILE HERE */
 .Form {
   margin: 80px 0 0 0;
   font-size: 28px;
@@ -794,12 +800,6 @@ html {
   display: block;
 }
 /* CUT THE FILE HERE */
-.Example {
-  background: #000;
-  height: 600px;
-  margin-bottom: 40px;
-}
-/* CUT THE FILE HERE */
 .Head {
   padding-top: 20px;
   background: rgba(17,17,17,0.067) 1;
@@ -831,34 +831,6 @@ html {
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   background-color: var(--text);
-}
-/* CUT THE FILE HERE */
-.Steps {
-  margin: 0 20px;
-  letter-spacing: -1.4px;
-}
-.Steps__items {
-  display: -webkit-inline-flex;
-  display: inline-flex;
-  width: 100%;
-}
-.Steps__step {
-  width: 100%;
-}
-.Steps__step + .Steps__step {
-  margin-left: 16px;
-}
-.Steps__num {
-  text-align: center;
-  font-size: 106px;
-  font-weight: 100;
-  padding: 10px 0;
-  border-radius: 20px;
-}
-.Steps__text {
-  font-size: 22px;
-  line-height: 24px;
-  margin-top: 8px;
 }
 /* CUT THE FILE HERE */
 .Shelf {
@@ -922,6 +894,34 @@ html {
 .Shelf__subtitle {
   font-size: 22px;
   letter-spacing: -1px;
+}
+/* CUT THE FILE HERE */
+.Steps {
+  margin: 0 20px;
+  letter-spacing: -1.4px;
+}
+.Steps__items {
+  display: -webkit-inline-flex;
+  display: inline-flex;
+  width: 100%;
+}
+.Steps__step {
+  width: 100%;
+}
+.Steps__step + .Steps__step {
+  margin-left: 16px;
+}
+.Steps__num {
+  text-align: center;
+  font-size: 106px;
+  font-weight: 100;
+  padding: 10px 0;
+  border-radius: 20px;
+}
+.Steps__text {
+  font-size: 22px;
+  line-height: 24px;
+  margin-top: 8px;
 }
 /* CUT THE FILE HERE */
 .Thumb {
