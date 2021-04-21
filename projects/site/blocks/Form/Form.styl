@@ -80,10 +80,10 @@
     &__upload
         width 100%
         position relative
-        
+        box-sizing border-box
+        outline-offset: -10px;
+
         &-doc-name
-            position absolute
-            top 101px
             text-align center
             width 100%
             font-size 17px
@@ -96,4 +96,28 @@
             height 150px
             line-height 150px
             display block
+        &-filename:last-child
+            padding-bottom: 24px
+
     
+.dropzone
+    width 100%
+
+.dz-default
+.dz-error-mark
+.dz-success-mark
+.dz-size
+.dz-preview.dz-error
+    display none
+
+.dz-preview.dz-file-preview:last-child
+    padding-bottom: 24px
+
+.button-loading
+    animation fadein 1.5s infinite 
+
+ @keyframes fadein {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100%   { opacity: 0.5; }
+}

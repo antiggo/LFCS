@@ -3,8 +3,10 @@ let price;
 let characterNumber = 2500;
 let currrentType = "silver";
 let uploadedDocument = false;
-let linkToTheDocument = "";
+let linksToTheDocuments = [];
 let calculatedPrice;
+let uploadedFiles = [];
+let uploadedFilesProgress = 0; 
 
 const emailJsService = "service_5zbkh3r";
 const emailJsTemplate = "template_mjdi55g";
@@ -44,6 +46,8 @@ let pricingParams = {
   "time": null
 }
 
+var dropzoneComponent;
+
 Beast.decl({
     Form: {
 
@@ -80,68 +84,106 @@ Beast.decl({
             }
         },
 
-        calculateCharNumber: function() {
-
-            var self = this
+        calculateCharNumber: function(dropfiles) {
+            
             // input for files
             var docs = document.querySelector("#file-upload");
+            
+            //another way to get files from dropzone
+            //var dropzoneFiles = dropzoneComponent.getAcceptedFiles();
 
-            // define reader
-            var reader = new FileReader();
+            //recalculate character number
+            characterNumber = 0;
+            let documentNameContainer = document.querySelector(".form__upload-doc-name");
+            documentNameContainer.innerHTML = "";
 
+            
             // if files are not selected stop
-            if (docs.files.length === 0) {
+            if (docs.files.length === 0 && dropfiles.length === 0) {
                 return;
+            }            
+            
+            if (docs.files.length > 0)
+              this.mergeFiles(docs.files);
+
+            if (dropfiles && dropfiles.length > 0)
+              this.mergeFiles(dropfiles);
+            
+
+            for (var i = 0; i < uploadedFiles.length; i++) {
+              this.parseFile(uploadedFiles[i], i);
             }
-
-            //check extension
-            let documentName = docs.files.item(0).name;
-            let ext = documentName.split('.').pop().toLowerCase();
-
-            // supported extensions
-            if (ext == "docx" || ext == "txt") {
-                let documentNameContainer = document.querySelector(".form__upload-doc-name");
-                documentNameContainer.innerHTML = documentName;
-
-                let documentUploadLabel = document.querySelector(".form__upload-label");
-                documentUploadLabel.innerHTML = "Загрузить другой документ";
-            }
-
-            // if it's DOCX
-            if (ext == "docx") {
-
-                this.updloadDocumentToSanity(docs.files.item(0));
-
-                reader.readAsBinaryString(docs.files.item(0));
-
-                // on error
-                reader.onerror = function (evt) {
-                    console.log("error reading file", evt);
-                    alert("Не удалось прочитать документ. Укажите количество символов вручную")
-                }
-
-                // on success
-                reader.onload = function (evt) {
-                    const content = evt.target.result;
-                    var zip = new PizZip(content);
-                    var doc = new Docxtemplater().loadZip(zip);
-
-                    self.setCharactedNum(doc.getFullText());
-                }
-            } else if (ext == "txt") { 
-
-                this.updloadDocumentToSanity(docs.files.item(0));
-
-                reader.onload = function(evt) {
-                    self.setCharactedNum(evt.target.result)
-                };
-                
-                reader.readAsText(docs.files[0], "UTF-8");
-                
-            } else {
-                alert('Пожалуйста, загрузите DOCX или TXT файл.')
-            }
+            
           
+        },
+
+        mergeFiles: function(files){
+          var fileUploadedAlready = false;
+          for (var i = 0; i < files.length; i++){
+            for (var k = 0; k < uploadedFiles.length; k++){
+              if (uploadedFiles[k].name == files[i].name && uploadedFiles[k].size == files[i].size) {
+                fileUploadedAlready = true;
+                break
+              }
+            }
+            if (!fileUploadedAlready) {
+              uploadedFiles.push(files[i])
+            } else {
+              fileUploadedAlready = false;
+            }
+          }
+        },
+
+        parseFile: function(file, index) {
+          var self = this
+
+          // define reader
+          var reader = new FileReader();
+            
+          //check extension
+          let documentName = file.name;
+          let ext = documentName.split('.').pop().toLowerCase();
+
+          // supported extensions
+          if (ext == "docx" || ext == "txt") {
+              let documentNameContainer = document.querySelector(".form__upload-doc-name");
+              documentNameContainer.innerHTML += "<div class='form__upload-filename'>" + documentName + "</div>";
+
+              let documentUploadLabel = document.querySelector(".form__upload-label");
+              documentUploadLabel.innerHTML = "Загрузить еще документы";
+          }
+
+          // if it's DOCX
+          if (ext == "docx") {
+
+              reader.readAsBinaryString(file);
+
+              // on error
+              reader.onerror = function (evt) {
+                  console.log("error reading file", evt);
+                  alert("Не удалось прочитать документ. Укажите количество символов вручную")
+              }
+
+              // on success
+              reader.onload = function (evt) {
+                  const content = evt.target.result;
+                  var zip = new PizZip(content);
+                  var doc = new Docxtemplater().loadZip(zip);
+
+                  self.setCharactedNum(doc.getFullText());
+              }
+          } else if (ext == "txt") { 
+
+              reader.onload = function(evt) {
+                  self.setCharactedNum(evt.target.result)
+              };
+              
+              reader.readAsText(file, "UTF-8");
+              
+          } else {
+            uploadedFiles.splice(index, 1);
+              alert('Пожалуйста, загрузите DOCX или TXT файл.')
+          }
         },
 
         setCharactedNum: function (text) {
@@ -149,11 +191,11 @@ Beast.decl({
             var charNumber = document.querySelector(".form__hint");
 
             if (text && text.length > 0) {
-                // show character number
-                charNumber.innerHTML = text.length + " знаков";
-
                 //set variable for char number 
-                characterNumber = text.length;
+                characterNumber = characterNumber + text.length;
+                
+                // show character number
+                charNumber.innerHTML = characterNumber + " знаков";
 
                 //calculate the price
                 this.calculateFinalPrice();
@@ -181,7 +223,8 @@ Beast.decl({
               .then(function(data) {      
                     //set public URL link to the document in the following variable
                     if (data && data.document) {
-                        linkToTheDocument = data.document.url;
+                        linksToTheDocuments.push(data.document.url);
+                        uploadedFilesProgress++;
                     }
                 });
         },
@@ -220,17 +263,21 @@ Beast.decl({
               }
             }
 
-            let requestForm = document.querySelector("#request-service-form");
+            let requestForm = document.querySelector(".form__action");
 
-            requestForm.onsubmit = function(event) {
+            requestForm.onclick = function(event) {
+              this.value = 'Отправляю...';
+              this.disabled = true;
+              this.classList.add("button-loading");
               event.preventDefault();
               // if all validation goes well
               if (validateForm()) {
-                sendRquestEmail(
-                  document.querySelector("#name").value,
-                  document.querySelector("#email").value,
-                  document.querySelector("#phone").value
-                );
+                
+                for (var i = 0; i < uploadedFiles.length; i++) {
+                  self.updloadDocumentToSanity(uploadedFiles[i]); 
+                } 
+                sendEmail();
+                
               } else return false;
             }
 
@@ -239,21 +286,44 @@ Beast.decl({
               let type = pricingParams["type"] == "silver" ? "Пакет Silver | " : "Пакет Gold | ";
               let language = pricingParams["language"] == "english" ? "Документ на английском |" : "Документ на русском |";
               let time = pricingParams["time"] == "urgent" ? " 24 часа" : " 2 дня";
+              let docsView = "";
+              for (var i = 0; i < linksToTheDocuments.length; i++){
+                docsView +=  "<p><a style='font-size: 24px;' href='" + linksToTheDocuments[i] + "'>Документ " + (i+1) + "</a></p>";
+              }
 
               emailjs.send(emailJsService, emailJsTemplate, {
                 name: name,
                 email: email,
                 phone: phone,
                 type: type + language + time,
-                link: linkToTheDocument,
+                link: docsView,
                 price: calculatedPrice
               })
               .then(function() {
-                  alert('Ваша заявка успешно оправлена');
-                  location.reload();
+                  //alert('Ваша заявка успешно оправлена');
+                  //location.reload();
               }, function(error) {
                   console.log('Failed sendig email', error);
               });
+            }
+
+            function sendEmail() {
+              //if all files were uploaded
+              if (uploadedFilesProgress == uploadedFiles.length) {
+                sendRquestEmail(
+                  document.querySelector("#name").value,
+                  document.querySelector("#email").value,
+                  document.querySelector("#phone").value
+                );
+                uploadedFilesProgress = 0;
+                
+                let btnSend = document.querySelector(".form__action");
+                btnSend.value = 'Отправлено успешно';
+                btnSend.className = "form__action";
+
+              } else {
+                setTimeout(function(){ sendEmail() }, 500);
+              }
             }
 
             //validation of all input fields
@@ -287,11 +357,44 @@ Beast.decl({
               return true;
             }
 
+            var parentBlockRef = this.parentBlock();
+            dropzoneComponent = new Dropzone("#dropzone-component", {
+                url: "#",
+                paramName: 'file',
+                previewsContainer: '.form__upload-doc-name',
+                autoQueue: false,
+                autoProcessQueue: false,
+                addRemoveLinks: false,
+                clickable: false,
+                thumbnailWidth: 80,
+                thumbnailHeight: 100,
+                maxFiles: 10,
+                acceptedFiles: '.docx, .doc, .txt',
+                parallelUploads: 1,
+                uploadMultiple: true,
+                dictDefaultMessage: 'Или перетащите файлы сюда',
+                init: function() {
+                  this.on("addedfiles", function() {
+                      parentBlockRef.calculateCharNumber(this.files);
+                  });
+                }
+              },
+            );
+
+            $('#dropzone-component').on('dragenter', function() {
+                $(this).css({'outline' : '2px dashed green'})
+            });
+
+            $('#dropzone-component').on('dragleave', function() {
+              $(this).css({'outline' : 'none'})
+            });
+            
+
         }
     },
 
     Form__form: {
-        tag: 'form',
+        tag: 'div',
         expand: function () {
 
             this.domAttr('action', this.parentBlock().param('action'))
@@ -344,10 +447,11 @@ Beast.decl({
     Form__upload: {
         expand: function () {
             this.append(
-                <upload-label for="file-upload">Загрузить документ</upload-label>,
-                <upload-doc-name></upload--doc-name>,
+                <upload-label for="file-upload">Загрузить документы</upload-label>,
+                <upload-doc-name></upload-doc-name>,
                 <upload-input id="file-upload" type="file"></upload-input>
             )
+            this.domAttr('id', 'dropzone-component');
         }
     },
 
@@ -360,6 +464,14 @@ Beast.decl({
         }
     },
 
+    'Form__upload-doc-name': {
+        tag: 'div',
+        expand: function () {
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+        }
+    },
+    
     'Form__upload-input': {
         tag: 'input',
         on: {
@@ -373,6 +485,7 @@ Beast.decl({
 
         expand: function () {
             this.domAttr('id', this.param('id'))
+            this.domAttr('multiple', true)
             this.domAttr('type', this.param('type'))
             // this.domAttr('onchnage', 'calculateCharNumber()')
         }
