@@ -329,11 +329,11 @@ Beast.decl({
             //validation of all input fields
             function validateForm() {
               if (!pricingParams["language"] || !pricingParams["time"]) {
-                alert('Для отправки формы вам необходимо указать язык документа и срок')
+                alert('Для отправки заявки необходимо указать язык документа и срок')
                 return false;
               }
               if (!uploadedDocument) {
-                alert('Для отправки формы вам необходимо загрузить документ, с которым необходимо будет работать')
+                alert('Для отправки заявки нужно загрузить документ, с которым будет необходимо работать')
                 return false;
               }
               let nameField = document.querySelector("#name");
@@ -344,13 +344,13 @@ Beast.decl({
 
               let emailField = document.querySelector("#email");
               if (emailField.value.trim() == "") {
-                alert('Пожалуйста, укажите ваш адрес электронной почта, чтобы мы знали как с вами связаться');
+                alert('Укажите адрес электронной почты, чтобы мы знали, как с вами связаться');
                 return false;
               }
 
               let phoneField = document.querySelector("#phone");
               if (phoneField.value.trim() == "") {
-                alert('Пожалуйста, укажите ваш телефонный номер, чтобы мы знали как с вами связаться');
+                alert('Укажите номер телефона, чтобы мы знали, как с вами связаться');
                 return false;
               }
 

@@ -141,3 +141,72 @@ Beast.decl({
         }
     },
 })
+
+
+Beast.decl({
+    WebScreen: {
+        expand: function fn () {
+            this.append(
+
+                <Screen color="#005537" text="#D8D8D8">
+
+                    <Head>
+                        <logo>/assets/logo.svg</logo>
+                        <menu-item>Команда</menu-item>
+                        <menu-item>Студия</menu-item>
+                        <menu-item>Связь</menu-item>
+                    </Head>
+
+                    <Title>Cайты и фирстиль</Title>
+
+                    <Text Size="M">
+                        Внедрение в документ графических и интерактивных элементов с использованием графического и веб-дизайна.
+                    </Text>
+
+                    <Example/>
+
+                    
+                    <Inquire/>
+
+                </Screen>
+            )
+        },
+        domInit: function fn () {
+            
+        }
+    },
+})
+
+
+Beast.decl({
+    PresentationScreen: {
+        expand: function fn () {
+            this.append(
+
+                <Screen color="#866140" text="#DBDBDB">
+
+                    <Head>
+                        <logo>/assets/logo.svg</logo>
+                        <menu-item>Команда</menu-item>
+                        <menu-item>Студия</menu-item>
+                        <menu-item>Связь</menu-item>
+                    </Head>
+
+                    <Title>Презентации</Title>
+
+                    <Text Size="M">
+                        Внедрение в документ графических и интерактивных элементов с использованием графического и веб-дизайна.
+                    </Text>
+
+                    <Example/>
+
+                    <Inquire/>
+
+                </Screen>
+            )
+        },
+        domInit: function fn () {
+            
+        }
+    },
+})

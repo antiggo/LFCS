@@ -22,14 +22,37 @@ Beast.decl({
                 <dot color="{dot}"/>,
                 this.get('num', 'title', 'subtitle')
                 
-            )
+            )    
+
+            if (this.param('name') === 'closed') {
+                
+            } else {
 
 
-            let chatPage = (
-                <DocScreen />
-            )
 
             this.on('click', function () {
+
+                var g = this.param('name')
+                console.log(g)
+
+                if (this.param('name') === 'docs') {
+                    var chatPage = (
+                        <DocScreen />
+                    )
+                }
+
+                if (this.param('name') === 'web') {
+                    var chatPage = (
+                        <WebScreen />
+                    )
+                }
+
+                if (this.param('name') === 'presenation') {
+                    var chatPage = (
+                        <PresentationScreen />
+                    )
+                }
+
                 if (history.pushState) {
                     history.pushState(null, null, this.param('href'));
                 }
@@ -48,6 +71,8 @@ Beast.decl({
                         }
                     })
             })
+
+            }
 
         }
     },
