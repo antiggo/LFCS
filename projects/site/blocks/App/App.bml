@@ -232,3 +232,35 @@ Beast.decl({
         }
     },
 })
+
+Beast.decl({
+    
+    List: {
+        expand: function () {
+            
+        }
+    },
+    
+    List__item: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+        }
+    },
+
+    List__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        }
+    },
+
+    List__hint: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'M',
+            Line: 'L'
+        }
+    },
+})

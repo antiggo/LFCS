@@ -342,6 +342,32 @@
 .Screen {
   height: 100%;
 }
+.List {
+  margin: 66px 20px;
+}
+.List__hint {
+  margin-top: 10px;
+  color: #acacac;
+}
+.List__item {
+  display: block;
+  max-width: 70%;
+}
+@media screen and (max-width: 599px) {
+  .List__item {
+    max-width: 100%;
+  }
+}
+.List__item + .List__item {
+  margin-top: 100px;
+}
+.List a {
+  text-decoration: none;
+  color: inherit;
+}
+.List__title {
+  color: #c49b72;
+}
 table {
   border-collapse: collapse;
   border-spacing: 0;
@@ -416,12 +442,6 @@ html {
   transition: transform 0.4s, -webkit-transform 0.4s;
   -webkit-animation-timing-function: cubic-bezier(0.1, 0.7, 0.1, 1);
   animation-timing-function: cubic-bezier(0.1, 0.7, 0.1, 1);
-}
-/* CUT THE FILE HERE */
-.Example {
-  background: #1d1d1d;
-  height: 600px;
-  margin-bottom: 40px;
 }
 /* CUT THE FILE HERE */
 .Cards {
@@ -508,6 +528,12 @@ html {
 .Cards__head {
   display: table;
   width: 100%;
+}
+/* CUT THE FILE HERE */
+.Example {
+  background: #1d1d1d;
+  height: 600px;
+  margin-bottom: 40px;
 }
 /* CUT THE FILE HERE */
 .Form {
