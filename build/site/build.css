@@ -418,6 +418,12 @@ html {
   animation-timing-function: cubic-bezier(0.1, 0.7, 0.1, 1);
 }
 /* CUT THE FILE HERE */
+.Example {
+  background: #1d1d1d;
+  height: 600px;
+  margin-bottom: 40px;
+}
+/* CUT THE FILE HERE */
 .Cards {
   margin: 20px 20px 0 20px;
 }
@@ -504,12 +510,6 @@ html {
   width: 100%;
 }
 /* CUT THE FILE HERE */
-.Example {
-  background: #1d1d1d;
-  height: 600px;
-  margin-bottom: 40px;
-}
-/* CUT THE FILE HERE */
 .Form {
   margin: 80px 0 0 0;
   font-size: 28px;
@@ -541,6 +541,7 @@ html {
   font-size: 28px;
   letter-spacing: -1.4px;
   font-family: GT Walsheim Pro;
+  -webkit-appearance: none;
 }
 .Form input:focus,
 .Form input:active {
@@ -705,6 +706,7 @@ html {
   font-size: 28px;
   letter-spacing: -1.4px;
   font-family: GT Walsheim Pro;
+  -webkit-appearance: none;
 }
 .FormLight input:focus,
 .FormLight input:active {
