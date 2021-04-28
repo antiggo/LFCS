@@ -6,12 +6,20 @@
         display inline-flex
         width 100%
         padding-bottom 20px
+        @media screen-phone
+            display block
     &__item
         width 100%
         border-radius 20px
         padding 30px
         position relative
         cursor pointer
+        
+        @media screen-phone
+            width initial
+            display block
+            & + &
+                margin-top 16px
         & + &
             margin-left 2px
         &:after

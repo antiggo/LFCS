@@ -210,3 +210,25 @@ Beast.decl({
         }
     },
 })
+
+Beast.decl({
+    Text: {
+        inherits: 'Typo',
+        mod: {
+            Line: 'L'
+        },
+        expand: function () {
+            this.mod('Text', this.mod('Size'))
+        }
+    },
+})
+
+Beast.decl({
+    Title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'XXL',
+            Line: 'L'
+        }
+    },
+})

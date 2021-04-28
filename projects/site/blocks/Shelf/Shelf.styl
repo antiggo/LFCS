@@ -1,6 +1,9 @@
 .Shelf
    margin 0px 4px
    padding-bottom 4px
+   a
+       display block
+       text-decoration none
    
    &__cols
        display table
@@ -55,9 +58,8 @@
             & + &
                 margin-top -30px
            
-   &__title
-       font-size 70px
-       letter-spacing -1px
     &__subtitle
+        @media screen-phone
+            margin-top 14px
         font-size 22px
         letter-spacing -1px

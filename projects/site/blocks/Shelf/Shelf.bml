@@ -12,7 +12,7 @@ Beast.decl({
     },
     
     Shelf__item: {
-
+        tag: 'a',
         expand: function () {
 
             this.css('background', this.param('color'))
@@ -21,64 +21,79 @@ Beast.decl({
             this.append(
                 <dot color="{dot}"/>,
                 this.get('num', 'title', 'subtitle')
-                
             )    
+            this.domAttr('href', this.param('href'))
 
-            if (this.param('name') === 'closed') {
+            // if (this.param('name') === 'closed') {
                 
-            } else {
+            // } else {
 
 
 
-            this.on('click', function () {
+            // this.on('click', function () {
 
-                var g = this.param('name')
-                console.log(g)
+            //     var g = this.param('name')
+            //     console.log(g)
 
-                if (this.param('name') === 'docs') {
-                    var chatPage = (
-                        <DocScreen />
-                    )
-                }
+            //     if (this.param('name') === 'docs') {
+            //         var chatPage = (
+            //             <DocScreen />
+            //         )
+            //     }
 
-                if (this.param('name') === 'web') {
-                    var chatPage = (
-                        <WebScreen />
-                    )
-                }
+            //     if (this.param('name') === 'web') {
+            //         var chatPage = (
+            //             <WebScreen />
+            //         )
+            //     }
 
-                if (this.param('name') === 'presenation') {
-                    var chatPage = (
-                        <PresentationScreen />
-                    )
-                }
+            //     if (this.param('name') === 'presenation') {
+            //         var chatPage = (
+            //             <PresentationScreen />
+            //         )
+            //     }
 
-                if (history.pushState) {
-                    history.pushState(null, null, this.param('href'));
-                }
+            //     if (history.pushState) {
+            //         history.pushState(null, null, this.param('href'));
+            //     }
 
-                <Overlay Type="side">
-                    {chatPage}
-                </Overlay>
-                    .param({
-                        topBar: true,
-                        scrollContent: true
-                    })
-                    .pushToStackNavigation({
-                        context: this,
-                        onDidPop: function () {
-                            chatPage.detach()
-                        }
-                    })
-            })
+            //     <Overlay Type="side">
+            //         {chatPage}
+            //     </Overlay>
+            //         .param({
+            //             topBar: true,
+            //             scrollContent: true
+            //         })
+            //         .pushToStackNavigation({
+            //             context: this,
+            //             onDidPop: function () {
+            //                 chatPage.detach()
+            //             }
+            //         })
+            // })
 
-            }
+            // }
 
         }
     },
 
     Shelf__dot: {
 
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            
+            
+
+        }
+    },
+
+    Shelf__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'XL',
+            Line: 'L'
+        },
         expand: function () {
 
             this.css('background', this.param('color'))

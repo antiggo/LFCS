@@ -5,6 +5,7 @@
  * @M    font-size-medium     line-height-small line-height-medium line-height-large
  * @L    font-size-large      line-height-small line-height-medium line-height-large
  * @XL   font-size-extralarge line-height-small line-height-medium line-height-large
+ * @XXL   font-size-extralarge line-height-small line-height-medium line-height-large
  */
 TypoDefine(options = {
     font: false
@@ -12,17 +13,18 @@ TypoDefine(options = {
     M:    1em 1em 1em 1em
     L:    1em 1em 1em 1em
     XL:   1em 1em 1em 1em
+    XXL:  1em 1em 1em 1em
     caps: 1em 1em
 })
     arrayValue(array, index)
         array[index]
 
     {options.font && '.Typo_font_' + options.font}.Typo
-        for i in S M L XL
+        for i in S M L XL XXL
             if (options[i])
                 &_text_{i}
                     font-size arrayValue(options[i], 0)
-                    for j, jj in S M L
+                    for j, jj in S M L XL XXL
                         lh = arrayValue(options[i], jj + 1)
                         if (lh)
                             &.Typo_line_{j}
@@ -33,36 +35,39 @@ TypoDefine(options = {
 
 @media screen-desktop
     TypoDefine({
-        S:    11px 16px 17px 20px
-        M:    13px 16px 17px 20px
-        L:    18px 22px 24px 26px
-        XL:   30px 30px 30px 30px
+        S:    22px 27px 27px 27px
+        M:    28px 34px 34px 34px
+        L:    50px 58px 58px 58px
+        XL:   70px 70px 70px 70px
+        XXL:  70px 70px 70px 70px
         caps: 11px
     })
 
-@media screen-touch
+@media screen-tablet
     TypoDefine({
         S:    12px 17px 19px 22px
         M:    24px 17px 30px 22px
         L:    20px 22px 24px 26px
         XL:   34px 42px 42px 42px
+        XXL:  70px 70px 70px 70px
         caps: 13px
     })
 
-@media screen-phone-320
+@media screen-phone
     TypoDefine({
-        S: 12px 17px 19px 22px
-        M: 14px 17px 18px 22px
-        L: 19px 22px 22px
+        S:   12px 17px 19px 22px
+        M:   22px 22px 18px 22px
+        L:   19px 22px 22px
+        XL:  40px 36px 36px 36px
+        XXL:  50px 46px 46px 46px
         caps: 13px
     })
+        
 
 .Typo
-    font-poster = 'Diatype REKKI', HelveticaNeue-Light, sans-serif-light
-    font-regular = 'Diatype REKKI', HelveticaNeue, arial, sans-serif
-    font-medium = 'Diatype REKKI', HelveticaNeue-Medium, sans-serif-medium
-
-    font-family font-regular // Шрифт по умолчанию
+    font-regular = 'GT Walsheim Pro', sans-serif
+    font-family font-regular
+    letter-spacing -1.4px
 
     &_font_serif
         font-family georgia, serif
