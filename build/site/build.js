@@ -6205,7 +6205,6 @@ Beast.decl({
     },
 })
 
-
 Beast.decl({
     Cards: {
 
@@ -6251,6 +6250,7 @@ Beast.decl({
     
 
 })
+
 
 
 
