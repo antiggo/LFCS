@@ -266,9 +266,7 @@ Beast.decl({
             let requestForm = document.querySelector(".form__action");
 
             requestForm.onclick = function(event) {
-              this.value = 'Отправляю...';
-              this.disabled = true;
-              this.classList.add("button-loading");
+              
               event.preventDefault();
               // if all validation goes well
               if (validateForm()) {
@@ -276,6 +274,9 @@ Beast.decl({
                 for (var i = 0; i < uploadedFiles.length; i++) {
                   self.updloadDocumentToSanity(uploadedFiles[i]); 
                 } 
+                this.value = 'Отправляю...';
+                this.disabled = true;
+                this.classList.add("button-loading");
                 sendEmail();
                 
               } else return false;
@@ -407,6 +408,24 @@ Beast.decl({
         expand: function () {
             this.domAttr('param', this.param('param'))
         }
+    },
+
+    Form__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
+    },
+
+    Form__hint: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
     },
 
     Form__button: {
