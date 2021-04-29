@@ -1131,44 +1131,6 @@ html {
   animation: fadein 1.5s infinite;
 }
 /* CUT THE FILE HERE */
-.Head {
-  padding-top: 20px;
-  background: rgba(17,17,17,0.067) 1;
-  z-index: 300;
-}
-.Head__menu {
-  font-size: 18px;
-  position: absolute;
-  right: 60px;
-  top: 47px;
-}
-@media screen and (max-width: 599px) {
-  .Head__menu {
-    display: none;
-  }
-}
-.Head__menu-item {
-  display: inline-block;
-  cursor: pointer;
-  color: inherit;
-  letter-spacing: -1px;
-}
-.Head__menu-item + .Head__menu-item {
-  margin-left: 44px;
-}
-.Head__logo {
-  margin-top: 12px;
-  height: 60px;
-  margin-left: 20px;
-  -webkit-mask-image: url("/assets/logo.svg");
-  mask-image: url("/assets/logo.svg");
-  -webkit-mask-size: 180px;
-  mask-size: 180px;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  background-color: var(--text);
-}
-/* CUT THE FILE HERE */
 .Overlay {
 /**
      * Style
@@ -1914,6 +1876,44 @@ html {
 }
 .UISwitchNavigation__layer_state_release {
   display: none;
+}
+/* CUT THE FILE HERE */
+.Head {
+  padding-top: 20px;
+  background: rgba(17,17,17,0.067) 1;
+  z-index: 300;
+}
+.Head__menu {
+  font-size: 18px;
+  position: absolute;
+  right: 60px;
+  top: 47px;
+}
+@media screen and (max-width: 599px) {
+  .Head__menu {
+    display: none;
+  }
+}
+.Head__menu-item {
+  display: inline-block;
+  cursor: pointer;
+  color: inherit;
+  letter-spacing: -1px;
+}
+.Head__menu-item + .Head__menu-item {
+  margin-left: 44px;
+}
+.Head__logo {
+  margin-top: 12px;
+  height: 60px;
+  margin-left: 20px;
+  -webkit-mask-image: url("/assets/logo.svg");
+  mask-image: url("/assets/logo.svg");
+  -webkit-mask-size: 180px;
+  mask-size: 180px;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  background-color: var(--text);
 }
 @-webkit-keyframes ContentOut {
   0% {

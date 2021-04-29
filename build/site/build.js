@@ -6995,36 +6995,6 @@ Beast.decl({
 })
 
 
-Beast.decl({
-    Head: {
-        expand: function () {
-            this.append(
-                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
-                Beast.node("menu",{__context:this},"\n                    ",this.get('menu-item'),"\n                ")
-            )
-
-        }
-    },
-
-    Head__link: {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', 'main.html')
-
-
-        }
-    },
-
-    Head__logo: {
-        expand: function () {
-            this.empty()
-            
-
-        }
-    },
-    
-
-})
 /**
  * @block Overlay Интерфейс модальных окон
  * @dep UINavigation grid Typo Control
@@ -8177,4 +8147,35 @@ Beast.decl({
             this.append(this.get('/'))
         }
     }
+})
+
+Beast.decl({
+    Head: {
+        expand: function () {
+            this.append(
+                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
+                Beast.node("menu",{__context:this},"\n                    ",this.get('menu-item'),"\n                ")
+            )
+
+        }
+    },
+
+    Head__link: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', 'main.html')
+
+
+        }
+    },
+
+    Head__logo: {
+        expand: function () {
+            this.empty()
+            
+
+        }
+    },
+    
+
 })
