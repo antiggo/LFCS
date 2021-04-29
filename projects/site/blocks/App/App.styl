@@ -37,6 +37,11 @@
 
 .Person
     display inline-flex
+    &__photo
+        display none
+        @media screen-phone
+            display block
+            margin 50px 20px
     @media screen-phone
         display initial
     .Text_Gap_M
@@ -45,8 +50,14 @@
     &__right
         width 50%
         margin 70px 40px 0 0
+        @media screen-phone
+            display none
     &__left
+        margin-bottom 80px
         width 75%
+        @media screen-phone
+            width initial
+            margin-right 0
         margin-right 40px
     .Thumb
         width 100%

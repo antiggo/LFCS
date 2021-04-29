@@ -150,7 +150,7 @@ Beast.decl({
               documentNameContainer.innerHTML += "<div class='form__upload-filename'>" + documentName + "</div>";
 
               let documentUploadLabel = document.querySelector(".form__upload-label");
-              documentUploadLabel.innerHTML = "Загрузить еще документы";
+              documentUploadLabel.innerHTML = "Загрузить еще";
           }
 
           // if it's DOCX
