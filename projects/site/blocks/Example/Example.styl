@@ -12,17 +12,31 @@
 	padding 40px
 	border-radius 20px
 	
+	&__col
+		@media screen-phone
+			width initial
+			& + &
+				margin-top 40px
+		width 50%
+		&:nth-child(1)
+			@media screen-phone
+				margin-right 0
+			margin-right 20px
+		&:nth-child(2)
+			margin-left 20px
+			@media screen-phone
+				margin-left 0
+	
 	&__title
 		margin-bottom 10px
 		text-transform uppercase
+		font-size 22px
 	&__wrap
 		display inline-flex
 		@media screen-phone
 			display initial
 	&__text
 		display inline-block
-		width 80%
-		margin-right 40px
 		@media screen-phone
 			width initial
 			margin-right 0

@@ -78,3 +78,78 @@ Beast.decl({
 
 
 
+
+Beast.decl({
+    Gallery: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'S',
+            Line: 'L'
+        },
+        expand: function () {
+            this.append(
+                <items>
+                    {this.get('item')}
+                </items>
+                
+            )
+
+        }
+    },
+    
+    Gallery__image: {
+
+        expand: function () {
+            
+            
+            this.append(
+                
+                <Thumb Ratio="1x1">{this.text()}</Thumb>
+                
+            )
+
+        }
+    },
+
+    Gallery__item: {
+        tag: 'a',
+        expand: function () {
+            var href = this.param('href')
+            this.domAttr('href', href)
+
+        }
+    },
+
+
+
+    
+
+    
+})
+
+
+
+
+
+Beast.decl({
+    Link: {
+        tag: 'a',
+        
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+
+        }
+    },
+    
+    
+
+
+
+    
+
+    
+})
+
+
+
+

@@ -23,8 +23,55 @@
     font-style: normal;
 }
 
+.Link
+    display inline
+    text-decoration none
+    color inherit
+    border-bottom 1px solid #ffffff45
+    
 
 
+.Person
+    display inline-flex
+    @media screen-phone
+        display initial
+    .Text_Gap_M
+        max-width 100%
+    
+    &__right
+        width 50%
+        margin 70px 40px 0 0
+    &__left
+        width 75%
+        margin-right 40px
+    .Thumb
+        width 100%
+        border-radius 20px
+
+
+.Gallery
+    margin 0 20px 320px 20px
+    font-size 22px
+    a
+        text-decoration none
+        color inherit
+    &__title
+        margin-top 8px
+        
+    &__subtitle
+        opacity .6
+    &__items
+        display flex
+        flex-wrap wrap
+    &__item
+        width calc(33.3% - 40px)
+        @media screen-phone
+            width 100%
+        padding 40px 20px 40px 20px
+        
+        .Thumb
+            width 100%
+            border-radius 20px
 
 .Photo
     margin 0 20px
@@ -125,6 +172,9 @@ html
 
 .Text
     color inherit
+    &__p
+        & + &
+            margin-top 24px
     &_Gap
         &_Main
             margin 200px 20px 68px 20px
