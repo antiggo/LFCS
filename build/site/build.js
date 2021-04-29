@@ -6122,57 +6122,6 @@ Beast.decl({
     },
 })
 
-
-Beast.decl({
-    Cards: {
-
-        expand: function () {
-            
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
-
-                
-            )
-
-        }
-    },
-    
-    Cards__item: {
-        tag: 'a',
-        expand: function () {
-            this.css('background', this.param('color'))
-            this.css('color', this.param('text'))
-            this.domAttr('href', this.param('href'))
-            
-            this.append(
-                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
-                this.get('title'),
-                Beast.node("cross",{__context:this},"+"),
-                this.get('price')
-                
-            )
-
-        }
-    },
-
-    Shelf__dot: {
-
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-    
-
-})
-
-
-
-
-
 // global variables for calculations
 let price;
 let characterNumber = 2500;
@@ -6689,6 +6638,176 @@ Beast.decl({
 
 
 Beast.decl({
+    Cards: {
+
+        expand: function () {
+            
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+
+                
+            )
+
+        }
+    },
+    
+    Cards__item: {
+        tag: 'a',
+        expand: function () {
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
+            this.domAttr('href', this.param('href'))
+            
+            this.append(
+                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
+                this.get('title'),
+                Beast.node("cross",{__context:this},"+"),
+                this.get('price')
+                
+            )
+
+        }
+    },
+
+    Shelf__dot: {
+
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            
+            
+
+        }
+    },
+    
+
+})
+
+
+
+
+
+
+/**
+ * @block Grid Динамическая сетка
+ * @tag base
+ */
+Beast.decl({
+    Grid: {
+        // finalMod: true,
+        mod: {
+            Col: '',                // @mod Col {number} Ширина в колонках
+            Wrap: false,            // @mod Wrap {boolean} Основной контейнер сетки
+            Margin: false,          // @mod Margin {boolean} Поля
+            MarginX: false,         // @mod MarginX {boolean} Горизонтальные поля
+            MarginY: false,         // @mod MarginY {boolean} Вертикальные поля
+            Unmargin: false,        // @mod Unmargin {boolean} Отрицательные поля
+            UnmarginX: false,       // @mod UnmarginX {boolean} Отрицательные горизоантальные поля
+            UnmarginY: false,       // @mod UnmarginY {boolean} Отрацательные вертикальные поля
+            MarginRightGap: false,  // @mod MarginRightGap {boolean} Правый отступ равен — горизоантальное поле
+            MarginLeftGap: false,   // @mod MarginLeftGap {boolean} Левый отступ равен — горизоантальное поле
+            Cell: false,            // @mod Cell {boolean} Горизонтальный отступ между соседями — межколонник
+            Row: false,             // @mod Row {boolean} Вертикальынй отступ между соседями — межколонник
+            Rows: false,            // @mod Rows {boolean} Дочерние компоненты отступают на горизонтальное поле
+            Tile: false,            // @mod Tile {boolean} Модификатор дочернего компонента (для модификатора Tiles)
+            Tiles: false,           // @mod Tiles {boolean} Дочерние компоненты плиткой с отступами в поле
+            Center: false,          // @mod Center {boolean} Выравнивание по центру
+            Hidden: false,          // @mod Hidden {boolean} Спрятать компонент
+            ColCheck: false,        // @mod ColCheck {boolean} Считать ширину в колонках
+            Ratio: '',              // @mod Ratio {1x1 1x2 3x4 ...} Пропорция
+        },
+        param: {
+            isMaxCol: false,
+        },
+        onMod: {
+            Col: {
+                '*': function (fromParentGrid) {
+                    if (fromParentGrid === undefined) {
+                        this.param('isMaxCol', this.mod('col') === 'max')
+                    }
+                }
+            }
+        },
+        onCol: undefined,
+        domInit: function () {
+            this.param('isMaxCol', this.mod('col') === 'max')
+
+            if (this.mod('ColCheck')) {
+                this.onWin('resize', this.checkColWidth)
+                requestAnimationFrame(function () {
+                    this.checkColWidth()
+                }.bind(this))
+            }
+        },
+        onAttach: function (firstTime) {
+            this.setParentGrid(!firstTime)
+        },
+        checkColWidth: function () {
+            var prop = this.css('content').slice(1,-1).split(' ')
+            var col = parseInt(prop[0])
+            var gap = parseInt(prop[1])
+            var maxCol = parseInt(prop[2])
+            var marginX = parseInt(prop[3])
+            var marginY = parseFloat(prop[4])
+
+            if (isNaN(col)) {
+                return
+            }
+
+            var width = this.domNode().offsetWidth
+            var colNum = Math.floor((width + gap) / (col + gap))
+
+            if (colNum > maxCol) {
+                colNum = maxCol
+            }
+
+            this.trigger('Col', {
+                num: colNum,
+                edge: window.innerWidth === (colNum * col + (colNum-1) * gap + marginX * 2),
+                col: col,
+                gap: gap,
+                marginX: marginX,
+                marginY: marginY,
+            })
+        },
+        setParentGrid: function (recursive, parentGrid) {
+            if (this.onCol !== undefined || this.onEdge !== undefined || this.param('isMaxCol')) {
+                var that = this
+
+                if (parentGrid === undefined) {
+                    parentGrid = this._parentNode
+                    while (parentGrid !== undefined && !(parentGrid.isKindOf('Grid') && parentGrid.mod('ColCheck'))) {
+                        parentGrid = parentGrid._parentNode
+                    }
+                }
+
+                if (parentGrid !== undefined) {
+                    if (this.onCol || this.param('isMaxCol')) {
+                        parentGrid.on('Col', function (e, data) {
+                            that.onCol && that.onCol(data.num, data.edge, data)
+                            that.param('isMaxCol') && that.mod('Col', data.num, true)
+                        })
+                    }
+                }
+            }
+
+            if (recursive !== undefined) {
+                var children = this.get('/')
+                for (var i = 0, ii = children.length; i < ii; i++) {
+                    if (children[i].isKindOf('grid') && !children[i].mod('ColCheck')) {
+                        children[i].setParentGrid(recursive, parentGrid)
+                    }
+                }
+            }
+        }
+    }
+})
+
+function grid (num, col, gap, margin) {
+    var gridWidth = col * num + gap * (num - 1) + margin * 2
+    return gridWidth
+}
+Beast.decl({
     FormLight: {
 
         expand: function () {
@@ -6858,6 +6977,291 @@ Beast.decl({
 })
 
 
+/**
+ * @block Overlay Интерфейс модальных окон
+ * @dep UINavigation grid Typo Control
+ * @tag base
+ * @ext UINavigation grid
+ */
+Beast.decl({
+    Overlay: {
+        inherits: ['UINavigation'],
+        mod: {
+            Type: 'side', // modal, partsideleft, bottom, top, expand, custom
+        },
+        onMod: {
+            State: {
+                active: function (callback) {
+                    if (this.mod('Type') === 'expand') {
+                        this.moveContextInside()
+                    }
+
+                    this.param('activeCallback', callback)
+                },
+                release: function (callback) {
+                    if (this.mod('Type') === 'expand') {
+                        this.moveContextOutside()
+                    }
+
+                    this.param('releaseCallback', callback)
+                },
+            }
+        },
+        param: {
+            activeCallback: function () {},
+            releaseCallback: function () {},
+            title: '',
+            subtitle: '',
+            topBar: true,
+            background: true,
+        },
+        expand: function () {
+            if (this.param('topBar')) {
+                this.append(Beast.node("topBar",{__context:this}))
+                    .mod('HasTopBar', true)
+            }
+
+            if (this.param('bottomBar')) {
+                var price = this.parentBlock().param('price')
+                this.append(
+                    Beast.node("bottomBar",{__context:this})   
+                )
+                    .mod('HasTopBar', true)
+            }
+
+            if (this.param('background')) {
+                this.append(Beast.node("background",{__context:this}))
+            }
+
+            if (this.mod('Type') === 'partsideleft') {
+                this.mod('Col', '1LeftMargins')
+            }
+
+            this.css('color', this.param('colorText'))
+            this.css('background-color', this.param('colorMain'))
+
+            this.append(
+                Beast.node("content",{__context:this},this.get())
+            )
+        },
+        on: {
+            animationstart: function () {
+                if (this.mod('Type') === 'modal') {
+                    var overlayHeight = this.domNode().offsetHeight
+                    var parentHeight = this.parentNode().domNode().offsetHeight
+                    var marginTop = overlayHeight < (parentHeight - 200)
+                        ? this.domNode().offsetHeight / -2
+                        : undefined
+
+                    this.css({
+                        marginLeft: this.domNode().offsetWidth / -2,
+                        marginTop: marginTop,
+                        marginBottom: 0,
+                        top: '0%',
+                    })
+
+                    if (marginTop !== undefined) {
+                        this.css({
+                            marginTop: marginTop,
+                            marginBottom: 0,
+                            top: '50%',
+                        })
+                    }
+                }
+            },
+            animationend: function () {
+                // if (this.mod('Type') === 'expand' && this.param('scrollContent')) {
+                //     requestAnimationFrame(function () {
+                //         if (this.elem('content')[0].domNode().scrollTop === 0) {
+                //             this.param('options').context.css('transform', 'translate3d(0px,0px,0px)')
+                //             this.elem('content')[0].domNode().scrollTop = -this.param('scrollContent')
+                //             this.param('scrollContent', false)
+                //         }
+                //     }.bind(this))
+                // }
+
+                
+
+                if (this.mod('State') === 'release') {
+                    this.param('releaseCallback')()
+                } else {
+                    this.param('activeCallback')()
+                }
+            }
+        },
+        moveContextInside: function () {
+            var context = this.param('options').context
+
+            // Calculate Global Offset
+            var offsetParent = context.domNode()
+            var offsetTop = offsetParent.offsetTop
+            while (offsetParent = offsetParent.offsetParent) {
+                offsetTop += offsetParent.offsetTop
+            }
+
+            // Placeholder
+            var placeholder = Beast.node("OverlayPlaceholder",{__context:this})
+            this.param('placeholder', placeholder)
+            context.parentNode().insertChild([placeholder], context.index(true))
+            placeholder
+                .css('height', context.domNode().offsetHeight)
+                .domNode().className = context.domNode().className
+
+            context.appendTo(
+                this.elem('content')[0]
+            )
+
+            offsetTop -= 44
+            context.css({
+                transform: 'translate3d(0px,' + offsetTop + 'px, 0px)'
+            })
+
+            // Context is under of the screen top
+            if (offsetTop > 0) {
+                requestAnimationFrame(function () {
+                    context.css({
+                        transition: 'transform 300ms',
+                        transform: 'translate3d(0px,0px,0px)',
+                    })
+                })
+            }
+            // Context is above of the screen top
+            else {
+                this.param({
+                    scrollContent: offsetTop
+                })
+            }
+        },
+        moveContextOutside: function () {
+            this.param('placeholder').parentNode().insertChild(
+                [this.param('options').context], this.param('placeholder').index(true)
+            )
+            this.param('placeholder').remove()
+
+            this.param('options').context.css({
+                transition: ''
+            })
+        },
+    },
+    Overlay__topBar: {
+        expand: function () {
+            var layerIndex = this.parentBlock().parentNode().index()
+
+            // this.append(
+            //     <topBarActionBack/>,
+            //     layerIndex > 1 && <topBarActionClose/>
+            // )
+
+            this.append(
+                // <topBarActionNav/>,
+                Beast.node("topBarActionClose",{__context:this})
+            )
+
+            var title = this.parentBlock().param('title')
+            var subtitle = this.parentBlock().param('subtitle')
+
+            if (title) {
+                var titles = Beast.node("topBarTitles",{__context:this}).append(
+                    Beast.node("topBarTitle",{__context:this},title)
+                )
+
+                if (subtitle) {
+                    titles.append(
+                        Beast.node("topBarSubtitle",{__context:this},subtitle)
+                    )
+                }
+
+                this.append(titles)
+            }
+        }
+    },
+
+    Overlay__bottomBar: {
+        expand: function () {
+
+            var layerIndex = this.parentBlock().parentNode().index()
+            var price = this.parentBlock().param('price')
+
+            this.append(
+                Beast.node("Reserve",{__context:this},"\n                    ",Beast.node("price",undefined,price),"   \n                ")
+            )
+
+            
+        }
+    },
+
+    Overlay__topBarTitle: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'M',
+            Line: 'M',
+        },
+    },
+    Overlay__topBarSubtitle: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'S',
+        },
+    },
+    Overlay__topBarAction: {
+        inherits: ['Control', 'Typo'],
+        mod: {
+            Text: 'M',
+            Medium: true,
+        },
+    },
+    Overlay__topBarActionBack: {
+        inherits: 'Overlay__topBarAction',
+        expand: function fn () {
+            this.inherited(fn)
+
+            this.append(
+                Beast.node("Icon",{__context:this,"Name":"CornerArrowLeft"}),
+                Beast.node("topBarActionLabel",{__context:this},"Back")
+            )
+        },
+        on: {
+            Release: function () {
+                this.parentBlock().popFromStackNavigation()
+            }
+        }
+    },
+    Overlay__topBarActionNav: {
+        inherits: 'Overlay__topBarAction',
+        expand: function fn () {
+            this.inherited(fn)
+
+            this.append(
+                Beast.node("topBarActionLabel",{__context:this},"Index"),
+                Beast.node("Work",{__context:this},Beast.node("title",undefined,"Test"))
+            )
+        },
+        on: {
+            Release: function () {
+                //this.parentBlock().popFromStackNavigation()
+            }
+        }
+    },
+    Overlay__topBarActionClose: {
+        inherits: 'Overlay__topBarAction',
+        expand: function fn () {
+            //this.css('background', this.parentBlock().param('colorText'))
+            this.inherited(fn)
+                .append(
+                    Beast.node("topBarActionLabel",{__context:this},"Close")
+                )
+        },
+        on: {
+            click: function () {
+                window.history.back();
+                this.parentBlock().popAllFromStackNavigation()
+            }
+        }
+    },
+
+    
+})
+
 Beast.decl({
     Head: {
         expand: function () {
@@ -6888,125 +7292,6 @@ Beast.decl({
     
 
 })
-/**
- * @block Grid Динамическая сетка
- * @tag base
- */
-Beast.decl({
-    Grid: {
-        // finalMod: true,
-        mod: {
-            Col: '',                // @mod Col {number} Ширина в колонках
-            Wrap: false,            // @mod Wrap {boolean} Основной контейнер сетки
-            Margin: false,          // @mod Margin {boolean} Поля
-            MarginX: false,         // @mod MarginX {boolean} Горизонтальные поля
-            MarginY: false,         // @mod MarginY {boolean} Вертикальные поля
-            Unmargin: false,        // @mod Unmargin {boolean} Отрицательные поля
-            UnmarginX: false,       // @mod UnmarginX {boolean} Отрицательные горизоантальные поля
-            UnmarginY: false,       // @mod UnmarginY {boolean} Отрацательные вертикальные поля
-            MarginRightGap: false,  // @mod MarginRightGap {boolean} Правый отступ равен — горизоантальное поле
-            MarginLeftGap: false,   // @mod MarginLeftGap {boolean} Левый отступ равен — горизоантальное поле
-            Cell: false,            // @mod Cell {boolean} Горизонтальный отступ между соседями — межколонник
-            Row: false,             // @mod Row {boolean} Вертикальынй отступ между соседями — межколонник
-            Rows: false,            // @mod Rows {boolean} Дочерние компоненты отступают на горизонтальное поле
-            Tile: false,            // @mod Tile {boolean} Модификатор дочернего компонента (для модификатора Tiles)
-            Tiles: false,           // @mod Tiles {boolean} Дочерние компоненты плиткой с отступами в поле
-            Center: false,          // @mod Center {boolean} Выравнивание по центру
-            Hidden: false,          // @mod Hidden {boolean} Спрятать компонент
-            ColCheck: false,        // @mod ColCheck {boolean} Считать ширину в колонках
-            Ratio: '',              // @mod Ratio {1x1 1x2 3x4 ...} Пропорция
-        },
-        param: {
-            isMaxCol: false,
-        },
-        onMod: {
-            Col: {
-                '*': function (fromParentGrid) {
-                    if (fromParentGrid === undefined) {
-                        this.param('isMaxCol', this.mod('col') === 'max')
-                    }
-                }
-            }
-        },
-        onCol: undefined,
-        domInit: function () {
-            this.param('isMaxCol', this.mod('col') === 'max')
-
-            if (this.mod('ColCheck')) {
-                this.onWin('resize', this.checkColWidth)
-                requestAnimationFrame(function () {
-                    this.checkColWidth()
-                }.bind(this))
-            }
-        },
-        onAttach: function (firstTime) {
-            this.setParentGrid(!firstTime)
-        },
-        checkColWidth: function () {
-            var prop = this.css('content').slice(1,-1).split(' ')
-            var col = parseInt(prop[0])
-            var gap = parseInt(prop[1])
-            var maxCol = parseInt(prop[2])
-            var marginX = parseInt(prop[3])
-            var marginY = parseFloat(prop[4])
-
-            if (isNaN(col)) {
-                return
-            }
-
-            var width = this.domNode().offsetWidth
-            var colNum = Math.floor((width + gap) / (col + gap))
-
-            if (colNum > maxCol) {
-                colNum = maxCol
-            }
-
-            this.trigger('Col', {
-                num: colNum,
-                edge: window.innerWidth === (colNum * col + (colNum-1) * gap + marginX * 2),
-                col: col,
-                gap: gap,
-                marginX: marginX,
-                marginY: marginY,
-            })
-        },
-        setParentGrid: function (recursive, parentGrid) {
-            if (this.onCol !== undefined || this.onEdge !== undefined || this.param('isMaxCol')) {
-                var that = this
-
-                if (parentGrid === undefined) {
-                    parentGrid = this._parentNode
-                    while (parentGrid !== undefined && !(parentGrid.isKindOf('Grid') && parentGrid.mod('ColCheck'))) {
-                        parentGrid = parentGrid._parentNode
-                    }
-                }
-
-                if (parentGrid !== undefined) {
-                    if (this.onCol || this.param('isMaxCol')) {
-                        parentGrid.on('Col', function (e, data) {
-                            that.onCol && that.onCol(data.num, data.edge, data)
-                            that.param('isMaxCol') && that.mod('Col', data.num, true)
-                        })
-                    }
-                }
-            }
-
-            if (recursive !== undefined) {
-                var children = this.get('/')
-                for (var i = 0, ii = children.length; i < ii; i++) {
-                    if (children[i].isKindOf('grid') && !children[i].mod('ColCheck')) {
-                        children[i].setParentGrid(recursive, parentGrid)
-                    }
-                }
-            }
-        }
-    }
-})
-
-function grid (num, col, gap, margin) {
-    var gridWidth = col * num + gap * (num - 1) + margin * 2
-    return gridWidth
-}
 Beast.decl({
     Shelf: {
 
@@ -7462,319 +7747,47 @@ Beast.decl({
             
 
         }
-    },
-
-    
-    
-
-})
-
-
-
-
-
-/**
- * @block Typo Типографика
- * @tag base
- */
-
-Beast.decl({
-    Typo: {
-        // finalMod: true,
-        mod: {
-            text: '',       // @mod Text    {S M L XL}  Размер текста
-            line: '',       // @mod Line    {S M L}     Высота строки
-            caps: false,    // @mod Caps    {boolean}   Капслок
-            light: false,   // @mod Light   {boolean}   Light-начертание
-            medium: false,  // @mod Medium  {boolean}   Medium-начертание
-            bold: false,    // @mod Bold    {boolean}   Bold-начертание
-        }
     }
 })
-/**
- * @block Overlay Интерфейс модальных окон
- * @dep UINavigation grid Typo Control
- * @tag base
- * @ext UINavigation grid
- */
+
+
+
+
+
 Beast.decl({
-    Overlay: {
-        inherits: ['UINavigation'],
-        mod: {
-            Type: 'side', // modal, partsideleft, bottom, top, expand, custom
-        },
-        onMod: {
-            State: {
-                active: function (callback) {
-                    if (this.mod('Type') === 'expand') {
-                        this.moveContextInside()
-                    }
+    Showcase: {
 
-                    this.param('activeCallback', callback)
-                },
-                release: function (callback) {
-                    if (this.mod('Type') === 'expand') {
-                        this.moveContextOutside()
-                    }
-
-                    this.param('releaseCallback', callback)
-                },
-            }
-        },
-        param: {
-            activeCallback: function () {},
-            releaseCallback: function () {},
-            title: '',
-            subtitle: '',
-            topBar: true,
-            background: true,
-        },
         expand: function () {
-            if (this.param('topBar')) {
-                this.append(Beast.node("topBar",{__context:this}))
-                    .mod('HasTopBar', true)
-            }
-
-            if (this.param('bottomBar')) {
-                var price = this.parentBlock().param('price')
-                this.append(
-                    Beast.node("bottomBar",{__context:this})   
-                )
-                    .mod('HasTopBar', true)
-            }
-
-            if (this.param('background')) {
-                this.append(Beast.node("background",{__context:this}))
-            }
-
-            if (this.mod('Type') === 'partsideleft') {
-                this.mod('Col', '1LeftMargins')
-            }
-
-            this.css('color', this.param('colorText'))
-            this.css('background-color', this.param('colorMain'))
-
             this.append(
-                Beast.node("content",{__context:this},this.get())
-            )
-        },
-        on: {
-            animationstart: function () {
-                if (this.mod('Type') === 'modal') {
-                    var overlayHeight = this.domNode().offsetHeight
-                    var parentHeight = this.parentNode().domNode().offsetHeight
-                    var marginTop = overlayHeight < (parentHeight - 200)
-                        ? this.domNode().offsetHeight / -2
-                        : undefined
-
-                    this.css({
-                        marginLeft: this.domNode().offsetWidth / -2,
-                        marginTop: marginTop,
-                        marginBottom: 0,
-                        top: '0%',
-                    })
-
-                    if (marginTop !== undefined) {
-                        this.css({
-                            marginTop: marginTop,
-                            marginBottom: 0,
-                            top: '50%',
-                        })
-                    }
-                }
-            },
-            animationend: function () {
-                // if (this.mod('Type') === 'expand' && this.param('scrollContent')) {
-                //     requestAnimationFrame(function () {
-                //         if (this.elem('content')[0].domNode().scrollTop === 0) {
-                //             this.param('options').context.css('transform', 'translate3d(0px,0px,0px)')
-                //             this.elem('content')[0].domNode().scrollTop = -this.param('scrollContent')
-                //             this.param('scrollContent', false)
-                //         }
-                //     }.bind(this))
-                // }
-
                 
-
-                if (this.mod('State') === 'release') {
-                    this.param('releaseCallback')()
-                } else {
-                    this.param('activeCallback')()
-                }
-            }
-        },
-        moveContextInside: function () {
-            var context = this.param('options').context
-
-            // Calculate Global Offset
-            var offsetParent = context.domNode()
-            var offsetTop = offsetParent.offsetTop
-            while (offsetParent = offsetParent.offsetParent) {
-                offsetTop += offsetParent.offsetTop
-            }
-
-            // Placeholder
-            var placeholder = Beast.node("OverlayPlaceholder",{__context:this})
-            this.param('placeholder', placeholder)
-            context.parentNode().insertChild([placeholder], context.index(true))
-            placeholder
-                .css('height', context.domNode().offsetHeight)
-                .domNode().className = context.domNode().className
-
-            context.appendTo(
-                this.elem('content')[0]
+                    this.get('items')
+                
             )
 
-            offsetTop -= 44
-            context.css({
-                transform: 'translate3d(0px,' + offsetTop + 'px, 0px)'
-            })
-
-            // Context is under of the screen top
-            if (offsetTop > 0) {
-                requestAnimationFrame(function () {
-                    context.css({
-                        transition: 'transform 300ms',
-                        transform: 'translate3d(0px,0px,0px)',
-                    })
-                })
-            }
-            // Context is above of the screen top
-            else {
-                this.param({
-                    scrollContent: offsetTop
-                })
-            }
-        },
-        moveContextOutside: function () {
-            this.param('placeholder').parentNode().insertChild(
-                [this.param('options').context], this.param('placeholder').index(true)
-            )
-            this.param('placeholder').remove()
-
-            this.param('options').context.css({
-                transition: ''
-            })
-        },
-    },
-    Overlay__topBar: {
-        expand: function () {
-            var layerIndex = this.parentBlock().parentNode().index()
-
-            // this.append(
-            //     <topBarActionBack/>,
-            //     layerIndex > 1 && <topBarActionClose/>
-            // )
-
-            this.append(
-                // <topBarActionNav/>,
-                Beast.node("topBarActionClose",{__context:this})
-            )
-
-            var title = this.parentBlock().param('title')
-            var subtitle = this.parentBlock().param('subtitle')
-
-            if (title) {
-                var titles = Beast.node("topBarTitles",{__context:this}).append(
-                    Beast.node("topBarTitle",{__context:this},title)
-                )
-
-                if (subtitle) {
-                    titles.append(
-                        Beast.node("topBarSubtitle",{__context:this},subtitle)
-                    )
-                }
-
-                this.append(titles)
-            }
         }
     },
+    
+    Showcase__item: {
 
-    Overlay__bottomBar: {
         expand: function () {
-
-            var layerIndex = this.parentBlock().parentNode().index()
-            var price = this.parentBlock().param('price')
-
-            this.append(
-                Beast.node("Reserve",{__context:this},"\n                    ",Beast.node("price",undefined,price),"   \n                ")
-            )
-
             
-        }
-    },
-
-    Overlay__topBarTitle: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'M',
-            Line: 'M',
-        },
-    },
-    Overlay__topBarSubtitle: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'S',
-        },
-    },
-    Overlay__topBarAction: {
-        inherits: ['Control', 'Typo'],
-        mod: {
-            Text: 'M',
-            Medium: true,
-        },
-    },
-    Overlay__topBarActionBack: {
-        inherits: 'Overlay__topBarAction',
-        expand: function fn () {
-            this.inherited(fn)
-
             this.append(
-                Beast.node("Icon",{__context:this,"Name":"CornerArrowLeft"}),
-                Beast.node("topBarActionLabel",{__context:this},"Back")
+                
+                Beast.node("Thumb",{__context:this,"Ratio":this.parentBlock().mod('Ratio')},this.text())
+                
             )
-        },
-        on: {
-            Release: function () {
-                this.parentBlock().popFromStackNavigation()
-            }
-        }
-    },
-    Overlay__topBarActionNav: {
-        inherits: 'Overlay__topBarAction',
-        expand: function fn () {
-            this.inherited(fn)
 
-            this.append(
-                Beast.node("topBarActionLabel",{__context:this},"Index"),
-                Beast.node("Work",{__context:this},Beast.node("title",undefined,"Test"))
-            )
-        },
-        on: {
-            Release: function () {
-                //this.parentBlock().popFromStackNavigation()
-            }
-        }
-    },
-    Overlay__topBarActionClose: {
-        inherits: 'Overlay__topBarAction',
-        expand: function fn () {
-            //this.css('background', this.parentBlock().param('colorText'))
-            this.inherited(fn)
-                .append(
-                    Beast.node("topBarActionLabel",{__context:this},"Close")
-                )
-        },
-        on: {
-            click: function () {
-                window.history.back();
-                this.parentBlock().popAllFromStackNavigation()
-            }
         }
     },
 
     
+
+    
 })
+
+
+
+
 
 Beast.decl({
 
@@ -8070,6 +8083,25 @@ Beast.decl({
             }
 
             this.append(this.get('/'))
+        }
+    }
+})
+
+/**
+ * @block Typo Типографика
+ * @tag base
+ */
+
+Beast.decl({
+    Typo: {
+        // finalMod: true,
+        mod: {
+            text: '',       // @mod Text    {S M L XL}  Размер текста
+            line: '',       // @mod Line    {S M L}     Высота строки
+            caps: false,    // @mod Caps    {boolean}   Капслок
+            light: false,   // @mod Light   {boolean}   Light-начертание
+            medium: false,  // @mod Medium  {boolean}   Medium-начертание
+            bold: false,    // @mod Bold    {boolean}   Bold-начертание
         }
     }
 })

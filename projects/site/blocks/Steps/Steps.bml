@@ -36,11 +36,42 @@ Beast.decl({
             
 
         }
+    }
+})
+
+
+
+
+
+Beast.decl({
+    Showcase: {
+
+        expand: function () {
+            this.append(
+                
+                    this.get('items')
+                
+            )
+
+        }
+    },
+    
+    Showcase__item: {
+
+        expand: function () {
+            
+            this.append(
+                
+                <Thumb Ratio="{this.parentBlock().mod('Ratio')}">{this.text()}</Thumb>
+                
+            )
+
+        }
     },
 
     
-    
 
+    
 })
 
 

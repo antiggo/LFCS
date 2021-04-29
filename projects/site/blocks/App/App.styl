@@ -23,6 +23,32 @@
     font-style: normal;
 }
 
+.Showcase
+    margin 4px 4px
+    &_Small
+        .Showcase__item
+            padding 66px 46px
+        .Thumb
+            width 76% !important
+    &__items
+        display flex
+        @media screen-phone
+            display block
+    &__item
+        background #00000042
+        padding 34px 46px
+        box-sizing content-box
+        width 50%
+        margin 1px
+        border-radius 8px
+        text-align center
+        @media screen-phone
+            width initial
+        .Thumb
+            width 100%
+            border-radius 4px
+            box-shadow 0 3px 7px -5px rgb(0 0 0 / 60%)
+
 .Screen
     height 100%
 

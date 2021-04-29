@@ -94,6 +94,14 @@
   display: block;
   padding-bottom: 56.25%;
 }
+.Grid_ratio_A4 {
+  position: relative;
+}
+.Grid_ratio_A4:after {
+  content: '';
+  display: block;
+  padding-bottom: 146%;
+}
 /* CUT THE FILE HERE */
 /*
  * Параметризируемая типографика
@@ -339,6 +347,43 @@
   font-weight: 100;
   font-style: normal;
 }
+.Showcase {
+  margin: 4px 4px;
+}
+.Showcase_Small .Showcase__item {
+  padding: 66px 46px;
+}
+.Showcase_Small .Thumb {
+  width: 76% !important;
+}
+.Showcase__items {
+  display: -webkit-flex;
+  display: flex;
+}
+@media screen and (max-width: 599px) {
+  .Showcase__items {
+    display: block;
+  }
+}
+.Showcase__item {
+  background: rgba(0,0,0,0.259);
+  padding: 34px 46px;
+  box-sizing: content-box;
+  width: 50%;
+  margin: 1px;
+  border-radius: 8px;
+  text-align: center;
+}
+@media screen and (max-width: 599px) {
+  .Showcase__item {
+    width: initial;
+  }
+}
+.Showcase__item .Thumb {
+  width: 100%;
+  border-radius: 4px;
+  box-shadow: 0 3px 7px -5px #000;
+}
 .Screen {
   height: 100%;
 }
@@ -442,12 +487,6 @@ html {
   transition: transform 0.4s, -webkit-transform 0.4s;
   -webkit-animation-timing-function: cubic-bezier(0.1, 0.7, 0.1, 1);
   animation-timing-function: cubic-bezier(0.1, 0.7, 0.1, 1);
-}
-/* CUT THE FILE HERE */
-.Example {
-  background: #1d1d1d;
-  height: 600px;
-  margin-bottom: 40px;
 }
 /* CUT THE FILE HERE */
 .Cards {
@@ -701,6 +740,12 @@ html {
   animation: fadein 1.5s infinite;
 }
 /* CUT THE FILE HERE */
+.Example {
+  background: #1d1d1d;
+  height: 600px;
+  margin-bottom: 40px;
+}
+/* CUT THE FILE HERE */
 .FormLight {
   margin: 80px 0 0 0;
   font-size: 28px;
@@ -902,86 +947,6 @@ html {
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   background-color: var(--text);
-}
-/* CUT THE FILE HERE */
-.Shelf {
-  margin: 0px 4px;
-  padding-bottom: 4px;
-}
-.Shelf a {
-  display: block;
-  text-decoration: none;
-}
-.Shelf__cols {
-  display: table;
-  width: 100%;
-}
-.Shelf__dot {
-  height: 26px;
-  width: 26px;
-  border-radius: 100%;
-  left: 16px;
-  top: 16px;
-  position: absolute;
-}
-@media screen and (max-width: 599px) {
-  .Shelf__dot {
-    height: 20px;
-    width: 20px;
-  }
-}
-.Shelf__num {
-  position: absolute;
-  right: 16px;
-  top: 16px;
-  z-index: 9999;
-}
-.Shelf__item {
-  padding: 70px 22px 66px 22px;
-  border-radius: 20px 20px 0 0;
-  position: relative;
-  margin-top: 2px;
-}
-.Shelf__item:hover {
-  cursor: pointer;
-}
-.Shelf__item_size_L {
-  padding: 300px 22px 36px 22px;
-  border-radius: 20px;
-}
-@media screen and (max-width: 599px) {
-  .Shelf__item_size_L {
-    padding: 220px 22px 36px 22px;
-  }
-}
-.Shelf__item_size_High {
-  width: 30.1%;
-  display: inline-block;
-  padding: 180px 20px 180px 20px;
-  border-radius: 20px;
-  margin-bottom: 2px;
-}
-.Shelf__item_size_High + .Shelf__item_size_High {
-  margin-left: 2px;
-}
-.Shelf__item_size_High .Shelf__title {
-  text-align: center;
-  font-size: 50px;
-}
-.Shelf__item_Last {
-  border-radius: 20px 20px 20px 20px;
-}
-.Shelf__item_Margin + .Shelf__item_Margin {
-  margin-top: -30px;
-}
-.Shelf__subtitle {
-  font-size: 22px;
-  letter-spacing: -1px;
-}
-@media screen and (max-width: 599px) {
-  .Shelf__subtitle {
-    margin-top: 14px;
-  }
 }
 /* CUT THE FILE HERE */
 .Overlay {
@@ -1449,8 +1414,88 @@ html {
   }
 }
 /* CUT THE FILE HERE */
+.Shelf {
+  margin: 0px 4px;
+  padding-bottom: 4px;
+}
+.Shelf a {
+  display: block;
+  text-decoration: none;
+}
+.Shelf__cols {
+  display: table;
+  width: 100%;
+}
+.Shelf__dot {
+  height: 26px;
+  width: 26px;
+  border-radius: 100%;
+  left: 16px;
+  top: 16px;
+  position: absolute;
+}
+@media screen and (max-width: 599px) {
+  .Shelf__dot {
+    height: 20px;
+    width: 20px;
+  }
+}
+.Shelf__num {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  z-index: 9999;
+}
+.Shelf__item {
+  padding: 70px 22px 66px 22px;
+  border-radius: 20px 20px 0 0;
+  position: relative;
+  margin-top: 2px;
+}
+.Shelf__item:hover {
+  cursor: pointer;
+}
+.Shelf__item_size_L {
+  padding: 300px 22px 36px 22px;
+  border-radius: 20px;
+}
+@media screen and (max-width: 599px) {
+  .Shelf__item_size_L {
+    padding: 220px 22px 36px 22px;
+  }
+}
+.Shelf__item_size_High {
+  width: 30.1%;
+  display: inline-block;
+  padding: 180px 20px 180px 20px;
+  border-radius: 20px;
+  margin-bottom: 2px;
+}
+.Shelf__item_size_High + .Shelf__item_size_High {
+  margin-left: 2px;
+}
+.Shelf__item_size_High .Shelf__title {
+  text-align: center;
+  font-size: 50px;
+}
+.Shelf__item_Last {
+  border-radius: 20px 20px 20px 20px;
+}
+.Shelf__item_Margin + .Shelf__item_Margin {
+  margin-top: -30px;
+}
+.Shelf__subtitle {
+  font-size: 22px;
+  letter-spacing: -1px;
+}
+@media screen and (max-width: 599px) {
+  .Shelf__subtitle {
+    margin-top: 14px;
+  }
+}
+/* CUT THE FILE HERE */
 .Steps {
-  margin: 0 20px;
+  margin: 40px 20px 0 20px;
   letter-spacing: -1.4px;
 }
 .Steps__items {
@@ -1486,69 +1531,6 @@ html {
   font-size: 22px;
   line-height: 24px;
   margin-top: 8px;
-}
-/* CUT THE FILE HERE */
-.UIStackNavigation_pushed {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  overflow-y: hidden;
-}
-.UIStackNavigation__layer:last-child:not(:first-child) {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  touch-scroll: y;
-  overflow: hidden;
-  z-index: 100;
-}
-.UIStackNavigation__fog {
-  display: none;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 1;
-}
-@-webkit-keyframes UIStackNavigationPush {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes UIStackNavigationPush {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@-webkit-keyframes UIStackNavigationPop {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-@keyframes UIStackNavigationPop {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-.UISwitchNavigation__layer_state_release {
-  display: none;
 }
 /* CUT THE FILE HERE */
 .Thumb {
@@ -1649,6 +1631,69 @@ html {
 }
 .Thumb_border {
   box-shadow: inset 0 0 0 2px rgba(0,0,0,0.1);
+}
+/* CUT THE FILE HERE */
+.UIStackNavigation_pushed {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow-y: hidden;
+}
+.UIStackNavigation__layer:last-child:not(:first-child) {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  touch-scroll: y;
+  overflow: hidden;
+  z-index: 100;
+}
+.UIStackNavigation__fog {
+  display: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1;
+}
+@-webkit-keyframes UIStackNavigationPush {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes UIStackNavigationPush {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes UIStackNavigationPop {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes UIStackNavigationPop {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.UISwitchNavigation__layer_state_release {
+  display: none;
 }
 @-webkit-keyframes ContentOut {
   0% {
