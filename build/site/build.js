@@ -6309,7 +6309,6 @@ Beast.decl({
 
 
 
-
 // global variables for calculations
 let price;
 let characterNumber = 2500;
@@ -6855,6 +6854,7 @@ Beast.decl({
     
 
 })
+
 /**
  * @block Overlay Интерфейс модальных окон
  * @dep UINavigation grid Typo Control

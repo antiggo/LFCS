@@ -5,20 +5,31 @@
 	font-size 17px
 	margin 40px 20px
 	color #535353
-	padding 30px
+	padding 40px
 	border-radius 20px
+	
 	&__title
 		margin-bottom 10px
 		text-transform uppercase
 	&__wrap
 		display inline-flex
+		@media screen-phone
+			display initial
 	&__text
 		display inline-block
 		width 80%
+		margin-right 40px
+		@media screen-phone
+			width initial
+			margin-right 0
 		line-height 22px
 	&__remark
 		display inline-block
 		width 19%
+		
+		@media screen-phone
+			width initial
+			margin-top 40px
 		vertical-align top
 		font-size 13px
 		
