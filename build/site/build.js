@@ -5930,56 +5930,6 @@ BemNode.prototype = {
 }
 
 })();
-Beast.decl({
-    Cards: {
-
-        expand: function () {
-            
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
-
-                
-            )
-
-        }
-    },
-    
-    Cards__item: {
-        tag: 'a',
-        expand: function () {
-            this.css('background', this.param('color'))
-            this.css('color', this.param('text'))
-            this.domAttr('href', this.param('href'))
-            
-            this.append(
-                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
-                this.get('title'),
-                Beast.node("cross",{__context:this},"+"),
-                this.get('price')
-                
-            )
-
-        }
-    },
-
-    Shelf__dot: {
-
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-    
-
-})
-
-
-
-
-
 /**
  * @block App Корневой компонент всех страниц
  * @dep UINavigation DocInspector DocConsole
@@ -6042,7 +5992,7 @@ Beast.decl({
         },
         domInit: function fn () {
             this.inherited(fn)
-            history.pushState({}, '', '')
+            // history.pushState({}, '', '')
             
         }
     },
@@ -6171,6 +6121,56 @@ Beast.decl({
         }
     },
 })
+
+
+Beast.decl({
+    Cards: {
+
+        expand: function () {
+            
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+
+                
+            )
+
+        }
+    },
+    
+    Cards__item: {
+        tag: 'a',
+        expand: function () {
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
+            this.domAttr('href', this.param('href'))
+            
+            this.append(
+                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
+                this.get('title'),
+                Beast.node("cross",{__context:this},"+"),
+                this.get('price')
+                
+            )
+
+        }
+    },
+
+    Shelf__dot: {
+
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            
+            
+
+        }
+    },
+    
+
+})
+
+
+
 
 
 // global variables for calculations
@@ -6858,6 +6858,36 @@ Beast.decl({
 })
 
 
+Beast.decl({
+    Head: {
+        expand: function () {
+            this.append(
+                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
+                Beast.node("menu",{__context:this},"\n                    ",this.get('menu-item'),"\n                ")
+            )
+
+        }
+    },
+
+    Head__link: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', 'main.html')
+
+
+        }
+    },
+
+    Head__logo: {
+        expand: function () {
+            this.empty()
+            
+
+        }
+    },
+    
+
+})
 /**
  * @block Grid Динамическая сетка
  * @tag base
@@ -6978,321 +7008,6 @@ function grid (num, col, gap, margin) {
     return gridWidth
 }
 Beast.decl({
-    Head: {
-        expand: function () {
-            this.append(
-                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
-                Beast.node("menu",{__context:this},"\n                    ",this.get('menu-item'),"\n                ")
-            )
-
-        }
-    },
-
-    Head__link: {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', 'main.html')
-
-
-        }
-    },
-
-    Head__logo: {
-        expand: function () {
-            this.empty()
-            
-
-        }
-    },
-    
-
-})
-/**
- * @block Overlay Интерфейс модальных окон
- * @dep UINavigation grid Typo Control
- * @tag base
- * @ext UINavigation grid
- */
-Beast.decl({
-    Overlay: {
-        inherits: ['UINavigation'],
-        mod: {
-            Type: 'side', // modal, partsideleft, bottom, top, expand, custom
-        },
-        onMod: {
-            State: {
-                active: function (callback) {
-                    if (this.mod('Type') === 'expand') {
-                        this.moveContextInside()
-                    }
-
-                    this.param('activeCallback', callback)
-                },
-                release: function (callback) {
-                    if (this.mod('Type') === 'expand') {
-                        this.moveContextOutside()
-                    }
-
-                    this.param('releaseCallback', callback)
-                },
-            }
-        },
-        param: {
-            activeCallback: function () {},
-            releaseCallback: function () {},
-            title: '',
-            subtitle: '',
-            topBar: true,
-            background: true,
-        },
-        expand: function () {
-            if (this.param('topBar')) {
-                this.append(Beast.node("topBar",{__context:this}))
-                    .mod('HasTopBar', true)
-            }
-
-            if (this.param('bottomBar')) {
-                var price = this.parentBlock().param('price')
-                this.append(
-                    Beast.node("bottomBar",{__context:this})   
-                )
-                    .mod('HasTopBar', true)
-            }
-
-            if (this.param('background')) {
-                this.append(Beast.node("background",{__context:this}))
-            }
-
-            if (this.mod('Type') === 'partsideleft') {
-                this.mod('Col', '1LeftMargins')
-            }
-
-            this.css('color', this.param('colorText'))
-            this.css('background-color', this.param('colorMain'))
-
-            this.append(
-                Beast.node("content",{__context:this},this.get())
-            )
-        },
-        on: {
-            animationstart: function () {
-                if (this.mod('Type') === 'modal') {
-                    var overlayHeight = this.domNode().offsetHeight
-                    var parentHeight = this.parentNode().domNode().offsetHeight
-                    var marginTop = overlayHeight < (parentHeight - 200)
-                        ? this.domNode().offsetHeight / -2
-                        : undefined
-
-                    this.css({
-                        marginLeft: this.domNode().offsetWidth / -2,
-                        marginTop: marginTop,
-                        marginBottom: 0,
-                        top: '0%',
-                    })
-
-                    if (marginTop !== undefined) {
-                        this.css({
-                            marginTop: marginTop,
-                            marginBottom: 0,
-                            top: '50%',
-                        })
-                    }
-                }
-            },
-            animationend: function () {
-                // if (this.mod('Type') === 'expand' && this.param('scrollContent')) {
-                //     requestAnimationFrame(function () {
-                //         if (this.elem('content')[0].domNode().scrollTop === 0) {
-                //             this.param('options').context.css('transform', 'translate3d(0px,0px,0px)')
-                //             this.elem('content')[0].domNode().scrollTop = -this.param('scrollContent')
-                //             this.param('scrollContent', false)
-                //         }
-                //     }.bind(this))
-                // }
-
-                
-
-                if (this.mod('State') === 'release') {
-                    this.param('releaseCallback')()
-                } else {
-                    this.param('activeCallback')()
-                }
-            }
-        },
-        moveContextInside: function () {
-            var context = this.param('options').context
-
-            // Calculate Global Offset
-            var offsetParent = context.domNode()
-            var offsetTop = offsetParent.offsetTop
-            while (offsetParent = offsetParent.offsetParent) {
-                offsetTop += offsetParent.offsetTop
-            }
-
-            // Placeholder
-            var placeholder = Beast.node("OverlayPlaceholder",{__context:this})
-            this.param('placeholder', placeholder)
-            context.parentNode().insertChild([placeholder], context.index(true))
-            placeholder
-                .css('height', context.domNode().offsetHeight)
-                .domNode().className = context.domNode().className
-
-            context.appendTo(
-                this.elem('content')[0]
-            )
-
-            offsetTop -= 44
-            context.css({
-                transform: 'translate3d(0px,' + offsetTop + 'px, 0px)'
-            })
-
-            // Context is under of the screen top
-            if (offsetTop > 0) {
-                requestAnimationFrame(function () {
-                    context.css({
-                        transition: 'transform 300ms',
-                        transform: 'translate3d(0px,0px,0px)',
-                    })
-                })
-            }
-            // Context is above of the screen top
-            else {
-                this.param({
-                    scrollContent: offsetTop
-                })
-            }
-        },
-        moveContextOutside: function () {
-            this.param('placeholder').parentNode().insertChild(
-                [this.param('options').context], this.param('placeholder').index(true)
-            )
-            this.param('placeholder').remove()
-
-            this.param('options').context.css({
-                transition: ''
-            })
-        },
-    },
-    Overlay__topBar: {
-        expand: function () {
-            var layerIndex = this.parentBlock().parentNode().index()
-
-            // this.append(
-            //     <topBarActionBack/>,
-            //     layerIndex > 1 && <topBarActionClose/>
-            // )
-
-            this.append(
-                // <topBarActionNav/>,
-                Beast.node("topBarActionClose",{__context:this})
-            )
-
-            var title = this.parentBlock().param('title')
-            var subtitle = this.parentBlock().param('subtitle')
-
-            if (title) {
-                var titles = Beast.node("topBarTitles",{__context:this}).append(
-                    Beast.node("topBarTitle",{__context:this},title)
-                )
-
-                if (subtitle) {
-                    titles.append(
-                        Beast.node("topBarSubtitle",{__context:this},subtitle)
-                    )
-                }
-
-                this.append(titles)
-            }
-        }
-    },
-
-    Overlay__bottomBar: {
-        expand: function () {
-
-            var layerIndex = this.parentBlock().parentNode().index()
-            var price = this.parentBlock().param('price')
-
-            this.append(
-                Beast.node("Reserve",{__context:this},"\n                    ",Beast.node("price",undefined,price),"   \n                ")
-            )
-
-            
-        }
-    },
-
-    Overlay__topBarTitle: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'M',
-            Line: 'M',
-        },
-    },
-    Overlay__topBarSubtitle: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'S',
-        },
-    },
-    Overlay__topBarAction: {
-        inherits: ['Control', 'Typo'],
-        mod: {
-            Text: 'M',
-            Medium: true,
-        },
-    },
-    Overlay__topBarActionBack: {
-        inherits: 'Overlay__topBarAction',
-        expand: function fn () {
-            this.inherited(fn)
-
-            this.append(
-                Beast.node("Icon",{__context:this,"Name":"CornerArrowLeft"}),
-                Beast.node("topBarActionLabel",{__context:this},"Back")
-            )
-        },
-        on: {
-            Release: function () {
-                this.parentBlock().popFromStackNavigation()
-            }
-        }
-    },
-    Overlay__topBarActionNav: {
-        inherits: 'Overlay__topBarAction',
-        expand: function fn () {
-            this.inherited(fn)
-
-            this.append(
-                Beast.node("topBarActionLabel",{__context:this},"Index"),
-                Beast.node("Work",{__context:this},Beast.node("title",undefined,"Test"))
-            )
-        },
-        on: {
-            Release: function () {
-                //this.parentBlock().popFromStackNavigation()
-            }
-        }
-    },
-    Overlay__topBarActionClose: {
-        inherits: 'Overlay__topBarAction',
-        expand: function fn () {
-            //this.css('background', this.parentBlock().param('colorText'))
-            this.inherited(fn)
-                .append(
-                    Beast.node("topBarActionLabel",{__context:this},"Close")
-                )
-        },
-        on: {
-            click: function () {
-                window.history.back();
-                this.parentBlock().popAllFromStackNavigation()
-            }
-        }
-    },
-
-    
-})
-
-Beast.decl({
     Shelf: {
 
         expand: function () {
@@ -7396,53 +7111,6 @@ Beast.decl({
 
         }
     },
-    
-
-})
-
-
-
-
-
-Beast.decl({
-    Steps: {
-
-        expand: function () {
-
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('step'),"\n                ")
-                
-            )
-
-        }
-    },
-    
-    Steps__step: {
-
-        expand: function () {
-            
-            this.append(
-                Beast.node("num",{__context:this},this.get('num')),
-                this.get('text')
-
-                
-            )
-
-        }
-    },
-
-    Steps__num: {
-
-        expand: function () {
-
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-            
-
-        }
-    },
-
-    
     
 
 })
@@ -7758,6 +7426,53 @@ Beast.decl({
 // @example <Thumb Ratio="1x1" Col="3" Shadow src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Grid src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Rounded src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
+Beast.decl({
+    Steps: {
+
+        expand: function () {
+
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('step'),"\n                ")
+                
+            )
+
+        }
+    },
+    
+    Steps__step: {
+
+        expand: function () {
+            
+            this.append(
+                Beast.node("num",{__context:this},this.get('num')),
+                this.get('text')
+
+                
+            )
+
+        }
+    },
+
+    Steps__num: {
+
+        expand: function () {
+
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+            
+
+        }
+    },
+
+    
+    
+
+})
+
+
+
+
+
 /**
  * @block Typo Типографика
  * @tag base
@@ -7776,6 +7491,291 @@ Beast.decl({
         }
     }
 })
+/**
+ * @block Overlay Интерфейс модальных окон
+ * @dep UINavigation grid Typo Control
+ * @tag base
+ * @ext UINavigation grid
+ */
+Beast.decl({
+    Overlay: {
+        inherits: ['UINavigation'],
+        mod: {
+            Type: 'side', // modal, partsideleft, bottom, top, expand, custom
+        },
+        onMod: {
+            State: {
+                active: function (callback) {
+                    if (this.mod('Type') === 'expand') {
+                        this.moveContextInside()
+                    }
+
+                    this.param('activeCallback', callback)
+                },
+                release: function (callback) {
+                    if (this.mod('Type') === 'expand') {
+                        this.moveContextOutside()
+                    }
+
+                    this.param('releaseCallback', callback)
+                },
+            }
+        },
+        param: {
+            activeCallback: function () {},
+            releaseCallback: function () {},
+            title: '',
+            subtitle: '',
+            topBar: true,
+            background: true,
+        },
+        expand: function () {
+            if (this.param('topBar')) {
+                this.append(Beast.node("topBar",{__context:this}))
+                    .mod('HasTopBar', true)
+            }
+
+            if (this.param('bottomBar')) {
+                var price = this.parentBlock().param('price')
+                this.append(
+                    Beast.node("bottomBar",{__context:this})   
+                )
+                    .mod('HasTopBar', true)
+            }
+
+            if (this.param('background')) {
+                this.append(Beast.node("background",{__context:this}))
+            }
+
+            if (this.mod('Type') === 'partsideleft') {
+                this.mod('Col', '1LeftMargins')
+            }
+
+            this.css('color', this.param('colorText'))
+            this.css('background-color', this.param('colorMain'))
+
+            this.append(
+                Beast.node("content",{__context:this},this.get())
+            )
+        },
+        on: {
+            animationstart: function () {
+                if (this.mod('Type') === 'modal') {
+                    var overlayHeight = this.domNode().offsetHeight
+                    var parentHeight = this.parentNode().domNode().offsetHeight
+                    var marginTop = overlayHeight < (parentHeight - 200)
+                        ? this.domNode().offsetHeight / -2
+                        : undefined
+
+                    this.css({
+                        marginLeft: this.domNode().offsetWidth / -2,
+                        marginTop: marginTop,
+                        marginBottom: 0,
+                        top: '0%',
+                    })
+
+                    if (marginTop !== undefined) {
+                        this.css({
+                            marginTop: marginTop,
+                            marginBottom: 0,
+                            top: '50%',
+                        })
+                    }
+                }
+            },
+            animationend: function () {
+                // if (this.mod('Type') === 'expand' && this.param('scrollContent')) {
+                //     requestAnimationFrame(function () {
+                //         if (this.elem('content')[0].domNode().scrollTop === 0) {
+                //             this.param('options').context.css('transform', 'translate3d(0px,0px,0px)')
+                //             this.elem('content')[0].domNode().scrollTop = -this.param('scrollContent')
+                //             this.param('scrollContent', false)
+                //         }
+                //     }.bind(this))
+                // }
+
+                
+
+                if (this.mod('State') === 'release') {
+                    this.param('releaseCallback')()
+                } else {
+                    this.param('activeCallback')()
+                }
+            }
+        },
+        moveContextInside: function () {
+            var context = this.param('options').context
+
+            // Calculate Global Offset
+            var offsetParent = context.domNode()
+            var offsetTop = offsetParent.offsetTop
+            while (offsetParent = offsetParent.offsetParent) {
+                offsetTop += offsetParent.offsetTop
+            }
+
+            // Placeholder
+            var placeholder = Beast.node("OverlayPlaceholder",{__context:this})
+            this.param('placeholder', placeholder)
+            context.parentNode().insertChild([placeholder], context.index(true))
+            placeholder
+                .css('height', context.domNode().offsetHeight)
+                .domNode().className = context.domNode().className
+
+            context.appendTo(
+                this.elem('content')[0]
+            )
+
+            offsetTop -= 44
+            context.css({
+                transform: 'translate3d(0px,' + offsetTop + 'px, 0px)'
+            })
+
+            // Context is under of the screen top
+            if (offsetTop > 0) {
+                requestAnimationFrame(function () {
+                    context.css({
+                        transition: 'transform 300ms',
+                        transform: 'translate3d(0px,0px,0px)',
+                    })
+                })
+            }
+            // Context is above of the screen top
+            else {
+                this.param({
+                    scrollContent: offsetTop
+                })
+            }
+        },
+        moveContextOutside: function () {
+            this.param('placeholder').parentNode().insertChild(
+                [this.param('options').context], this.param('placeholder').index(true)
+            )
+            this.param('placeholder').remove()
+
+            this.param('options').context.css({
+                transition: ''
+            })
+        },
+    },
+    Overlay__topBar: {
+        expand: function () {
+            var layerIndex = this.parentBlock().parentNode().index()
+
+            // this.append(
+            //     <topBarActionBack/>,
+            //     layerIndex > 1 && <topBarActionClose/>
+            // )
+
+            this.append(
+                // <topBarActionNav/>,
+                Beast.node("topBarActionClose",{__context:this})
+            )
+
+            var title = this.parentBlock().param('title')
+            var subtitle = this.parentBlock().param('subtitle')
+
+            if (title) {
+                var titles = Beast.node("topBarTitles",{__context:this}).append(
+                    Beast.node("topBarTitle",{__context:this},title)
+                )
+
+                if (subtitle) {
+                    titles.append(
+                        Beast.node("topBarSubtitle",{__context:this},subtitle)
+                    )
+                }
+
+                this.append(titles)
+            }
+        }
+    },
+
+    Overlay__bottomBar: {
+        expand: function () {
+
+            var layerIndex = this.parentBlock().parentNode().index()
+            var price = this.parentBlock().param('price')
+
+            this.append(
+                Beast.node("Reserve",{__context:this},"\n                    ",Beast.node("price",undefined,price),"   \n                ")
+            )
+
+            
+        }
+    },
+
+    Overlay__topBarTitle: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'M',
+            Line: 'M',
+        },
+    },
+    Overlay__topBarSubtitle: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'S',
+        },
+    },
+    Overlay__topBarAction: {
+        inherits: ['Control', 'Typo'],
+        mod: {
+            Text: 'M',
+            Medium: true,
+        },
+    },
+    Overlay__topBarActionBack: {
+        inherits: 'Overlay__topBarAction',
+        expand: function fn () {
+            this.inherited(fn)
+
+            this.append(
+                Beast.node("Icon",{__context:this,"Name":"CornerArrowLeft"}),
+                Beast.node("topBarActionLabel",{__context:this},"Back")
+            )
+        },
+        on: {
+            Release: function () {
+                this.parentBlock().popFromStackNavigation()
+            }
+        }
+    },
+    Overlay__topBarActionNav: {
+        inherits: 'Overlay__topBarAction',
+        expand: function fn () {
+            this.inherited(fn)
+
+            this.append(
+                Beast.node("topBarActionLabel",{__context:this},"Index"),
+                Beast.node("Work",{__context:this},Beast.node("title",undefined,"Test"))
+            )
+        },
+        on: {
+            Release: function () {
+                //this.parentBlock().popFromStackNavigation()
+            }
+        }
+    },
+    Overlay__topBarActionClose: {
+        inherits: 'Overlay__topBarAction',
+        expand: function fn () {
+            //this.css('background', this.parentBlock().param('colorText'))
+            this.inherited(fn)
+                .append(
+                    Beast.node("topBarActionLabel",{__context:this},"Close")
+                )
+        },
+        on: {
+            click: function () {
+                window.history.back();
+                this.parentBlock().popAllFromStackNavigation()
+            }
+        }
+    },
+
+    
+})
+
 Beast.decl({
 
     /**

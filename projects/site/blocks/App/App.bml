@@ -60,7 +60,7 @@ Beast.decl({
         },
         domInit: function fn () {
             this.inherited(fn)
-            history.pushState({}, '', '')
+            // history.pushState({}, '', '')
             
         }
     },
