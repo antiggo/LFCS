@@ -6,7 +6,7 @@
  */
 Beast.decl({
     Thumb: {
-        inherits: ['Grid', 'Link'],
+        inherits: ['Grid'],
         mod: {
             Ratio:'',               // @mod Ratio {1x1 1x2 2x1 2x3 3x2 3x4 4x3 16x10} Пропорция
             Fit:'cover',            // @mod Fit {cover! contain} Растягивание картинки по контейнеру

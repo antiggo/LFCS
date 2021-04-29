@@ -5930,6 +5930,335 @@ BemNode.prototype = {
 }
 
 })();
+/**
+ * @block Grid Динамическая сетка
+ * @tag base
+ */
+Beast.decl({
+    Grid: {
+        // finalMod: true,
+        mod: {
+            Col: '',                // @mod Col {number} Ширина в колонках
+            Wrap: false,            // @mod Wrap {boolean} Основной контейнер сетки
+            Margin: false,          // @mod Margin {boolean} Поля
+            MarginX: false,         // @mod MarginX {boolean} Горизонтальные поля
+            MarginY: false,         // @mod MarginY {boolean} Вертикальные поля
+            Unmargin: false,        // @mod Unmargin {boolean} Отрицательные поля
+            UnmarginX: false,       // @mod UnmarginX {boolean} Отрицательные горизоантальные поля
+            UnmarginY: false,       // @mod UnmarginY {boolean} Отрацательные вертикальные поля
+            MarginRightGap: false,  // @mod MarginRightGap {boolean} Правый отступ равен — горизоантальное поле
+            MarginLeftGap: false,   // @mod MarginLeftGap {boolean} Левый отступ равен — горизоантальное поле
+            Cell: false,            // @mod Cell {boolean} Горизонтальный отступ между соседями — межколонник
+            Row: false,             // @mod Row {boolean} Вертикальынй отступ между соседями — межколонник
+            Rows: false,            // @mod Rows {boolean} Дочерние компоненты отступают на горизонтальное поле
+            Tile: false,            // @mod Tile {boolean} Модификатор дочернего компонента (для модификатора Tiles)
+            Tiles: false,           // @mod Tiles {boolean} Дочерние компоненты плиткой с отступами в поле
+            Center: false,          // @mod Center {boolean} Выравнивание по центру
+            Hidden: false,          // @mod Hidden {boolean} Спрятать компонент
+            ColCheck: false,        // @mod ColCheck {boolean} Считать ширину в колонках
+            Ratio: '',              // @mod Ratio {1x1 1x2 3x4 ...} Пропорция
+        },
+        param: {
+            isMaxCol: false,
+        },
+        onMod: {
+            Col: {
+                '*': function (fromParentGrid) {
+                    if (fromParentGrid === undefined) {
+                        this.param('isMaxCol', this.mod('col') === 'max')
+                    }
+                }
+            }
+        },
+        onCol: undefined,
+        domInit: function () {
+            this.param('isMaxCol', this.mod('col') === 'max')
+
+            if (this.mod('ColCheck')) {
+                this.onWin('resize', this.checkColWidth)
+                requestAnimationFrame(function () {
+                    this.checkColWidth()
+                }.bind(this))
+            }
+        },
+        onAttach: function (firstTime) {
+            this.setParentGrid(!firstTime)
+        },
+        checkColWidth: function () {
+            var prop = this.css('content').slice(1,-1).split(' ')
+            var col = parseInt(prop[0])
+            var gap = parseInt(prop[1])
+            var maxCol = parseInt(prop[2])
+            var marginX = parseInt(prop[3])
+            var marginY = parseFloat(prop[4])
+
+            if (isNaN(col)) {
+                return
+            }
+
+            var width = this.domNode().offsetWidth
+            var colNum = Math.floor((width + gap) / (col + gap))
+
+            if (colNum > maxCol) {
+                colNum = maxCol
+            }
+
+            this.trigger('Col', {
+                num: colNum,
+                edge: window.innerWidth === (colNum * col + (colNum-1) * gap + marginX * 2),
+                col: col,
+                gap: gap,
+                marginX: marginX,
+                marginY: marginY,
+            })
+        },
+        setParentGrid: function (recursive, parentGrid) {
+            if (this.onCol !== undefined || this.onEdge !== undefined || this.param('isMaxCol')) {
+                var that = this
+
+                if (parentGrid === undefined) {
+                    parentGrid = this._parentNode
+                    while (parentGrid !== undefined && !(parentGrid.isKindOf('Grid') && parentGrid.mod('ColCheck'))) {
+                        parentGrid = parentGrid._parentNode
+                    }
+                }
+
+                if (parentGrid !== undefined) {
+                    if (this.onCol || this.param('isMaxCol')) {
+                        parentGrid.on('Col', function (e, data) {
+                            that.onCol && that.onCol(data.num, data.edge, data)
+                            that.param('isMaxCol') && that.mod('Col', data.num, true)
+                        })
+                    }
+                }
+            }
+
+            if (recursive !== undefined) {
+                var children = this.get('/')
+                for (var i = 0, ii = children.length; i < ii; i++) {
+                    if (children[i].isKindOf('grid') && !children[i].mod('ColCheck')) {
+                        children[i].setParentGrid(recursive, parentGrid)
+                    }
+                }
+            }
+        }
+    }
+})
+
+function grid (num, col, gap, margin) {
+    var gridWidth = col * num + gap * (num - 1) + margin * 2
+    return gridWidth
+}
+/**
+ * @block Typo Типографика
+ * @tag base
+ */
+
+Beast.decl({
+    Typo: {
+        // finalMod: true,
+        mod: {
+            text: '',       // @mod Text    {S M L XL}  Размер текста
+            line: '',       // @mod Line    {S M L}     Высота строки
+            caps: false,    // @mod Caps    {boolean}   Капслок
+            light: false,   // @mod Light   {boolean}   Light-начертание
+            medium: false,  // @mod Medium  {boolean}   Medium-начертание
+            bold: false,    // @mod Bold    {boolean}   Bold-начертание
+        }
+    }
+})
+/**
+ * @block App Корневой компонент всех страниц
+ * @dep UINavigation DocInspector DocConsole
+ * @tag base
+ * @ext UIStackNavigation
+ */
+Beast.decl({
+    App: {
+        inherits: ['Grid', 'UIStackNavigation'],
+        tag:'body',
+        mod: {
+            platform: '',
+            device: '',
+            ColCheck:true,
+        },
+        // onWin: {
+        //     'Head:active': function (e, source) {
+        //         console.log(source)      
+        //     },
+        //     'Lobby:active': function (e, source) {
+                
+        //     }
+        // },
+        expand: function fn () {
+            this.inherited(fn)
+
+            if (this.param('color')) {
+                this.css('background', this.param('color'))
+
+                let root = document.documentElement;
+                root.style.setProperty('--text', this.param('text'));
+                root.style.setProperty('--ground', this.param('color'));
+            }
+
+            if (this.param('text')) {
+                this.css('color', this.param('text'))
+            }
+
+            // this.append(
+            //     <DocInspector/>
+            // )
+
+            if (MissEvent.mobile) {
+                this.mix('mobile')
+            }
+
+            if (MissEvent.android) {
+                this.mix('android')
+            }
+
+            if (MissEvent.ios) {
+                this.mix('ios')
+            }
+
+            if (MissEvent.qs('exp')) {
+                MissEvent.qs('exp').split(',').forEach(function (expName) {
+                    this.mix('exp_' + expName)
+                }.bind(this))
+            }
+        },
+        domInit: function fn () {
+            this.inherited(fn)
+            // history.pushState({}, '', '')
+            
+        }
+    },
+})
+
+
+Beast.decl({
+    Screen: {
+        
+        expand: function fn () {
+            
+
+            if (this.param('color')) {
+                this.css('background', this.param('color'))
+
+                let root = document.documentElement;
+                root.style.setProperty('--text', this.param('text'));
+                root.style.setProperty('--ground', this.param('color'));
+            }
+
+            if (this.param('text')) {
+                this.css('color', this.param('text'))
+            }
+
+            
+        },
+        
+    },
+})
+
+
+Beast.decl({
+    DocScreen: {
+        expand: function fn () {
+            this.append(
+
+                Beast.node("Screen",{__context:this,"color":"#275C83","text":"#B2B2B2"},"\n\n                    ",Beast.node("Head",undefined,"\n                        ",Beast.node("logo",undefined,"/assets/logo.svg"),"\n                        ",Beast.node("menu-item",undefined,"Команда"),"\n                        ",Beast.node("menu-item",undefined,"Студия"),"\n                        ",Beast.node("menu-item",undefined,"Связь"),"\n                    "),"\n\n                    ",Beast.node("Title",undefined,"Документы"),"\n\n                    ",Beast.node("Text",{"Size":"M"},"\n                        Превратим обычный документ в безупречный. От редакторской вычитки до инфографики и индивидуального дизайна.\n                    "),"\n\n                    ",Beast.node("Cards",undefined,"\n                        ",Beast.node("item",{"href":"silver.html","color":"#D2D2D2","text":"#6F6F6F"},"\n                            ",Beast.node("hint",undefined,"Silver"),"\n                            ",Beast.node("elem",undefined,"Ag"),"\n                            ",Beast.node("title",undefined,"Редакторская вычитка"),"\n                            ",Beast.node("price",undefined,"от 500₽"),"\n                        "),"\n                        ",Beast.node("item",{"href":"gold.html","color":"#C49B72","text":"#D8D8D8"},"\n                            ",Beast.node("hint",undefined,"Gold"),"\n                            ",Beast.node("elem",undefined,"Au"),"\n                            ",Beast.node("title",undefined,"Юридический дизайн документа"),"\n                            ",Beast.node("price",undefined,"от 3750₽"),"\n                        "),"\n                        ",Beast.node("item",{"href":"tailored.html","color":"#C24035","text":"#B2B2B2"},"\n                            ",Beast.node("hint",undefined,"Tailored"),"\n                            ",Beast.node("elem",undefined,"Xx"),"\n                            ",Beast.node("title",undefined,"Индивидуальный заказна дизайн"),"\n                            ",Beast.node("price",undefined,"₽₽₽"),"\n                        "),"\n                    "),"\n\n                ")
+            )
+        },
+        domInit: function fn () {
+            
+        }
+    },
+})
+
+
+Beast.decl({
+    WebScreen: {
+        expand: function fn () {
+            this.append(
+
+                Beast.node("Screen",{__context:this,"color":"#005537","text":"#D8D8D8"},"\n\n                    ",Beast.node("Head",undefined,"\n                        ",Beast.node("logo",undefined,"/assets/logo.svg"),"\n                        ",Beast.node("menu-item",undefined,"Команда"),"\n                        ",Beast.node("menu-item",undefined,"Студия"),"\n                        ",Beast.node("menu-item",undefined,"Связь"),"\n                    "),"\n\n                    ",Beast.node("Title",undefined,"Cайты и фирстиль"),"\n\n                    ",Beast.node("Text",{"Size":"M"},"\n                        Внедрение в документ графических и интерактивных элементов с использованием графического и веб-дизайна.\n                    "),"\n\n                    ",Beast.node("Example"),"\n\n                    \n                    ",Beast.node("Inquire"),"\n\n                ")
+            )
+        },
+        domInit: function fn () {
+            
+        }
+    },
+})
+
+
+Beast.decl({
+    PresentationScreen: {
+        expand: function fn () {
+            this.append(
+
+                Beast.node("Screen",{__context:this,"color":"#866140","text":"#DBDBDB"},"\n\n                    ",Beast.node("Head",undefined,"\n                        ",Beast.node("logo",undefined,"/assets/logo.svg"),"\n                        ",Beast.node("menu-item",undefined,"Команда"),"\n                        ",Beast.node("menu-item",undefined,"Студия"),"\n                        ",Beast.node("menu-item",undefined,"Связь"),"\n                    "),"\n\n                    ",Beast.node("Title",undefined,"Презентации"),"\n\n                    ",Beast.node("Text",{"Size":"M"},"\n                        Внедрение в документ графических и интерактивных элементов с использованием графического и веб-дизайна.\n                    "),"\n\n                    ",Beast.node("Example"),"\n\n                    ",Beast.node("Inquire"),"\n\n                ")
+            )
+        },
+        domInit: function fn () {
+            
+        }
+    },
+})
+
+Beast.decl({
+    Text: {
+        inherits: 'Typo',
+        mod: {
+            Line: 'L'
+        },
+        expand: function () {
+            this.mod('Text', this.mod('Size'))
+        }
+    },
+})
+
+Beast.decl({
+    Title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'XXL',
+            Line: 'L'
+        }
+    },
+})
+
+Beast.decl({
+    
+    List: {
+        expand: function () {
+            
+        }
+    },
+    
+    List__item: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+        }
+    },
+
+    List__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        }
+    },
+
+    List__hint: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'M',
+            Line: 'L'
+        }
+    },
+})
+
 Beast.decl({
     Cards: {
 
@@ -5979,176 +6308,6 @@ Beast.decl({
 
 
 
-
-
-Beast.decl({
-    FormLight: {
-
-        expand: function () {
-
-            this.append(
-                Beast.node("form",{__context:this},"\n                    ",this.get('head', 'item'),"\n                ")
-                
-            )
-
-        },
-
-        domInit: function () {
-            let requestForm = document.querySelector(".formLight__action");
-
-            requestForm.onclick = function(event) {
-              
-              event.preventDefault();
-
-              // if all validation goes well
-              if (validateForm()) {
-                this.value = 'Отправляю...';
-                this.disabled = true;
-                this.classList.add("button-loading");  
-                 
-                sendEmail();
-                
-              } else return false;
-            }
-
-            function sendRquestEmail(name, email, phone) {
-
-              emailjs.send(emailJsService, emailJsTemplate, {
-                name: name,
-                email: email,
-                phone: phone,
-                type: 'Пакет TAILORED',
-                link: '— ',
-                price: '—'
-              })
-              .then(function() {
-                  //alert('Ваша заявка успешно оправлена');
-                  //location.reload();
-              }, function(error) {
-                  console.log('Failed sendig email', error);
-              });
-            }
-
-            function sendEmail() {
-              //if all files were uploaded
-              if (uploadedFilesProgress == uploadedFiles.length) {
-                sendRquestEmail(
-                  document.querySelector("#name").value,
-                  document.querySelector("#email").value,
-                  document.querySelector("#phone").value
-                );
-                uploadedFilesProgress = 0;
-                
-                let btnSend = document.querySelector(".formLight__action");
-                btnSend.value = 'Отправлено успешно';
-                btnSend.className = "formLight__action";
-
-              } else {
-                setTimeout(function(){ sendEmail() }, 500);
-              }
-            }
-
-            //validation of all input fields
-            function validateForm() {
-
-              let nameField = document.querySelector("#name");
-              if (nameField.value.trim() == "") {
-                alert('Пожалуйста, укажите ваше имя, чтобы мы знали как к вам обращаться');
-                return false;
-              }
-
-              let emailField = document.querySelector("#email");
-              if (emailField.value.trim() == "") {
-                alert('Укажите адрес электронной почты, чтобы мы знали, как с вами связаться');
-                return false;
-              }
-
-              let phoneField = document.querySelector("#phone");
-              if (phoneField.value.trim() == "") {
-                alert('Укажите номер телефона, чтобы мы знали, как с вами связаться');
-                return false;
-              }
-
-              return true;
-            }
-
-            
-            
-
-        }
-    },
-
-    FormLight__form: {
-        tag: 'div',
-        expand: function () {
-
-            this.domAttr('action', this.parentBlock().param('action'))
-            this.domAttr('id', this.parentBlock().param('id'))
-
-        }
-    },
-
-    FormLight__item: {
-        expand: function () {
-            this.domAttr('param', this.param('param'))
-        }
-    },
-
-    FormLight__title: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'L',
-            Line: 'L'
-        },
-        
-    },
-
-    FormLight__hint: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'L',
-            Line: 'L'
-        },
-        
-    },
-
-    FormLight__button: {
-        expand: function () {
-            this.domAttr('data-param', this.param('data-param'))
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-        }
-    },
-
-    FormLight__action: {
-        tag: 'input',
-        expand: function () {
-            this.domAttr('type', 'submit')
-            this.domAttr('value', this.text())
-            this.css('background', this.parentBlock().param('action'))
-            this.css('color', this.parentBlock().param('actionText'))
-        }
-    },
-
-    FormLight__input: {
-        tag: 'input',
-        expand: function () {
-            this.domAttr('type', this.param('type'))
-            this.domAttr('id', this.param('id'))
-            this.domAttr('placeholder', this.param('placeholder'))
-            this.domAttr('required', true)
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-
-            let root = document.documentElement;
-            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
-            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
-            
-        }
-    },
-
-    
-})
 
 
 // global variables for calculations
@@ -6666,125 +6825,176 @@ Beast.decl({
 
 
 
-/**
- * @block Grid Динамическая сетка
- * @tag base
- */
 Beast.decl({
-    Grid: {
-        // finalMod: true,
-        mod: {
-            Col: '',                // @mod Col {number} Ширина в колонках
-            Wrap: false,            // @mod Wrap {boolean} Основной контейнер сетки
-            Margin: false,          // @mod Margin {boolean} Поля
-            MarginX: false,         // @mod MarginX {boolean} Горизонтальные поля
-            MarginY: false,         // @mod MarginY {boolean} Вертикальные поля
-            Unmargin: false,        // @mod Unmargin {boolean} Отрицательные поля
-            UnmarginX: false,       // @mod UnmarginX {boolean} Отрицательные горизоантальные поля
-            UnmarginY: false,       // @mod UnmarginY {boolean} Отрацательные вертикальные поля
-            MarginRightGap: false,  // @mod MarginRightGap {boolean} Правый отступ равен — горизоантальное поле
-            MarginLeftGap: false,   // @mod MarginLeftGap {boolean} Левый отступ равен — горизоантальное поле
-            Cell: false,            // @mod Cell {boolean} Горизонтальный отступ между соседями — межколонник
-            Row: false,             // @mod Row {boolean} Вертикальынй отступ между соседями — межколонник
-            Rows: false,            // @mod Rows {boolean} Дочерние компоненты отступают на горизонтальное поле
-            Tile: false,            // @mod Tile {boolean} Модификатор дочернего компонента (для модификатора Tiles)
-            Tiles: false,           // @mod Tiles {boolean} Дочерние компоненты плиткой с отступами в поле
-            Center: false,          // @mod Center {boolean} Выравнивание по центру
-            Hidden: false,          // @mod Hidden {boolean} Спрятать компонент
-            ColCheck: false,        // @mod ColCheck {boolean} Считать ширину в колонках
-            Ratio: '',              // @mod Ratio {1x1 1x2 3x4 ...} Пропорция
+    FormLight: {
+
+        expand: function () {
+
+            this.append(
+                Beast.node("form",{__context:this},"\n                    ",this.get('head', 'item'),"\n                ")
+                
+            )
+
         },
-        param: {
-            isMaxCol: false,
-        },
-        onMod: {
-            Col: {
-                '*': function (fromParentGrid) {
-                    if (fromParentGrid === undefined) {
-                        this.param('isMaxCol', this.mod('col') === 'max')
-                    }
-                }
-            }
-        },
-        onCol: undefined,
+
         domInit: function () {
-            this.param('isMaxCol', this.mod('col') === 'max')
+            let requestForm = document.querySelector(".formLight__action");
 
-            if (this.mod('ColCheck')) {
-                this.onWin('resize', this.checkColWidth)
-                requestAnimationFrame(function () {
-                    this.checkColWidth()
-                }.bind(this))
-            }
-        },
-        onAttach: function (firstTime) {
-            this.setParentGrid(!firstTime)
-        },
-        checkColWidth: function () {
-            var prop = this.css('content').slice(1,-1).split(' ')
-            var col = parseInt(prop[0])
-            var gap = parseInt(prop[1])
-            var maxCol = parseInt(prop[2])
-            var marginX = parseInt(prop[3])
-            var marginY = parseFloat(prop[4])
+            requestForm.onclick = function(event) {
+              
+              event.preventDefault();
 
-            if (isNaN(col)) {
-                return
+              // if all validation goes well
+              if (validateForm()) {
+                this.value = 'Отправляю...';
+                this.disabled = true;
+                this.classList.add("button-loading");  
+                 
+                sendEmail();
+                
+              } else return false;
             }
 
-            var width = this.domNode().offsetWidth
-            var colNum = Math.floor((width + gap) / (col + gap))
+            function sendRquestEmail(name, email, phone) {
 
-            if (colNum > maxCol) {
-                colNum = maxCol
+              emailjs.send(emailJsService, emailJsTemplate, {
+                name: name,
+                email: email,
+                phone: phone,
+                type: 'Пакет TAILORED',
+                link: '— ',
+                price: '—'
+              })
+              .then(function() {
+                  //alert('Ваша заявка успешно оправлена');
+                  //location.reload();
+              }, function(error) {
+                  console.log('Failed sendig email', error);
+              });
             }
 
-            this.trigger('Col', {
-                num: colNum,
-                edge: window.innerWidth === (colNum * col + (colNum-1) * gap + marginX * 2),
-                col: col,
-                gap: gap,
-                marginX: marginX,
-                marginY: marginY,
-            })
-        },
-        setParentGrid: function (recursive, parentGrid) {
-            if (this.onCol !== undefined || this.onEdge !== undefined || this.param('isMaxCol')) {
-                var that = this
+            function sendEmail() {
+              //if all files were uploaded
+              if (uploadedFilesProgress == uploadedFiles.length) {
+                sendRquestEmail(
+                  document.querySelector("#name").value,
+                  document.querySelector("#email").value,
+                  document.querySelector("#phone").value
+                );
+                uploadedFilesProgress = 0;
+                
+                let btnSend = document.querySelector(".formLight__action");
+                btnSend.value = 'Отправлено успешно';
+                btnSend.className = "formLight__action";
 
-                if (parentGrid === undefined) {
-                    parentGrid = this._parentNode
-                    while (parentGrid !== undefined && !(parentGrid.isKindOf('Grid') && parentGrid.mod('ColCheck'))) {
-                        parentGrid = parentGrid._parentNode
-                    }
-                }
-
-                if (parentGrid !== undefined) {
-                    if (this.onCol || this.param('isMaxCol')) {
-                        parentGrid.on('Col', function (e, data) {
-                            that.onCol && that.onCol(data.num, data.edge, data)
-                            that.param('isMaxCol') && that.mod('Col', data.num, true)
-                        })
-                    }
-                }
+              } else {
+                setTimeout(function(){ sendEmail() }, 500);
+              }
             }
 
-            if (recursive !== undefined) {
-                var children = this.get('/')
-                for (var i = 0, ii = children.length; i < ii; i++) {
-                    if (children[i].isKindOf('grid') && !children[i].mod('ColCheck')) {
-                        children[i].setParentGrid(recursive, parentGrid)
-                    }
-                }
+            //validation of all input fields
+            function validateForm() {
+
+              let nameField = document.querySelector("#name");
+              if (nameField.value.trim() == "") {
+                alert('Пожалуйста, укажите ваше имя, чтобы мы знали как к вам обращаться');
+                return false;
+              }
+
+              let emailField = document.querySelector("#email");
+              if (emailField.value.trim() == "") {
+                alert('Укажите адрес электронной почты, чтобы мы знали, как с вами связаться');
+                return false;
+              }
+
+              let phoneField = document.querySelector("#phone");
+              if (phoneField.value.trim() == "") {
+                alert('Укажите номер телефона, чтобы мы знали, как с вами связаться');
+                return false;
+              }
+
+              return true;
             }
+
+            
+            
+
         }
-    }
+    },
+
+    FormLight__form: {
+        tag: 'div',
+        expand: function () {
+
+            this.domAttr('action', this.parentBlock().param('action'))
+            this.domAttr('id', this.parentBlock().param('id'))
+
+        }
+    },
+
+    FormLight__item: {
+        expand: function () {
+            this.domAttr('param', this.param('param'))
+        }
+    },
+
+    FormLight__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
+    },
+
+    FormLight__hint: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
+    },
+
+    FormLight__button: {
+        expand: function () {
+            this.domAttr('data-param', this.param('data-param'))
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+        }
+    },
+
+    FormLight__action: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', 'submit')
+            this.domAttr('value', this.text())
+            this.css('background', this.parentBlock().param('action'))
+            this.css('color', this.parentBlock().param('actionText'))
+        }
+    },
+
+    FormLight__input: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+
+            let root = document.documentElement;
+            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
+            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
+            
+        }
+    },
+
+    
 })
 
-function grid (num, col, gap, margin) {
-    var gridWidth = col * num + gap * (num - 1) + margin * 2
-    return gridWidth
-}
+
 Beast.decl({
     Head: {
         expand: function () {
@@ -7100,197 +7310,117 @@ Beast.decl({
     
 })
 
-/**
- * @block App Корневой компонент всех страниц
- * @dep UINavigation DocInspector DocConsole
- * @tag base
- * @ext UIStackNavigation
- */
 Beast.decl({
-    App: {
-        inherits: ['Grid', 'UIStackNavigation'],
-        tag:'body',
-        mod: {
-            platform: '',
-            device: '',
-            ColCheck:true,
-        },
-        // onWin: {
-        //     'Head:active': function (e, source) {
-        //         console.log(source)      
-        //     },
-        //     'Lobby:active': function (e, source) {
+    Shelf: {
+
+        expand: function () {
+
+            this.append(
+                this.get('item', 'cols')
                 
-        //     }
-        // },
-        expand: function fn () {
-            this.inherited(fn)
-
-            if (this.param('color')) {
-                this.css('background', this.param('color'))
-
-                let root = document.documentElement;
-                root.style.setProperty('--text', this.param('text'));
-                root.style.setProperty('--ground', this.param('color'));
-            }
-
-            if (this.param('text')) {
-                this.css('color', this.param('text'))
-            }
-
-            // this.append(
-            //     <DocInspector/>
-            // )
-
-            if (MissEvent.mobile) {
-                this.mix('mobile')
-            }
-
-            if (MissEvent.android) {
-                this.mix('android')
-            }
-
-            if (MissEvent.ios) {
-                this.mix('ios')
-            }
-
-            if (MissEvent.qs('exp')) {
-                MissEvent.qs('exp').split(',').forEach(function (expName) {
-                    this.mix('exp_' + expName)
-                }.bind(this))
-            }
-        },
-        domInit: function fn () {
-            this.inherited(fn)
-            // history.pushState({}, '', '')
-            
-        }
-    },
-})
-
-
-Beast.decl({
-    Screen: {
-        
-        expand: function fn () {
-            
-
-            if (this.param('color')) {
-                this.css('background', this.param('color'))
-
-                let root = document.documentElement;
-                root.style.setProperty('--text', this.param('text'));
-                root.style.setProperty('--ground', this.param('color'));
-            }
-
-            if (this.param('text')) {
-                this.css('color', this.param('text'))
-            }
-
-            
-        },
-        
-    },
-})
-
-
-Beast.decl({
-    DocScreen: {
-        expand: function fn () {
-            this.append(
-
-                Beast.node("Screen",{__context:this,"color":"#275C83","text":"#B2B2B2"},"\n\n                    ",Beast.node("Head",undefined,"\n                        ",Beast.node("logo",undefined,"/assets/logo.svg"),"\n                        ",Beast.node("menu-item",undefined,"Команда"),"\n                        ",Beast.node("menu-item",undefined,"Студия"),"\n                        ",Beast.node("menu-item",undefined,"Связь"),"\n                    "),"\n\n                    ",Beast.node("Title",undefined,"Документы"),"\n\n                    ",Beast.node("Text",{"Size":"M"},"\n                        Превратим обычный документ в безупречный. От редакторской вычитки до инфографики и индивидуального дизайна.\n                    "),"\n\n                    ",Beast.node("Cards",undefined,"\n                        ",Beast.node("item",{"href":"silver.html","color":"#D2D2D2","text":"#6F6F6F"},"\n                            ",Beast.node("hint",undefined,"Silver"),"\n                            ",Beast.node("elem",undefined,"Ag"),"\n                            ",Beast.node("title",undefined,"Редакторская вычитка"),"\n                            ",Beast.node("price",undefined,"от 500₽"),"\n                        "),"\n                        ",Beast.node("item",{"href":"gold.html","color":"#C49B72","text":"#D8D8D8"},"\n                            ",Beast.node("hint",undefined,"Gold"),"\n                            ",Beast.node("elem",undefined,"Au"),"\n                            ",Beast.node("title",undefined,"Юридический дизайн документа"),"\n                            ",Beast.node("price",undefined,"от 3750₽"),"\n                        "),"\n                        ",Beast.node("item",{"href":"tailored.html","color":"#C24035","text":"#B2B2B2"},"\n                            ",Beast.node("hint",undefined,"Tailored"),"\n                            ",Beast.node("elem",undefined,"Xx"),"\n                            ",Beast.node("title",undefined,"Индивидуальный заказна дизайн"),"\n                            ",Beast.node("price",undefined,"₽₽₽"),"\n                        "),"\n                    "),"\n\n                ")
             )
-        },
-        domInit: function fn () {
-            
-        }
-    },
-})
 
-
-Beast.decl({
-    WebScreen: {
-        expand: function fn () {
-            this.append(
-
-                Beast.node("Screen",{__context:this,"color":"#005537","text":"#D8D8D8"},"\n\n                    ",Beast.node("Head",undefined,"\n                        ",Beast.node("logo",undefined,"/assets/logo.svg"),"\n                        ",Beast.node("menu-item",undefined,"Команда"),"\n                        ",Beast.node("menu-item",undefined,"Студия"),"\n                        ",Beast.node("menu-item",undefined,"Связь"),"\n                    "),"\n\n                    ",Beast.node("Title",undefined,"Cайты и фирстиль"),"\n\n                    ",Beast.node("Text",{"Size":"M"},"\n                        Внедрение в документ графических и интерактивных элементов с использованием графического и веб-дизайна.\n                    "),"\n\n                    ",Beast.node("Example"),"\n\n                    \n                    ",Beast.node("Inquire"),"\n\n                ")
-            )
-        },
-        domInit: function fn () {
-            
-        }
-    },
-})
-
-
-Beast.decl({
-    PresentationScreen: {
-        expand: function fn () {
-            this.append(
-
-                Beast.node("Screen",{__context:this,"color":"#866140","text":"#DBDBDB"},"\n\n                    ",Beast.node("Head",undefined,"\n                        ",Beast.node("logo",undefined,"/assets/logo.svg"),"\n                        ",Beast.node("menu-item",undefined,"Команда"),"\n                        ",Beast.node("menu-item",undefined,"Студия"),"\n                        ",Beast.node("menu-item",undefined,"Связь"),"\n                    "),"\n\n                    ",Beast.node("Title",undefined,"Презентации"),"\n\n                    ",Beast.node("Text",{"Size":"M"},"\n                        Внедрение в документ графических и интерактивных элементов с использованием графического и веб-дизайна.\n                    "),"\n\n                    ",Beast.node("Example"),"\n\n                    ",Beast.node("Inquire"),"\n\n                ")
-            )
-        },
-        domInit: function fn () {
-            
-        }
-    },
-})
-
-Beast.decl({
-    Text: {
-        inherits: 'Typo',
-        mod: {
-            Line: 'L'
-        },
-        expand: function () {
-            this.mod('Text', this.mod('Size'))
-        }
-    },
-})
-
-Beast.decl({
-    Title: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'XXL',
-            Line: 'L'
-        }
-    },
-})
-
-Beast.decl({
-    
-    List: {
-        expand: function () {
-            
         }
     },
     
-    List__item: {
+    Shelf__item: {
         tag: 'a',
         expand: function () {
+
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
+            var dot = this.param('dot')
+            this.append(
+                Beast.node("dot",{__context:this,"color":dot}),
+                this.get('num', 'title', 'subtitle')
+            )    
             this.domAttr('href', this.param('href'))
+
+            // if (this.param('name') === 'closed') {
+                
+            // } else {
+
+
+
+            // this.on('click', function () {
+
+            //     var g = this.param('name')
+            //     console.log(g)
+
+            //     if (this.param('name') === 'docs') {
+            //         var chatPage = (
+            //             <DocScreen />
+            //         )
+            //     }
+
+            //     if (this.param('name') === 'web') {
+            //         var chatPage = (
+            //             <WebScreen />
+            //         )
+            //     }
+
+            //     if (this.param('name') === 'presenation') {
+            //         var chatPage = (
+            //             <PresentationScreen />
+            //         )
+            //     }
+
+            //     if (history.pushState) {
+            //         history.pushState(null, null, this.param('href'));
+            //     }
+
+            //     <Overlay Type="side">
+            //         {chatPage}
+            //     </Overlay>
+            //         .param({
+            //             topBar: true,
+            //             scrollContent: true
+            //         })
+            //         .pushToStackNavigation({
+            //             context: this,
+            //             onDidPop: function () {
+            //                 chatPage.detach()
+            //             }
+            //         })
+            // })
+
+            // }
+
         }
     },
 
-    List__title: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'L',
-            Line: 'L'
+    Shelf__dot: {
+
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            
+            
+
         }
     },
 
-    List__hint: {
+    Shelf__title: {
         inherits: 'Typo',
         mod: {
-            Text: 'M',
+            Text: 'XL',
             Line: 'L'
+        },
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            
+            
+
         }
     },
+    
+
 })
+
+
+
+
 
 Beast.decl({
     Steps: {
@@ -7444,118 +7574,6 @@ Beast.decl({
 
 
 
-Beast.decl({
-    Shelf: {
-
-        expand: function () {
-
-            this.append(
-                this.get('item', 'cols')
-                
-            )
-
-        }
-    },
-    
-    Shelf__item: {
-        tag: 'a',
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            this.css('color', this.param('text'))
-            var dot = this.param('dot')
-            this.append(
-                Beast.node("dot",{__context:this,"color":dot}),
-                this.get('num', 'title', 'subtitle')
-            )    
-            this.domAttr('href', this.param('href'))
-
-            // if (this.param('name') === 'closed') {
-                
-            // } else {
-
-
-
-            // this.on('click', function () {
-
-            //     var g = this.param('name')
-            //     console.log(g)
-
-            //     if (this.param('name') === 'docs') {
-            //         var chatPage = (
-            //             <DocScreen />
-            //         )
-            //     }
-
-            //     if (this.param('name') === 'web') {
-            //         var chatPage = (
-            //             <WebScreen />
-            //         )
-            //     }
-
-            //     if (this.param('name') === 'presenation') {
-            //         var chatPage = (
-            //             <PresentationScreen />
-            //         )
-            //     }
-
-            //     if (history.pushState) {
-            //         history.pushState(null, null, this.param('href'));
-            //     }
-
-            //     <Overlay Type="side">
-            //         {chatPage}
-            //     </Overlay>
-            //         .param({
-            //             topBar: true,
-            //             scrollContent: true
-            //         })
-            //         .pushToStackNavigation({
-            //             context: this,
-            //             onDidPop: function () {
-            //                 chatPage.detach()
-            //             }
-            //         })
-            // })
-
-            // }
-
-        }
-    },
-
-    Shelf__dot: {
-
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-
-    Shelf__title: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'XL',
-            Line: 'L'
-        },
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-    
-
-})
-
-
-
-
-
 /**
  * @block Thumb Тумбнеил
  * @dep grid link
@@ -7564,7 +7582,7 @@ Beast.decl({
  */
 Beast.decl({
     Thumb: {
-        inherits: ['Grid', 'Link'],
+        inherits: ['Grid'],
         mod: {
             Ratio:'',               // @mod Ratio {1x1 1x2 2x1 2x3 3x2 3x4 4x3 16x10} Пропорция
             Fit:'cover',            // @mod Fit {cover! contain} Растягивание картинки по контейнеру
@@ -7863,24 +7881,6 @@ Beast.decl({
 // @example <Thumb Ratio="1x1" Col="3" Shadow src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Grid src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Rounded src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
-/**
- * @block Typo Типографика
- * @tag base
- */
-
-Beast.decl({
-    Typo: {
-        // finalMod: true,
-        mod: {
-            text: '',       // @mod Text    {S M L XL}  Размер текста
-            line: '',       // @mod Line    {S M L}     Высота строки
-            caps: false,    // @mod Caps    {boolean}   Капслок
-            light: false,   // @mod Light   {boolean}   Light-начертание
-            medium: false,  // @mod Medium  {boolean}   Medium-начертание
-            bold: false,    // @mod Bold    {boolean}   Bold-начертание
-        }
-    }
-})
 Beast.decl({
 
     /**
