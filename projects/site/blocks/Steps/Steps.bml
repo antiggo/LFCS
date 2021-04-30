@@ -87,6 +87,7 @@ Beast.decl({
             Line: 'L'
         },
         expand: function () {
+            this.domAttr('id', 'team')
             this.append(
                 <items>
                     {this.get('item')}
@@ -125,6 +126,19 @@ Beast.decl({
     
 
     
+})
+
+
+
+Beast.decl({
+    Contact: {
+        expand: function () {
+            
+            this.domAttr('id', 'contact')
+            
+
+        }
+    }
 })
 
 
