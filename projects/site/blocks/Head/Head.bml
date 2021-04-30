@@ -18,7 +18,7 @@ Beast.decl({
     Head__link: {
         tag: 'a',
         expand: function () {
-            this.domAttr('href', '/')
+            this.domAttr('href', 'main.html')
 
 
         }

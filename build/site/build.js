@@ -5931,143 +5931,6 @@ BemNode.prototype = {
 
 })();
 /**
- * @block Grid Динамическая сетка
- * @tag base
- */
-Beast.decl({
-    Grid: {
-        // finalMod: true,
-        mod: {
-            Col: '',                // @mod Col {number} Ширина в колонках
-            Wrap: false,            // @mod Wrap {boolean} Основной контейнер сетки
-            Margin: false,          // @mod Margin {boolean} Поля
-            MarginX: false,         // @mod MarginX {boolean} Горизонтальные поля
-            MarginY: false,         // @mod MarginY {boolean} Вертикальные поля
-            Unmargin: false,        // @mod Unmargin {boolean} Отрицательные поля
-            UnmarginX: false,       // @mod UnmarginX {boolean} Отрицательные горизоантальные поля
-            UnmarginY: false,       // @mod UnmarginY {boolean} Отрацательные вертикальные поля
-            MarginRightGap: false,  // @mod MarginRightGap {boolean} Правый отступ равен — горизоантальное поле
-            MarginLeftGap: false,   // @mod MarginLeftGap {boolean} Левый отступ равен — горизоантальное поле
-            Cell: false,            // @mod Cell {boolean} Горизонтальный отступ между соседями — межколонник
-            Row: false,             // @mod Row {boolean} Вертикальынй отступ между соседями — межколонник
-            Rows: false,            // @mod Rows {boolean} Дочерние компоненты отступают на горизонтальное поле
-            Tile: false,            // @mod Tile {boolean} Модификатор дочернего компонента (для модификатора Tiles)
-            Tiles: false,           // @mod Tiles {boolean} Дочерние компоненты плиткой с отступами в поле
-            Center: false,          // @mod Center {boolean} Выравнивание по центру
-            Hidden: false,          // @mod Hidden {boolean} Спрятать компонент
-            ColCheck: false,        // @mod ColCheck {boolean} Считать ширину в колонках
-            Ratio: '',              // @mod Ratio {1x1 1x2 3x4 ...} Пропорция
-        },
-        param: {
-            isMaxCol: false,
-        },
-        onMod: {
-            Col: {
-                '*': function (fromParentGrid) {
-                    if (fromParentGrid === undefined) {
-                        this.param('isMaxCol', this.mod('col') === 'max')
-                    }
-                }
-            }
-        },
-        onCol: undefined,
-        domInit: function () {
-            this.param('isMaxCol', this.mod('col') === 'max')
-
-            if (this.mod('ColCheck')) {
-                this.onWin('resize', this.checkColWidth)
-                requestAnimationFrame(function () {
-                    this.checkColWidth()
-                }.bind(this))
-            }
-        },
-        onAttach: function (firstTime) {
-            this.setParentGrid(!firstTime)
-        },
-        checkColWidth: function () {
-            var prop = this.css('content').slice(1,-1).split(' ')
-            var col = parseInt(prop[0])
-            var gap = parseInt(prop[1])
-            var maxCol = parseInt(prop[2])
-            var marginX = parseInt(prop[3])
-            var marginY = parseFloat(prop[4])
-
-            if (isNaN(col)) {
-                return
-            }
-
-            var width = this.domNode().offsetWidth
-            var colNum = Math.floor((width + gap) / (col + gap))
-
-            if (colNum > maxCol) {
-                colNum = maxCol
-            }
-
-            this.trigger('Col', {
-                num: colNum,
-                edge: window.innerWidth === (colNum * col + (colNum-1) * gap + marginX * 2),
-                col: col,
-                gap: gap,
-                marginX: marginX,
-                marginY: marginY,
-            })
-        },
-        setParentGrid: function (recursive, parentGrid) {
-            if (this.onCol !== undefined || this.onEdge !== undefined || this.param('isMaxCol')) {
-                var that = this
-
-                if (parentGrid === undefined) {
-                    parentGrid = this._parentNode
-                    while (parentGrid !== undefined && !(parentGrid.isKindOf('Grid') && parentGrid.mod('ColCheck'))) {
-                        parentGrid = parentGrid._parentNode
-                    }
-                }
-
-                if (parentGrid !== undefined) {
-                    if (this.onCol || this.param('isMaxCol')) {
-                        parentGrid.on('Col', function (e, data) {
-                            that.onCol && that.onCol(data.num, data.edge, data)
-                            that.param('isMaxCol') && that.mod('Col', data.num, true)
-                        })
-                    }
-                }
-            }
-
-            if (recursive !== undefined) {
-                var children = this.get('/')
-                for (var i = 0, ii = children.length; i < ii; i++) {
-                    if (children[i].isKindOf('grid') && !children[i].mod('ColCheck')) {
-                        children[i].setParentGrid(recursive, parentGrid)
-                    }
-                }
-            }
-        }
-    }
-})
-
-function grid (num, col, gap, margin) {
-    var gridWidth = col * num + gap * (num - 1) + margin * 2
-    return gridWidth
-}
-/**
- * @block Typo Типографика
- * @tag base
- */
-
-Beast.decl({
-    Typo: {
-        // finalMod: true,
-        mod: {
-            text: '',       // @mod Text    {S M L XL}  Размер текста
-            line: '',       // @mod Line    {S M L}     Высота строки
-            caps: false,    // @mod Caps    {boolean}   Капслок
-            light: false,   // @mod Light   {boolean}   Light-начертание
-            medium: false,  // @mod Medium  {boolean}   Medium-начертание
-            bold: false,    // @mod Bold    {boolean}   Bold-начертание
-        }
-    }
-})
-/**
  * @block App Корневой компонент всех страниц
  * @dep UINavigation DocInspector DocConsole
  * @tag base
@@ -6258,56 +6121,6 @@ Beast.decl({
         }
     },
 })
-
-Beast.decl({
-    Cards: {
-
-        expand: function () {
-            
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
-
-                
-            )
-
-        }
-    },
-    
-    Cards__item: {
-        tag: 'a',
-        expand: function () {
-            this.css('background', this.param('color'))
-            this.css('color', this.param('text'))
-            this.domAttr('href', this.param('href'))
-            
-            this.append(
-                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
-                this.get('title'),
-                Beast.node("cross",{__context:this},"+"),
-                this.get('price')
-                
-            )
-
-        }
-    },
-
-    Shelf__dot: {
-
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-    
-
-})
-
-
-
-
 
 // global variables for calculations
 let price;
@@ -6837,6 +6650,56 @@ Beast.decl({
 
 
 Beast.decl({
+    Cards: {
+
+        expand: function () {
+            
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+
+                
+            )
+
+        }
+    },
+    
+    Cards__item: {
+        tag: 'a',
+        expand: function () {
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
+            this.domAttr('href', this.param('href'))
+            
+            this.append(
+                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
+                this.get('title'),
+                Beast.node("cross",{__context:this},"+"),
+                this.get('price')
+                
+            )
+
+        }
+    },
+
+    Shelf__dot: {
+
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            
+            
+
+        }
+    },
+    
+
+})
+
+
+
+
+
+Beast.decl({
     FormLight: {
 
         expand: function () {
@@ -7006,6 +6869,125 @@ Beast.decl({
 })
 
 
+/**
+ * @block Grid Динамическая сетка
+ * @tag base
+ */
+Beast.decl({
+    Grid: {
+        // finalMod: true,
+        mod: {
+            Col: '',                // @mod Col {number} Ширина в колонках
+            Wrap: false,            // @mod Wrap {boolean} Основной контейнер сетки
+            Margin: false,          // @mod Margin {boolean} Поля
+            MarginX: false,         // @mod MarginX {boolean} Горизонтальные поля
+            MarginY: false,         // @mod MarginY {boolean} Вертикальные поля
+            Unmargin: false,        // @mod Unmargin {boolean} Отрицательные поля
+            UnmarginX: false,       // @mod UnmarginX {boolean} Отрицательные горизоантальные поля
+            UnmarginY: false,       // @mod UnmarginY {boolean} Отрацательные вертикальные поля
+            MarginRightGap: false,  // @mod MarginRightGap {boolean} Правый отступ равен — горизоантальное поле
+            MarginLeftGap: false,   // @mod MarginLeftGap {boolean} Левый отступ равен — горизоантальное поле
+            Cell: false,            // @mod Cell {boolean} Горизонтальный отступ между соседями — межколонник
+            Row: false,             // @mod Row {boolean} Вертикальынй отступ между соседями — межколонник
+            Rows: false,            // @mod Rows {boolean} Дочерние компоненты отступают на горизонтальное поле
+            Tile: false,            // @mod Tile {boolean} Модификатор дочернего компонента (для модификатора Tiles)
+            Tiles: false,           // @mod Tiles {boolean} Дочерние компоненты плиткой с отступами в поле
+            Center: false,          // @mod Center {boolean} Выравнивание по центру
+            Hidden: false,          // @mod Hidden {boolean} Спрятать компонент
+            ColCheck: false,        // @mod ColCheck {boolean} Считать ширину в колонках
+            Ratio: '',              // @mod Ratio {1x1 1x2 3x4 ...} Пропорция
+        },
+        param: {
+            isMaxCol: false,
+        },
+        onMod: {
+            Col: {
+                '*': function (fromParentGrid) {
+                    if (fromParentGrid === undefined) {
+                        this.param('isMaxCol', this.mod('col') === 'max')
+                    }
+                }
+            }
+        },
+        onCol: undefined,
+        domInit: function () {
+            this.param('isMaxCol', this.mod('col') === 'max')
+
+            if (this.mod('ColCheck')) {
+                this.onWin('resize', this.checkColWidth)
+                requestAnimationFrame(function () {
+                    this.checkColWidth()
+                }.bind(this))
+            }
+        },
+        onAttach: function (firstTime) {
+            this.setParentGrid(!firstTime)
+        },
+        checkColWidth: function () {
+            var prop = this.css('content').slice(1,-1).split(' ')
+            var col = parseInt(prop[0])
+            var gap = parseInt(prop[1])
+            var maxCol = parseInt(prop[2])
+            var marginX = parseInt(prop[3])
+            var marginY = parseFloat(prop[4])
+
+            if (isNaN(col)) {
+                return
+            }
+
+            var width = this.domNode().offsetWidth
+            var colNum = Math.floor((width + gap) / (col + gap))
+
+            if (colNum > maxCol) {
+                colNum = maxCol
+            }
+
+            this.trigger('Col', {
+                num: colNum,
+                edge: window.innerWidth === (colNum * col + (colNum-1) * gap + marginX * 2),
+                col: col,
+                gap: gap,
+                marginX: marginX,
+                marginY: marginY,
+            })
+        },
+        setParentGrid: function (recursive, parentGrid) {
+            if (this.onCol !== undefined || this.onEdge !== undefined || this.param('isMaxCol')) {
+                var that = this
+
+                if (parentGrid === undefined) {
+                    parentGrid = this._parentNode
+                    while (parentGrid !== undefined && !(parentGrid.isKindOf('Grid') && parentGrid.mod('ColCheck'))) {
+                        parentGrid = parentGrid._parentNode
+                    }
+                }
+
+                if (parentGrid !== undefined) {
+                    if (this.onCol || this.param('isMaxCol')) {
+                        parentGrid.on('Col', function (e, data) {
+                            that.onCol && that.onCol(data.num, data.edge, data)
+                            that.param('isMaxCol') && that.mod('Col', data.num, true)
+                        })
+                    }
+                }
+            }
+
+            if (recursive !== undefined) {
+                var children = this.get('/')
+                for (var i = 0, ii = children.length; i < ii; i++) {
+                    if (children[i].isKindOf('grid') && !children[i].mod('ColCheck')) {
+                        children[i].setParentGrid(recursive, parentGrid)
+                    }
+                }
+            }
+        }
+    }
+})
+
+function grid (num, col, gap, margin) {
+    var gridWidth = col * num + gap * (num - 1) + margin * 2
+    return gridWidth
+}
 Beast.decl({
     Head: {
         expand: function () {
@@ -7020,7 +7002,7 @@ Beast.decl({
     Head__link: {
         tag: 'a',
         expand: function () {
-            this.domAttr('href', '/')
+            this.domAttr('href', 'main.html')
 
 
         }
@@ -7043,6 +7025,118 @@ Beast.decl({
     
 
 })
+Beast.decl({
+    Shelf: {
+
+        expand: function () {
+
+            this.append(
+                this.get('item', 'cols')
+                
+            )
+
+        }
+    },
+    
+    Shelf__item: {
+        tag: 'a',
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
+            var dot = this.param('dot')
+            this.append(
+                Beast.node("dot",{__context:this,"color":dot}),
+                this.get('num', 'title', 'subtitle')
+            )    
+            this.domAttr('href', this.param('href'))
+
+            // if (this.param('name') === 'closed') {
+                
+            // } else {
+
+
+
+            // this.on('click', function () {
+
+            //     var g = this.param('name')
+            //     console.log(g)
+
+            //     if (this.param('name') === 'docs') {
+            //         var chatPage = (
+            //             <DocScreen />
+            //         )
+            //     }
+
+            //     if (this.param('name') === 'web') {
+            //         var chatPage = (
+            //             <WebScreen />
+            //         )
+            //     }
+
+            //     if (this.param('name') === 'presenation') {
+            //         var chatPage = (
+            //             <PresentationScreen />
+            //         )
+            //     }
+
+            //     if (history.pushState) {
+            //         history.pushState(null, null, this.param('href'));
+            //     }
+
+            //     <Overlay Type="side">
+            //         {chatPage}
+            //     </Overlay>
+            //         .param({
+            //             topBar: true,
+            //             scrollContent: true
+            //         })
+            //         .pushToStackNavigation({
+            //             context: this,
+            //             onDidPop: function () {
+            //                 chatPage.detach()
+            //             }
+            //         })
+            // })
+
+            // }
+
+        }
+    },
+
+    Shelf__dot: {
+
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            
+            
+
+        }
+    },
+
+    Shelf__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'XL',
+            Line: 'L'
+        },
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            
+            
+
+        }
+    },
+    
+
+})
+
+
+
+
+
 /**
  * @block Overlay Интерфейс модальных окон
  * @dep UINavigation grid Typo Control
@@ -7327,118 +7421,6 @@ Beast.decl({
 
     
 })
-
-Beast.decl({
-    Shelf: {
-
-        expand: function () {
-
-            this.append(
-                this.get('item', 'cols')
-                
-            )
-
-        }
-    },
-    
-    Shelf__item: {
-        tag: 'a',
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            this.css('color', this.param('text'))
-            var dot = this.param('dot')
-            this.append(
-                Beast.node("dot",{__context:this,"color":dot}),
-                this.get('num', 'title', 'subtitle')
-            )    
-            this.domAttr('href', this.param('href'))
-
-            // if (this.param('name') === 'closed') {
-                
-            // } else {
-
-
-
-            // this.on('click', function () {
-
-            //     var g = this.param('name')
-            //     console.log(g)
-
-            //     if (this.param('name') === 'docs') {
-            //         var chatPage = (
-            //             <DocScreen />
-            //         )
-            //     }
-
-            //     if (this.param('name') === 'web') {
-            //         var chatPage = (
-            //             <WebScreen />
-            //         )
-            //     }
-
-            //     if (this.param('name') === 'presenation') {
-            //         var chatPage = (
-            //             <PresentationScreen />
-            //         )
-            //     }
-
-            //     if (history.pushState) {
-            //         history.pushState(null, null, this.param('href'));
-            //     }
-
-            //     <Overlay Type="side">
-            //         {chatPage}
-            //     </Overlay>
-            //         .param({
-            //             topBar: true,
-            //             scrollContent: true
-            //         })
-            //         .pushToStackNavigation({
-            //             context: this,
-            //             onDidPop: function () {
-            //                 chatPage.detach()
-            //             }
-            //         })
-            // })
-
-            // }
-
-        }
-    },
-
-    Shelf__dot: {
-
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-
-    Shelf__title: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'XL',
-            Line: 'L'
-        },
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-    
-
-})
-
-
-
-
 
 Beast.decl({
     Steps: {
@@ -7913,6 +7895,24 @@ Beast.decl({
 // @example <Thumb Ratio="1x1" Col="3" Shadow src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Grid src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Rounded src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
+/**
+ * @block Typo Типографика
+ * @tag base
+ */
+
+Beast.decl({
+    Typo: {
+        // finalMod: true,
+        mod: {
+            text: '',       // @mod Text    {S M L XL}  Размер текста
+            line: '',       // @mod Line    {S M L}     Высота строки
+            caps: false,    // @mod Caps    {boolean}   Капслок
+            light: false,   // @mod Light   {boolean}   Light-начертание
+            medium: false,  // @mod Medium  {boolean}   Medium-начертание
+            bold: false,    // @mod Bold    {boolean}   Bold-начертание
+        }
+    }
+})
 Beast.decl({
 
     /**
