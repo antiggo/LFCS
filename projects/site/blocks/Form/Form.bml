@@ -144,6 +144,15 @@ Beast.decl({
           let documentName = file.name;
           let ext = documentName.split('.').pop().toLowerCase();
 
+          try {
+            gtag('event', 'document_upload', {
+              'event_category' : 'extension',
+              'event_label' : ext
+            });
+          } catch(err) {
+             console.log(err);
+          }          
+
           // supported extensions
           if (ext == "docx" || ext == "txt") {
               let documentNameContainer = document.querySelector(".form__upload-doc-name");
