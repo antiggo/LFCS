@@ -6309,6 +6309,7 @@ Beast.decl({
 
 
 
+
 Beast.decl({
     FormLight: {
 
@@ -6479,6 +6480,36 @@ Beast.decl({
 })
 
 
+Beast.decl({
+    Head: {
+        expand: function () {
+            this.append(
+                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
+                Beast.node("menu",{__context:this},"\n                    ",this.get('menu-item'),"\n                ")
+            )
+
+        }
+    },
+
+    Head__link: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', 'main.html')
+
+
+        }
+    },
+
+    Head__logo: {
+        expand: function () {
+            this.empty()
+            
+
+        }
+    },
+    
+
+})
 // global variables for calculations
 let price;
 let characterNumber = 2500;
@@ -7003,30 +7034,106 @@ Beast.decl({
 
 
 
-
 Beast.decl({
-    Head: {
+    Shelf: {
+
         expand: function () {
+
             this.append(
-                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
-                Beast.node("menu",{__context:this},"\n                    ",this.get('menu-item'),"\n                ")
+                this.get('item', 'cols')
+                
             )
 
         }
     },
-
-    Head__link: {
+    
+    Shelf__item: {
         tag: 'a',
         expand: function () {
-            this.domAttr('href', 'main.html')
 
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
+            var dot = this.param('dot')
+            this.append(
+                Beast.node("dot",{__context:this,"color":dot}),
+                this.get('num', 'title', 'subtitle')
+            )    
+            this.domAttr('href', this.param('href'))
+
+            // if (this.param('name') === 'closed') {
+                
+            // } else {
+
+
+
+            // this.on('click', function () {
+
+            //     var g = this.param('name')
+            //     console.log(g)
+
+            //     if (this.param('name') === 'docs') {
+            //         var chatPage = (
+            //             <DocScreen />
+            //         )
+            //     }
+
+            //     if (this.param('name') === 'web') {
+            //         var chatPage = (
+            //             <WebScreen />
+            //         )
+            //     }
+
+            //     if (this.param('name') === 'presenation') {
+            //         var chatPage = (
+            //             <PresentationScreen />
+            //         )
+            //     }
+
+            //     if (history.pushState) {
+            //         history.pushState(null, null, this.param('href'));
+            //     }
+
+            //     <Overlay Type="side">
+            //         {chatPage}
+            //     </Overlay>
+            //         .param({
+            //             topBar: true,
+            //             scrollContent: true
+            //         })
+            //         .pushToStackNavigation({
+            //             context: this,
+            //             onDidPop: function () {
+            //                 chatPage.detach()
+            //             }
+            //         })
+            // })
+
+            // }
 
         }
     },
 
-    Head__logo: {
+    Shelf__dot: {
+
         expand: function () {
-            this.empty()
+
+            this.css('background', this.param('color'))
+            
+            
+
+        }
+    },
+
+    Shelf__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'XL',
+            Line: 'L'
+        },
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            
             
 
         }
@@ -7034,6 +7141,11 @@ Beast.decl({
     
 
 })
+
+
+
+
+
 /**
  * @block Overlay Интерфейс модальных окон
  * @dep UINavigation grid Typo Control
@@ -7318,118 +7430,6 @@ Beast.decl({
 
     
 })
-
-Beast.decl({
-    Shelf: {
-
-        expand: function () {
-
-            this.append(
-                this.get('item', 'cols')
-                
-            )
-
-        }
-    },
-    
-    Shelf__item: {
-        tag: 'a',
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            this.css('color', this.param('text'))
-            var dot = this.param('dot')
-            this.append(
-                Beast.node("dot",{__context:this,"color":dot}),
-                this.get('num', 'title', 'subtitle')
-            )    
-            this.domAttr('href', this.param('href'))
-
-            // if (this.param('name') === 'closed') {
-                
-            // } else {
-
-
-
-            // this.on('click', function () {
-
-            //     var g = this.param('name')
-            //     console.log(g)
-
-            //     if (this.param('name') === 'docs') {
-            //         var chatPage = (
-            //             <DocScreen />
-            //         )
-            //     }
-
-            //     if (this.param('name') === 'web') {
-            //         var chatPage = (
-            //             <WebScreen />
-            //         )
-            //     }
-
-            //     if (this.param('name') === 'presenation') {
-            //         var chatPage = (
-            //             <PresentationScreen />
-            //         )
-            //     }
-
-            //     if (history.pushState) {
-            //         history.pushState(null, null, this.param('href'));
-            //     }
-
-            //     <Overlay Type="side">
-            //         {chatPage}
-            //     </Overlay>
-            //         .param({
-            //             topBar: true,
-            //             scrollContent: true
-            //         })
-            //         .pushToStackNavigation({
-            //             context: this,
-            //             onDidPop: function () {
-            //                 chatPage.detach()
-            //             }
-            //         })
-            // })
-
-            // }
-
-        }
-    },
-
-    Shelf__dot: {
-
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-
-    Shelf__title: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'XL',
-            Line: 'L'
-        },
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-    
-
-})
-
-
-
-
 
 Beast.decl({
     Steps: {
