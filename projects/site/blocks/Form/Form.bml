@@ -5,6 +5,7 @@ let currrentType = "silver";
 let uploadedDocument = false;
 let linksToTheDocuments = [];
 let calculatedPrice;
+let calculatedPriceDetails=[];
 let uploadedFiles = [];
 let uploadedFilesProgress = 0; 
 
@@ -80,6 +81,7 @@ Beast.decl({
                 document.querySelector(".form__action").value = price*pageCount + "₽ — отправить заявку";
 
                 calculatedPrice = price*pageCount;
+                calculatedPriceDetails = [price, pageCount];
 
             }
         },
@@ -295,7 +297,7 @@ Beast.decl({
 
               let type = pricingParams["type"] == "silver" ? "Пакет Silver | " : "Пакет Gold | ";
               let language = pricingParams["language"] == "english" ? "Документ на английском |" : "Документ на русском |";
-              let time = pricingParams["time"] == "urgent" ? " 24 часа" : " 2 дня";
+              let time = pricingParams["time"] == "urgent" ? " 24 часа" : " 5 дн.";
               let docsView = "";
               for (var i = 0; i < linksToTheDocuments.length; i++){
                 docsView +=  "<p><a style='font-size: 24px;' href='" + linksToTheDocuments[i] + "'>Документ " + (i+1) + "</a></p>";
@@ -307,7 +309,7 @@ Beast.decl({
                 phone: phone,
                 type: type + language + time,
                 link: docsView,
-                price: calculatedPrice
+                price: calculatedPriceDetails[0] + " ₽ * " + calculatedPriceDetails[1] + " стр. = " + calculatedPrice
               })
               .then(function() {
                   //alert('Ваша заявка успешно оправлена');
