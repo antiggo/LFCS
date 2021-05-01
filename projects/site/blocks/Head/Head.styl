@@ -4,6 +4,12 @@
     background #11111
     z-index 300
     
+    &_Main
+        .Head__menu-item_Main
+            display none
+        // .Head__menu
+        //     display none
+    
     a
         text-decoration none
 
@@ -11,7 +17,7 @@
         font-size 18px
         position absolute
         right 60px
-        top 47px
+        top 8px
         @media screen-phone
             display none
         &-item
@@ -19,6 +25,8 @@
             cursor pointer
             color inherit
             letter-spacing -1px
+            line-height 80px
+            
             & + &
                 margin-left 44px
             

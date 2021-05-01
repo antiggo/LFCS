@@ -97,6 +97,10 @@ Beast.decl({
         expand: function () {
 
             this.css('background', this.param('color'))
+
+            if (this.parentBlock().mod('Size') === 'M') {
+                this.mod('Text', 'L')   
+            }
             
             
 

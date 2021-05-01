@@ -14,6 +14,8 @@ Beast.decl({
 
         domInit: function () {
             let requestForm = document.querySelector(".formLight__action");
+            var typeName = this.param('typeName')
+            console.log(typeName)
 
             requestForm.onclick = function(event) {
               
@@ -36,9 +38,9 @@ Beast.decl({
                 name: name,
                 email: email,
                 phone: phone,
-                type: 'Пакет TAILORED',
-                link: '— ',
-                price: '—'
+                type: typeName,
+                link: '—',
+                price: '0'
               })
               .then(function() {
                   //alert('Ваша заявка успешно оправлена');

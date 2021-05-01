@@ -6,6 +6,7 @@ Beast.decl({
                     {this.get('logo')}
                 </link>,
                 <menu>
+                    <menu-item Main href="/">Все продукты</menu-item>
                     <menu-item href="about.html">Студия</menu-item>
                     <menu-item href="about.html#team">Команда</menu-item>
                     <menu-item href="about.html#contact">Связь</menu-item>

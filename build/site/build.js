@@ -6086,7 +6086,13 @@ Beast.decl({
         mod: {
             Text: 'XXL',
             Line: 'L'
+        },
+        expand: function () {
+            if (this.mod('Size') === 'M') {
+                this.mod('Text', 'L')
+            }
         }
+
     },
 })
 
@@ -6121,6 +6127,56 @@ Beast.decl({
         }
     },
 })
+
+Beast.decl({
+    Cards: {
+
+        expand: function () {
+            
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+
+                
+            )
+
+        }
+    },
+    
+    Cards__item: {
+        tag: 'a',
+        expand: function () {
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
+            this.domAttr('href', this.param('href'))
+            
+            this.append(
+                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
+                this.get('title'),
+                Beast.node("cross",{__context:this},"+"),
+                this.get('price')
+                
+            )
+
+        }
+    },
+
+    Shelf__dot: {
+
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            
+            
+
+        }
+    },
+    
+
+})
+
+
+
+
 
 // global variables for calculations
 let price;
@@ -6202,7 +6258,7 @@ Beast.decl({
                   pageCount = Math.floor(1 + characterNumber/pageCharacterNumber);
                 }
 
-                document.querySelector(".form__action").value = price*pageCount + "₽ — отправить заявку";
+                document.querySelector(".form__action-title").innerHTML = price*pageCount + "₽ — отправить заявку";
 
                 calculatedPrice = price*pageCount;
                 calculatedPriceDetails = [price, pageCount];
@@ -6378,6 +6434,19 @@ Beast.decl({
             let selectors = document.querySelectorAll(".form__button_select");
             var self = this
 
+            if (this.param('type') === 'silver') {
+              $('.form__button[data-param="russian"]').attr('active', true)
+              $('.form__button[data-param="regular"]').attr('active', true)
+              document.querySelector(".form__action-title").innerHTML = "500₽ — отправить заявку";  
+            }
+
+            if (this.param('type') === 'gold') {
+              $('.form__button[data-param="russian"]').attr('active', true)
+              $('.form__button[data-param="regular"]').attr('active', true)
+              document.querySelector(".form__action-title").innerHTML = "2500₽ — отправить заявку";  
+            }
+            
+
             if (selectors) {
               for (var i = 0; i < selectors.length; i++) {
 
@@ -6451,7 +6520,7 @@ Beast.decl({
                 );
                 uploadedFilesProgress = 0;
                 
-                let btnSend = document.querySelector(".form__action");
+                let btnSend = document.querySelector(".form__action-title");
                 btnSend.value = 'Отправлено успешно';
                 btnSend.className = "form__action";
 
@@ -6570,10 +6639,14 @@ Beast.decl({
     },
 
     Form__action: {
-        tag: 'input',
+        // tag: 'input',
         expand: function () {
-            this.domAttr('type', 'submit')
-            this.domAttr('value', this.text())
+            // this.domAttr('type', 'submit')
+            // this.domAttr('value', this.text())
+            this.append(
+              Beast.node("action-title",{__context:this},this.text()),
+              Beast.node("action-subtitle",{__context:this},"(конфиденциально)")
+            )
             this.css('background', this.parentBlock().param('action'))
             this.css('color', this.parentBlock().param('actionText'))
         }
@@ -6650,56 +6723,6 @@ Beast.decl({
 
 
 Beast.decl({
-    Cards: {
-
-        expand: function () {
-            
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
-
-                
-            )
-
-        }
-    },
-    
-    Cards__item: {
-        tag: 'a',
-        expand: function () {
-            this.css('background', this.param('color'))
-            this.css('color', this.param('text'))
-            this.domAttr('href', this.param('href'))
-            
-            this.append(
-                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
-                this.get('title'),
-                Beast.node("cross",{__context:this},"+"),
-                this.get('price')
-                
-            )
-
-        }
-    },
-
-    Shelf__dot: {
-
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-    
-
-})
-
-
-
-
-
-Beast.decl({
     FormLight: {
 
         expand: function () {
@@ -6713,6 +6736,8 @@ Beast.decl({
 
         domInit: function () {
             let requestForm = document.querySelector(".formLight__action");
+            var typeName = this.param('typeName')
+            console.log(typeName)
 
             requestForm.onclick = function(event) {
               
@@ -6735,9 +6760,9 @@ Beast.decl({
                 name: name,
                 email: email,
                 phone: phone,
-                type: 'Пакет TAILORED',
-                link: '— ',
-                price: '—'
+                type: typeName,
+                link: '—',
+                price: '0'
               })
               .then(function() {
                   //alert('Ваша заявка успешно оправлена');
@@ -6993,7 +7018,7 @@ Beast.decl({
         expand: function () {
             this.append(
                 Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
-                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"href":"about.html"},"Студия"),"\n                    ",Beast.node("menu-item",{"href":"about.html#team"},"Команда"),"\n                    ",Beast.node("menu-item",{"href":"about.html#contact"},"Связь"),"\n                ")
+                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"/"},"Все продукты"),"\n                    ",Beast.node("menu-item",{"href":"about.html"},"Студия"),"\n                    ",Beast.node("menu-item",{"href":"about.html#team"},"Команда"),"\n                    ",Beast.node("menu-item",{"href":"about.html#contact"},"Связь"),"\n                ")
             )
 
         }
@@ -7025,118 +7050,6 @@ Beast.decl({
     
 
 })
-Beast.decl({
-    Shelf: {
-
-        expand: function () {
-
-            this.append(
-                this.get('item', 'cols')
-                
-            )
-
-        }
-    },
-    
-    Shelf__item: {
-        tag: 'a',
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            this.css('color', this.param('text'))
-            var dot = this.param('dot')
-            this.append(
-                Beast.node("dot",{__context:this,"color":dot}),
-                this.get('num', 'title', 'subtitle')
-            )    
-            this.domAttr('href', this.param('href'))
-
-            // if (this.param('name') === 'closed') {
-                
-            // } else {
-
-
-
-            // this.on('click', function () {
-
-            //     var g = this.param('name')
-            //     console.log(g)
-
-            //     if (this.param('name') === 'docs') {
-            //         var chatPage = (
-            //             <DocScreen />
-            //         )
-            //     }
-
-            //     if (this.param('name') === 'web') {
-            //         var chatPage = (
-            //             <WebScreen />
-            //         )
-            //     }
-
-            //     if (this.param('name') === 'presenation') {
-            //         var chatPage = (
-            //             <PresentationScreen />
-            //         )
-            //     }
-
-            //     if (history.pushState) {
-            //         history.pushState(null, null, this.param('href'));
-            //     }
-
-            //     <Overlay Type="side">
-            //         {chatPage}
-            //     </Overlay>
-            //         .param({
-            //             topBar: true,
-            //             scrollContent: true
-            //         })
-            //         .pushToStackNavigation({
-            //             context: this,
-            //             onDidPop: function () {
-            //                 chatPage.detach()
-            //             }
-            //         })
-            // })
-
-            // }
-
-        }
-    },
-
-    Shelf__dot: {
-
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-
-    Shelf__title: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'XL',
-            Line: 'L'
-        },
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-    
-
-})
-
-
-
-
-
 /**
  * @block Overlay Интерфейс модальных окон
  * @dep UINavigation grid Typo Control
@@ -7421,6 +7334,122 @@ Beast.decl({
 
     
 })
+
+Beast.decl({
+    Shelf: {
+
+        expand: function () {
+
+            this.append(
+                this.get('item', 'cols')
+                
+            )
+
+        }
+    },
+    
+    Shelf__item: {
+        tag: 'a',
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
+            var dot = this.param('dot')
+            this.append(
+                Beast.node("dot",{__context:this,"color":dot}),
+                this.get('num', 'title', 'subtitle')
+            )    
+            this.domAttr('href', this.param('href'))
+
+            // if (this.param('name') === 'closed') {
+                
+            // } else {
+
+
+
+            // this.on('click', function () {
+
+            //     var g = this.param('name')
+            //     console.log(g)
+
+            //     if (this.param('name') === 'docs') {
+            //         var chatPage = (
+            //             <DocScreen />
+            //         )
+            //     }
+
+            //     if (this.param('name') === 'web') {
+            //         var chatPage = (
+            //             <WebScreen />
+            //         )
+            //     }
+
+            //     if (this.param('name') === 'presenation') {
+            //         var chatPage = (
+            //             <PresentationScreen />
+            //         )
+            //     }
+
+            //     if (history.pushState) {
+            //         history.pushState(null, null, this.param('href'));
+            //     }
+
+            //     <Overlay Type="side">
+            //         {chatPage}
+            //     </Overlay>
+            //         .param({
+            //             topBar: true,
+            //             scrollContent: true
+            //         })
+            //         .pushToStackNavigation({
+            //             context: this,
+            //             onDidPop: function () {
+            //                 chatPage.detach()
+            //             }
+            //         })
+            // })
+
+            // }
+
+        }
+    },
+
+    Shelf__dot: {
+
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            
+            
+
+        }
+    },
+
+    Shelf__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'XL',
+            Line: 'L'
+        },
+        expand: function () {
+
+            this.css('background', this.param('color'))
+
+            if (this.parentBlock().mod('Size') === 'M') {
+                this.mod('Text', 'L')   
+            }
+            
+            
+
+        }
+    },
+    
+
+})
+
+
+
+
 
 Beast.decl({
     Steps: {

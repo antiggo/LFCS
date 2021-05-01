@@ -229,7 +229,13 @@ Beast.decl({
         mod: {
             Text: 'XXL',
             Line: 'L'
+        },
+        expand: function () {
+            if (this.mod('Size') === 'M') {
+                this.mod('Text', 'L')
+            }
         }
+
     },
 })
 
