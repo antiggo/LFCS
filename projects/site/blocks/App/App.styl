@@ -23,6 +23,15 @@
     font-style: normal;
 }
 
+.Legal
+    @media screen-phone
+        &__large
+            display none
+    &__small
+        display none
+        @media screen-phone
+            display block
+
 .Link
     display inline
     text-decoration none

@@ -6265,6 +6265,57 @@ Beast.decl({
     },
 })
 
+Beast.decl({
+    Cards: {
+
+        expand: function () {
+            
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+
+                
+            )
+
+        }
+    },
+    
+    Cards__item: {
+        tag: 'a',
+        expand: function () {
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
+            this.domAttr('href', this.param('href'))
+            
+            this.append(
+                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
+                this.get('title'),
+                Beast.node("cross",{__context:this},"+"),
+                this.get('price')
+                
+            )
+
+        }
+    },
+
+    Shelf__dot: {
+
+        expand: function () {
+
+            this.css('background', this.param('color'))
+            
+            
+
+        }
+    },
+    
+
+})
+
+
+
+
+
+
 // global variables for calculations
 let price;
 let characterNumber = 2500;
@@ -6809,33 +6860,289 @@ Beast.decl({
 
 
 Beast.decl({
-    Cards: {
+    Head: {
+        expand: function () {
+            this.append(
+                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
+                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"/"},"Все продукты"),"\n                    ",Beast.node("menu-item",{"href":"about.html"},"Студия"),"\n                    ",Beast.node("menu-item",{"href":"about.html#team"},"Команда"),"\n                    ",Beast.node("menu-item",{"href":"about.html#contact"},"Связь"),"\n                ")
+            )
+
+        }
+    },
+
+    Head__link: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', 'main.html')
+
+
+        }
+    },
+
+    'Head__menu-item': {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+
+        }
+    },
+
+    Head__logo: {
+        expand: function () {
+            this.empty()
+            
+        }
+    },
+    
+
+})
+Beast.decl({
+    FormLight: {
 
         expand: function () {
-            
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
 
+            this.append(
+                Beast.node("form",{__context:this},"\n                    ",this.get('head', 'item'),"\n                ")
+                
+            )
+
+        },
+
+        domInit: function () {
+            let requestForm = document.querySelector(".formLight__action");
+            var typeName = this.param('typeName')
+            console.log(typeName)
+
+            requestForm.onclick = function(event) {
+              
+              event.preventDefault();
+
+              // if all validation goes well
+              if (validateForm()) {
+                this.value = 'Отправляю...';
+                this.disabled = true;
+                this.classList.add("button-loading");  
+                 
+                sendEmail();
+                
+              } else return false;
+            }
+
+            function sendRquestEmail(name, email, phone) {
+
+              emailjs.send(emailJsService, emailJsTemplate, {
+                name: name,
+                email: email,
+                phone: phone,
+                type: typeName,
+                link: '—',
+                price: '0'
+              })
+              .then(function() {
+                  //alert('Ваша заявка успешно оправлена');
+                  //location.reload();
+              }, function(error) {
+                  console.log('Failed sendig email', error);
+              });
+            }
+
+            function sendEmail() {
+              //if all files were uploaded
+              if (uploadedFilesProgress == uploadedFiles.length) {
+                sendRquestEmail(
+                  document.querySelector("#name").value,
+                  document.querySelector("#email").value,
+                  document.querySelector("#phone").value
+                );
+                uploadedFilesProgress = 0;
+                
+                let btnSend = document.querySelector(".formLight__action");
+                btnSend.value = 'Отправлено успешно';
+                btnSend.className = "formLight__action";
+
+              } else {
+                setTimeout(function(){ sendEmail() }, 500);
+              }
+            }
+
+            //validation of all input fields
+            function validateForm() {
+
+              let nameField = document.querySelector("#name");
+              if (nameField.value.trim() == "") {
+                alert('Пожалуйста, укажите ваше имя, чтобы мы знали как к вам обращаться');
+                return false;
+              }
+
+              let emailField = document.querySelector("#email");
+              if (emailField.value.trim() == "") {
+                alert('Укажите адрес электронной почты, чтобы мы знали, как с вами связаться');
+                return false;
+              }
+
+              let phoneField = document.querySelector("#phone");
+              if (phoneField.value.trim() == "") {
+                alert('Укажите номер телефона, чтобы мы знали, как с вами связаться');
+                return false;
+              }
+
+              return true;
+            }
+
+            
+            
+
+        }
+    },
+
+    FormLight__form: {
+        tag: 'div',
+        expand: function () {
+
+            this.domAttr('action', this.parentBlock().param('action'))
+            this.domAttr('id', this.parentBlock().param('id'))
+
+        }
+    },
+
+    FormLight__item: {
+        expand: function () {
+            this.domAttr('param', this.param('param'))
+        }
+    },
+
+    FormLight__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
+    },
+
+    FormLight__hint: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
+    },
+
+    FormLight__button: {
+        expand: function () {
+            this.domAttr('data-param', this.param('data-param'))
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+        }
+    },
+
+    FormLight__action: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', 'submit')
+            this.domAttr('value', this.text())
+            this.css('background', this.parentBlock().param('action'))
+            this.css('color', this.parentBlock().param('actionText'))
+        }
+    },
+
+    FormLight__input: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+
+            let root = document.documentElement;
+            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
+            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
+            
+        }
+    },
+
+    
+})
+
+
+Beast.decl({
+    Shelf: {
+
+        expand: function () {
+
+            this.append(
+                this.get('item', 'cols')
                 
             )
 
         }
     },
     
-    Cards__item: {
+    Shelf__item: {
         tag: 'a',
         expand: function () {
+
             this.css('background', this.param('color'))
             this.css('color', this.param('text'))
-            this.domAttr('href', this.param('href'))
-            
+            var dot = this.param('dot')
             this.append(
-                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
-                this.get('title'),
-                Beast.node("cross",{__context:this},"+"),
-                this.get('price')
+                Beast.node("dot",{__context:this,"color":dot}),
+                this.get('num', 'title', 'subtitle')
+            )    
+            this.domAttr('href', this.param('href'))
+
+            // if (this.param('name') === 'closed') {
                 
-            )
+            // } else {
+
+
+
+            // this.on('click', function () {
+
+            //     var g = this.param('name')
+            //     console.log(g)
+
+            //     if (this.param('name') === 'docs') {
+            //         var chatPage = (
+            //             <DocScreen />
+            //         )
+            //     }
+
+            //     if (this.param('name') === 'web') {
+            //         var chatPage = (
+            //             <WebScreen />
+            //         )
+            //     }
+
+            //     if (this.param('name') === 'presenation') {
+            //         var chatPage = (
+            //             <PresentationScreen />
+            //         )
+            //     }
+
+            //     if (history.pushState) {
+            //         history.pushState(null, null, this.param('href'));
+            //     }
+
+            //     <Overlay Type="side">
+            //         {chatPage}
+            //     </Overlay>
+            //         .param({
+            //             topBar: true,
+            //             scrollContent: true
+            //         })
+            //         .pushToStackNavigation({
+            //             context: this,
+            //             onDidPop: function () {
+            //                 chatPage.detach()
+            //             }
+            //         })
+            // })
+
+            // }
 
         }
     },
@@ -6850,10 +7157,194 @@ Beast.decl({
 
         }
     },
+
+    Shelf__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'XL',
+            Line: 'L'
+        },
+        expand: function () {
+
+            this.css('background', this.param('color'))
+
+            if (this.parentBlock().mod('Size') === 'M') {
+                this.mod('Text', 'L')   
+            }
+            
+            
+
+        }
+    },
     
 
 })
 
+
+
+
+
+Beast.decl({
+    Steps: {
+
+        expand: function () {
+
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('step'),"\n                ")
+                
+            )
+
+        }
+    },
+    
+    Steps__step: {
+
+        expand: function () {
+            
+            this.append(
+                Beast.node("num",{__context:this},this.get('num')),
+                this.get('text')
+
+                
+            )
+
+        }
+    },
+
+    Steps__num: {
+
+        expand: function () {
+
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+            
+
+        }
+    }
+})
+
+
+
+
+
+Beast.decl({
+    Showcase: {
+
+        expand: function () {
+            this.append(
+                
+                    this.get('items')
+                
+            )
+
+        }
+    },
+    
+    Showcase__item: {
+
+        expand: function () {
+            this.css('background', this.parentBlock().param('color'))
+            
+            this.append(
+                
+                Beast.node("Thumb",{__context:this,"Ratio":this.parentBlock().mod('Ratio')},this.text())
+                
+            )
+
+        }
+    },
+
+    
+
+    
+})
+
+
+
+
+
+Beast.decl({
+    Gallery: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'S',
+            Line: 'L'
+        },
+        expand: function () {
+            this.domAttr('id', 'team')
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+                
+            )
+
+        }
+    },
+    
+    Gallery__image: {
+
+        expand: function () {
+            
+            
+            this.append(
+                
+                Beast.node("Thumb",{__context:this,"Ratio":"1x1"},this.text())
+                
+            )
+
+        }
+    },
+
+    Gallery__item: {
+        tag: 'a',
+        expand: function () {
+            var href = this.param('href')
+            this.domAttr('href', href)
+
+        }
+    },
+
+
+
+    
+
+    
+})
+
+
+
+Beast.decl({
+    Contact: {
+        expand: function () {
+            
+            this.domAttr('id', 'contact')
+            
+
+        }
+    }
+})
+
+
+
+
+
+Beast.decl({
+    Link: {
+        tag: 'a',
+        
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+
+        }
+    },
+    
+    
+
+
+
+    
+
+    
+})
 
 
 
@@ -7143,497 +7634,6 @@ Beast.decl({
 
     
 })
-
-Beast.decl({
-    Shelf: {
-
-        expand: function () {
-
-            this.append(
-                this.get('item', 'cols')
-                
-            )
-
-        }
-    },
-    
-    Shelf__item: {
-        tag: 'a',
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            this.css('color', this.param('text'))
-            var dot = this.param('dot')
-            this.append(
-                Beast.node("dot",{__context:this,"color":dot}),
-                this.get('num', 'title', 'subtitle')
-            )    
-            this.domAttr('href', this.param('href'))
-
-            // if (this.param('name') === 'closed') {
-                
-            // } else {
-
-
-
-            // this.on('click', function () {
-
-            //     var g = this.param('name')
-            //     console.log(g)
-
-            //     if (this.param('name') === 'docs') {
-            //         var chatPage = (
-            //             <DocScreen />
-            //         )
-            //     }
-
-            //     if (this.param('name') === 'web') {
-            //         var chatPage = (
-            //             <WebScreen />
-            //         )
-            //     }
-
-            //     if (this.param('name') === 'presenation') {
-            //         var chatPage = (
-            //             <PresentationScreen />
-            //         )
-            //     }
-
-            //     if (history.pushState) {
-            //         history.pushState(null, null, this.param('href'));
-            //     }
-
-            //     <Overlay Type="side">
-            //         {chatPage}
-            //     </Overlay>
-            //         .param({
-            //             topBar: true,
-            //             scrollContent: true
-            //         })
-            //         .pushToStackNavigation({
-            //             context: this,
-            //             onDidPop: function () {
-            //                 chatPage.detach()
-            //             }
-            //         })
-            // })
-
-            // }
-
-        }
-    },
-
-    Shelf__dot: {
-
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-
-    Shelf__title: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'XL',
-            Line: 'L'
-        },
-        expand: function () {
-
-            this.css('background', this.param('color'))
-
-            if (this.parentBlock().mod('Size') === 'M') {
-                this.mod('Text', 'L')   
-            }
-            
-            
-
-        }
-    },
-    
-
-})
-
-
-
-
-
-Beast.decl({
-    FormLight: {
-
-        expand: function () {
-
-            this.append(
-                Beast.node("form",{__context:this},"\n                    ",this.get('head', 'item'),"\n                ")
-                
-            )
-
-        },
-
-        domInit: function () {
-            let requestForm = document.querySelector(".formLight__action");
-            var typeName = this.param('typeName')
-            console.log(typeName)
-
-            requestForm.onclick = function(event) {
-              
-              event.preventDefault();
-
-              // if all validation goes well
-              if (validateForm()) {
-                this.value = 'Отправляю...';
-                this.disabled = true;
-                this.classList.add("button-loading");  
-                 
-                sendEmail();
-                
-              } else return false;
-            }
-
-            function sendRquestEmail(name, email, phone) {
-
-              emailjs.send(emailJsService, emailJsTemplate, {
-                name: name,
-                email: email,
-                phone: phone,
-                type: typeName,
-                link: '—',
-                price: '0'
-              })
-              .then(function() {
-                  //alert('Ваша заявка успешно оправлена');
-                  //location.reload();
-              }, function(error) {
-                  console.log('Failed sendig email', error);
-              });
-            }
-
-            function sendEmail() {
-              //if all files were uploaded
-              if (uploadedFilesProgress == uploadedFiles.length) {
-                sendRquestEmail(
-                  document.querySelector("#name").value,
-                  document.querySelector("#email").value,
-                  document.querySelector("#phone").value
-                );
-                uploadedFilesProgress = 0;
-                
-                let btnSend = document.querySelector(".formLight__action");
-                btnSend.value = 'Отправлено успешно';
-                btnSend.className = "formLight__action";
-
-              } else {
-                setTimeout(function(){ sendEmail() }, 500);
-              }
-            }
-
-            //validation of all input fields
-            function validateForm() {
-
-              let nameField = document.querySelector("#name");
-              if (nameField.value.trim() == "") {
-                alert('Пожалуйста, укажите ваше имя, чтобы мы знали как к вам обращаться');
-                return false;
-              }
-
-              let emailField = document.querySelector("#email");
-              if (emailField.value.trim() == "") {
-                alert('Укажите адрес электронной почты, чтобы мы знали, как с вами связаться');
-                return false;
-              }
-
-              let phoneField = document.querySelector("#phone");
-              if (phoneField.value.trim() == "") {
-                alert('Укажите номер телефона, чтобы мы знали, как с вами связаться');
-                return false;
-              }
-
-              return true;
-            }
-
-            
-            
-
-        }
-    },
-
-    FormLight__form: {
-        tag: 'div',
-        expand: function () {
-
-            this.domAttr('action', this.parentBlock().param('action'))
-            this.domAttr('id', this.parentBlock().param('id'))
-
-        }
-    },
-
-    FormLight__item: {
-        expand: function () {
-            this.domAttr('param', this.param('param'))
-        }
-    },
-
-    FormLight__title: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'L',
-            Line: 'L'
-        },
-        
-    },
-
-    FormLight__hint: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'L',
-            Line: 'L'
-        },
-        
-    },
-
-    FormLight__button: {
-        expand: function () {
-            this.domAttr('data-param', this.param('data-param'))
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-        }
-    },
-
-    FormLight__action: {
-        tag: 'input',
-        expand: function () {
-            this.domAttr('type', 'submit')
-            this.domAttr('value', this.text())
-            this.css('background', this.parentBlock().param('action'))
-            this.css('color', this.parentBlock().param('actionText'))
-        }
-    },
-
-    FormLight__input: {
-        tag: 'input',
-        expand: function () {
-            this.domAttr('type', this.param('type'))
-            this.domAttr('id', this.param('id'))
-            this.domAttr('placeholder', this.param('placeholder'))
-            this.domAttr('required', true)
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-
-            let root = document.documentElement;
-            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
-            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
-            
-        }
-    },
-
-    
-})
-
-
-Beast.decl({
-    Head: {
-        expand: function () {
-            this.append(
-                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
-                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"/"},"Все продукты"),"\n                    ",Beast.node("menu-item",{"href":"about.html"},"Студия"),"\n                    ",Beast.node("menu-item",{"href":"about.html#team"},"Команда"),"\n                    ",Beast.node("menu-item",{"href":"about.html#contact"},"Связь"),"\n                ")
-            )
-
-        }
-    },
-
-    Head__link: {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', 'main.html')
-
-
-        }
-    },
-
-    'Head__menu-item': {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', this.param('href'))
-
-        }
-    },
-
-    Head__logo: {
-        expand: function () {
-            this.empty()
-            
-        }
-    },
-    
-
-})
-Beast.decl({
-    Steps: {
-
-        expand: function () {
-
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('step'),"\n                ")
-                
-            )
-
-        }
-    },
-    
-    Steps__step: {
-
-        expand: function () {
-            
-            this.append(
-                Beast.node("num",{__context:this},this.get('num')),
-                this.get('text')
-
-                
-            )
-
-        }
-    },
-
-    Steps__num: {
-
-        expand: function () {
-
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-            
-
-        }
-    }
-})
-
-
-
-
-
-Beast.decl({
-    Showcase: {
-
-        expand: function () {
-            this.append(
-                
-                    this.get('items')
-                
-            )
-
-        }
-    },
-    
-    Showcase__item: {
-
-        expand: function () {
-            this.css('background', this.parentBlock().param('color'))
-            
-            this.append(
-                
-                Beast.node("Thumb",{__context:this,"Ratio":this.parentBlock().mod('Ratio')},this.text())
-                
-            )
-
-        }
-    },
-
-    
-
-    
-})
-
-
-
-
-
-Beast.decl({
-    Gallery: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'S',
-            Line: 'L'
-        },
-        expand: function () {
-            this.domAttr('id', 'team')
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
-                
-            )
-
-        }
-    },
-    
-    Gallery__image: {
-
-        expand: function () {
-            
-            
-            this.append(
-                
-                Beast.node("Thumb",{__context:this,"Ratio":"1x1"},this.text())
-                
-            )
-
-        }
-    },
-
-    Gallery__item: {
-        tag: 'a',
-        expand: function () {
-            var href = this.param('href')
-            this.domAttr('href', href)
-
-        }
-    },
-
-
-
-    
-
-    
-})
-
-
-
-Beast.decl({
-    Contact: {
-        expand: function () {
-            
-            this.domAttr('id', 'contact')
-            
-
-        }
-    }
-})
-
-
-
-
-
-Beast.decl({
-    Link: {
-        tag: 'a',
-        
-        expand: function () {
-            this.domAttr('href', this.param('href'))
-
-        }
-    },
-    
-    
-
-
-
-    
-
-    
-})
-
-
-
-
 
 /**
  * @block Thumb Тумбнеил
