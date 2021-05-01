@@ -5931,6 +5931,143 @@ BemNode.prototype = {
 
 })();
 /**
+ * @block Grid Динамическая сетка
+ * @tag base
+ */
+Beast.decl({
+    Grid: {
+        // finalMod: true,
+        mod: {
+            Col: '',                // @mod Col {number} Ширина в колонках
+            Wrap: false,            // @mod Wrap {boolean} Основной контейнер сетки
+            Margin: false,          // @mod Margin {boolean} Поля
+            MarginX: false,         // @mod MarginX {boolean} Горизонтальные поля
+            MarginY: false,         // @mod MarginY {boolean} Вертикальные поля
+            Unmargin: false,        // @mod Unmargin {boolean} Отрицательные поля
+            UnmarginX: false,       // @mod UnmarginX {boolean} Отрицательные горизоантальные поля
+            UnmarginY: false,       // @mod UnmarginY {boolean} Отрацательные вертикальные поля
+            MarginRightGap: false,  // @mod MarginRightGap {boolean} Правый отступ равен — горизоантальное поле
+            MarginLeftGap: false,   // @mod MarginLeftGap {boolean} Левый отступ равен — горизоантальное поле
+            Cell: false,            // @mod Cell {boolean} Горизонтальный отступ между соседями — межколонник
+            Row: false,             // @mod Row {boolean} Вертикальынй отступ между соседями — межколонник
+            Rows: false,            // @mod Rows {boolean} Дочерние компоненты отступают на горизонтальное поле
+            Tile: false,            // @mod Tile {boolean} Модификатор дочернего компонента (для модификатора Tiles)
+            Tiles: false,           // @mod Tiles {boolean} Дочерние компоненты плиткой с отступами в поле
+            Center: false,          // @mod Center {boolean} Выравнивание по центру
+            Hidden: false,          // @mod Hidden {boolean} Спрятать компонент
+            ColCheck: false,        // @mod ColCheck {boolean} Считать ширину в колонках
+            Ratio: '',              // @mod Ratio {1x1 1x2 3x4 ...} Пропорция
+        },
+        param: {
+            isMaxCol: false,
+        },
+        onMod: {
+            Col: {
+                '*': function (fromParentGrid) {
+                    if (fromParentGrid === undefined) {
+                        this.param('isMaxCol', this.mod('col') === 'max')
+                    }
+                }
+            }
+        },
+        onCol: undefined,
+        domInit: function () {
+            this.param('isMaxCol', this.mod('col') === 'max')
+
+            if (this.mod('ColCheck')) {
+                this.onWin('resize', this.checkColWidth)
+                requestAnimationFrame(function () {
+                    this.checkColWidth()
+                }.bind(this))
+            }
+        },
+        onAttach: function (firstTime) {
+            this.setParentGrid(!firstTime)
+        },
+        checkColWidth: function () {
+            var prop = this.css('content').slice(1,-1).split(' ')
+            var col = parseInt(prop[0])
+            var gap = parseInt(prop[1])
+            var maxCol = parseInt(prop[2])
+            var marginX = parseInt(prop[3])
+            var marginY = parseFloat(prop[4])
+
+            if (isNaN(col)) {
+                return
+            }
+
+            var width = this.domNode().offsetWidth
+            var colNum = Math.floor((width + gap) / (col + gap))
+
+            if (colNum > maxCol) {
+                colNum = maxCol
+            }
+
+            this.trigger('Col', {
+                num: colNum,
+                edge: window.innerWidth === (colNum * col + (colNum-1) * gap + marginX * 2),
+                col: col,
+                gap: gap,
+                marginX: marginX,
+                marginY: marginY,
+            })
+        },
+        setParentGrid: function (recursive, parentGrid) {
+            if (this.onCol !== undefined || this.onEdge !== undefined || this.param('isMaxCol')) {
+                var that = this
+
+                if (parentGrid === undefined) {
+                    parentGrid = this._parentNode
+                    while (parentGrid !== undefined && !(parentGrid.isKindOf('Grid') && parentGrid.mod('ColCheck'))) {
+                        parentGrid = parentGrid._parentNode
+                    }
+                }
+
+                if (parentGrid !== undefined) {
+                    if (this.onCol || this.param('isMaxCol')) {
+                        parentGrid.on('Col', function (e, data) {
+                            that.onCol && that.onCol(data.num, data.edge, data)
+                            that.param('isMaxCol') && that.mod('Col', data.num, true)
+                        })
+                    }
+                }
+            }
+
+            if (recursive !== undefined) {
+                var children = this.get('/')
+                for (var i = 0, ii = children.length; i < ii; i++) {
+                    if (children[i].isKindOf('grid') && !children[i].mod('ColCheck')) {
+                        children[i].setParentGrid(recursive, parentGrid)
+                    }
+                }
+            }
+        }
+    }
+})
+
+function grid (num, col, gap, margin) {
+    var gridWidth = col * num + gap * (num - 1) + margin * 2
+    return gridWidth
+}
+/**
+ * @block Typo Типографика
+ * @tag base
+ */
+
+Beast.decl({
+    Typo: {
+        // finalMod: true,
+        mod: {
+            text: '',       // @mod Text    {S M L XL}  Размер текста
+            line: '',       // @mod Line    {S M L}     Высота строки
+            caps: false,    // @mod Caps    {boolean}   Капслок
+            light: false,   // @mod Light   {boolean}   Light-начертание
+            medium: false,  // @mod Medium  {boolean}   Medium-начертание
+            bold: false,    // @mod Bold    {boolean}   Bold-начертание
+        }
+    }
+})
+/**
  * @block App Корневой компонент всех страниц
  * @dep UINavigation DocInspector DocConsole
  * @tag base
@@ -6127,56 +6264,6 @@ Beast.decl({
         }
     },
 })
-
-Beast.decl({
-    Cards: {
-
-        expand: function () {
-            
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
-
-                
-            )
-
-        }
-    },
-    
-    Cards__item: {
-        tag: 'a',
-        expand: function () {
-            this.css('background', this.param('color'))
-            this.css('color', this.param('text'))
-            this.domAttr('href', this.param('href'))
-            
-            this.append(
-                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
-                this.get('title'),
-                Beast.node("cross",{__context:this},"+"),
-                this.get('price')
-                
-            )
-
-        }
-    },
-
-    Shelf__dot: {
-
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-    
-
-})
-
-
-
-
 
 // global variables for calculations
 let price;
@@ -6721,335 +6808,57 @@ Beast.decl({
 
 
 
-
 Beast.decl({
-    FormLight: {
+    Cards: {
 
         expand: function () {
-
+            
             this.append(
-                Beast.node("form",{__context:this},"\n                    ",this.get('head', 'item'),"\n                ")
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+
                 
             )
 
-        },
-
-        domInit: function () {
-            let requestForm = document.querySelector(".formLight__action");
-            var typeName = this.param('typeName')
-            console.log(typeName)
-
-            requestForm.onclick = function(event) {
-              
-              event.preventDefault();
-
-              // if all validation goes well
-              if (validateForm()) {
-                this.value = 'Отправляю...';
-                this.disabled = true;
-                this.classList.add("button-loading");  
-                 
-                sendEmail();
-                
-              } else return false;
-            }
-
-            function sendRquestEmail(name, email, phone) {
-
-              emailjs.send(emailJsService, emailJsTemplate, {
-                name: name,
-                email: email,
-                phone: phone,
-                type: typeName,
-                link: '—',
-                price: '0'
-              })
-              .then(function() {
-                  //alert('Ваша заявка успешно оправлена');
-                  //location.reload();
-              }, function(error) {
-                  console.log('Failed sendig email', error);
-              });
-            }
-
-            function sendEmail() {
-              //if all files were uploaded
-              if (uploadedFilesProgress == uploadedFiles.length) {
-                sendRquestEmail(
-                  document.querySelector("#name").value,
-                  document.querySelector("#email").value,
-                  document.querySelector("#phone").value
-                );
-                uploadedFilesProgress = 0;
-                
-                let btnSend = document.querySelector(".formLight__action");
-                btnSend.value = 'Отправлено успешно';
-                btnSend.className = "formLight__action";
-
-              } else {
-                setTimeout(function(){ sendEmail() }, 500);
-              }
-            }
-
-            //validation of all input fields
-            function validateForm() {
-
-              let nameField = document.querySelector("#name");
-              if (nameField.value.trim() == "") {
-                alert('Пожалуйста, укажите ваше имя, чтобы мы знали как к вам обращаться');
-                return false;
-              }
-
-              let emailField = document.querySelector("#email");
-              if (emailField.value.trim() == "") {
-                alert('Укажите адрес электронной почты, чтобы мы знали, как с вами связаться');
-                return false;
-              }
-
-              let phoneField = document.querySelector("#phone");
-              if (phoneField.value.trim() == "") {
-                alert('Укажите номер телефона, чтобы мы знали, как с вами связаться');
-                return false;
-              }
-
-              return true;
-            }
-
-            
-            
-
         }
     },
-
-    FormLight__form: {
-        tag: 'div',
-        expand: function () {
-
-            this.domAttr('action', this.parentBlock().param('action'))
-            this.domAttr('id', this.parentBlock().param('id'))
-
-        }
-    },
-
-    FormLight__item: {
-        expand: function () {
-            this.domAttr('param', this.param('param'))
-        }
-    },
-
-    FormLight__title: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'L',
-            Line: 'L'
-        },
-        
-    },
-
-    FormLight__hint: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'L',
-            Line: 'L'
-        },
-        
-    },
-
-    FormLight__button: {
-        expand: function () {
-            this.domAttr('data-param', this.param('data-param'))
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-        }
-    },
-
-    FormLight__action: {
-        tag: 'input',
-        expand: function () {
-            this.domAttr('type', 'submit')
-            this.domAttr('value', this.text())
-            this.css('background', this.parentBlock().param('action'))
-            this.css('color', this.parentBlock().param('actionText'))
-        }
-    },
-
-    FormLight__input: {
-        tag: 'input',
-        expand: function () {
-            this.domAttr('type', this.param('type'))
-            this.domAttr('id', this.param('id'))
-            this.domAttr('placeholder', this.param('placeholder'))
-            this.domAttr('required', true)
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-
-            let root = document.documentElement;
-            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
-            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
-            
-        }
-    },
-
     
-})
-
-
-/**
- * @block Grid Динамическая сетка
- * @tag base
- */
-Beast.decl({
-    Grid: {
-        // finalMod: true,
-        mod: {
-            Col: '',                // @mod Col {number} Ширина в колонках
-            Wrap: false,            // @mod Wrap {boolean} Основной контейнер сетки
-            Margin: false,          // @mod Margin {boolean} Поля
-            MarginX: false,         // @mod MarginX {boolean} Горизонтальные поля
-            MarginY: false,         // @mod MarginY {boolean} Вертикальные поля
-            Unmargin: false,        // @mod Unmargin {boolean} Отрицательные поля
-            UnmarginX: false,       // @mod UnmarginX {boolean} Отрицательные горизоантальные поля
-            UnmarginY: false,       // @mod UnmarginY {boolean} Отрацательные вертикальные поля
-            MarginRightGap: false,  // @mod MarginRightGap {boolean} Правый отступ равен — горизоантальное поле
-            MarginLeftGap: false,   // @mod MarginLeftGap {boolean} Левый отступ равен — горизоантальное поле
-            Cell: false,            // @mod Cell {boolean} Горизонтальный отступ между соседями — межколонник
-            Row: false,             // @mod Row {boolean} Вертикальынй отступ между соседями — межколонник
-            Rows: false,            // @mod Rows {boolean} Дочерние компоненты отступают на горизонтальное поле
-            Tile: false,            // @mod Tile {boolean} Модификатор дочернего компонента (для модификатора Tiles)
-            Tiles: false,           // @mod Tiles {boolean} Дочерние компоненты плиткой с отступами в поле
-            Center: false,          // @mod Center {boolean} Выравнивание по центру
-            Hidden: false,          // @mod Hidden {boolean} Спрятать компонент
-            ColCheck: false,        // @mod ColCheck {boolean} Считать ширину в колонках
-            Ratio: '',              // @mod Ratio {1x1 1x2 3x4 ...} Пропорция
-        },
-        param: {
-            isMaxCol: false,
-        },
-        onMod: {
-            Col: {
-                '*': function (fromParentGrid) {
-                    if (fromParentGrid === undefined) {
-                        this.param('isMaxCol', this.mod('col') === 'max')
-                    }
-                }
-            }
-        },
-        onCol: undefined,
-        domInit: function () {
-            this.param('isMaxCol', this.mod('col') === 'max')
-
-            if (this.mod('ColCheck')) {
-                this.onWin('resize', this.checkColWidth)
-                requestAnimationFrame(function () {
-                    this.checkColWidth()
-                }.bind(this))
-            }
-        },
-        onAttach: function (firstTime) {
-            this.setParentGrid(!firstTime)
-        },
-        checkColWidth: function () {
-            var prop = this.css('content').slice(1,-1).split(' ')
-            var col = parseInt(prop[0])
-            var gap = parseInt(prop[1])
-            var maxCol = parseInt(prop[2])
-            var marginX = parseInt(prop[3])
-            var marginY = parseFloat(prop[4])
-
-            if (isNaN(col)) {
-                return
-            }
-
-            var width = this.domNode().offsetWidth
-            var colNum = Math.floor((width + gap) / (col + gap))
-
-            if (colNum > maxCol) {
-                colNum = maxCol
-            }
-
-            this.trigger('Col', {
-                num: colNum,
-                edge: window.innerWidth === (colNum * col + (colNum-1) * gap + marginX * 2),
-                col: col,
-                gap: gap,
-                marginX: marginX,
-                marginY: marginY,
-            })
-        },
-        setParentGrid: function (recursive, parentGrid) {
-            if (this.onCol !== undefined || this.onEdge !== undefined || this.param('isMaxCol')) {
-                var that = this
-
-                if (parentGrid === undefined) {
-                    parentGrid = this._parentNode
-                    while (parentGrid !== undefined && !(parentGrid.isKindOf('Grid') && parentGrid.mod('ColCheck'))) {
-                        parentGrid = parentGrid._parentNode
-                    }
-                }
-
-                if (parentGrid !== undefined) {
-                    if (this.onCol || this.param('isMaxCol')) {
-                        parentGrid.on('Col', function (e, data) {
-                            that.onCol && that.onCol(data.num, data.edge, data)
-                            that.param('isMaxCol') && that.mod('Col', data.num, true)
-                        })
-                    }
-                }
-            }
-
-            if (recursive !== undefined) {
-                var children = this.get('/')
-                for (var i = 0, ii = children.length; i < ii; i++) {
-                    if (children[i].isKindOf('grid') && !children[i].mod('ColCheck')) {
-                        children[i].setParentGrid(recursive, parentGrid)
-                    }
-                }
-            }
-        }
-    }
-})
-
-function grid (num, col, gap, margin) {
-    var gridWidth = col * num + gap * (num - 1) + margin * 2
-    return gridWidth
-}
-Beast.decl({
-    Head: {
-        expand: function () {
-            this.append(
-                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
-                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"/"},"Все продукты"),"\n                    ",Beast.node("menu-item",{"href":"about.html"},"Студия"),"\n                    ",Beast.node("menu-item",{"href":"about.html#team"},"Команда"),"\n                    ",Beast.node("menu-item",{"href":"about.html#contact"},"Связь"),"\n                ")
-            )
-
-        }
-    },
-
-    Head__link: {
+    Cards__item: {
         tag: 'a',
         expand: function () {
-            this.domAttr('href', 'main.html')
-
-
-        }
-    },
-
-    'Head__menu-item': {
-        tag: 'a',
-        expand: function () {
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
             this.domAttr('href', this.param('href'))
+            
+            this.append(
+                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
+                this.get('title'),
+                Beast.node("cross",{__context:this},"+"),
+                this.get('price')
+                
+            )
 
         }
     },
 
-    Head__logo: {
+    Shelf__dot: {
+
         expand: function () {
-            this.empty()
+
+            this.css('background', this.param('color'))
             
+            
+
         }
     },
     
 
 })
+
+
+
+
+
+
 /**
  * @block Overlay Интерфейс модальных окон
  * @dep UINavigation grid Typo Control
@@ -7451,6 +7260,215 @@ Beast.decl({
 
 
 
+Beast.decl({
+    FormLight: {
+
+        expand: function () {
+
+            this.append(
+                Beast.node("form",{__context:this},"\n                    ",this.get('head', 'item'),"\n                ")
+                
+            )
+
+        },
+
+        domInit: function () {
+            let requestForm = document.querySelector(".formLight__action");
+            var typeName = this.param('typeName')
+            console.log(typeName)
+
+            requestForm.onclick = function(event) {
+              
+              event.preventDefault();
+
+              // if all validation goes well
+              if (validateForm()) {
+                this.value = 'Отправляю...';
+                this.disabled = true;
+                this.classList.add("button-loading");  
+                 
+                sendEmail();
+                
+              } else return false;
+            }
+
+            function sendRquestEmail(name, email, phone) {
+
+              emailjs.send(emailJsService, emailJsTemplate, {
+                name: name,
+                email: email,
+                phone: phone,
+                type: typeName,
+                link: '—',
+                price: '0'
+              })
+              .then(function() {
+                  //alert('Ваша заявка успешно оправлена');
+                  //location.reload();
+              }, function(error) {
+                  console.log('Failed sendig email', error);
+              });
+            }
+
+            function sendEmail() {
+              //if all files were uploaded
+              if (uploadedFilesProgress == uploadedFiles.length) {
+                sendRquestEmail(
+                  document.querySelector("#name").value,
+                  document.querySelector("#email").value,
+                  document.querySelector("#phone").value
+                );
+                uploadedFilesProgress = 0;
+                
+                let btnSend = document.querySelector(".formLight__action");
+                btnSend.value = 'Отправлено успешно';
+                btnSend.className = "formLight__action";
+
+              } else {
+                setTimeout(function(){ sendEmail() }, 500);
+              }
+            }
+
+            //validation of all input fields
+            function validateForm() {
+
+              let nameField = document.querySelector("#name");
+              if (nameField.value.trim() == "") {
+                alert('Пожалуйста, укажите ваше имя, чтобы мы знали как к вам обращаться');
+                return false;
+              }
+
+              let emailField = document.querySelector("#email");
+              if (emailField.value.trim() == "") {
+                alert('Укажите адрес электронной почты, чтобы мы знали, как с вами связаться');
+                return false;
+              }
+
+              let phoneField = document.querySelector("#phone");
+              if (phoneField.value.trim() == "") {
+                alert('Укажите номер телефона, чтобы мы знали, как с вами связаться');
+                return false;
+              }
+
+              return true;
+            }
+
+            
+            
+
+        }
+    },
+
+    FormLight__form: {
+        tag: 'div',
+        expand: function () {
+
+            this.domAttr('action', this.parentBlock().param('action'))
+            this.domAttr('id', this.parentBlock().param('id'))
+
+        }
+    },
+
+    FormLight__item: {
+        expand: function () {
+            this.domAttr('param', this.param('param'))
+        }
+    },
+
+    FormLight__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
+    },
+
+    FormLight__hint: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
+    },
+
+    FormLight__button: {
+        expand: function () {
+            this.domAttr('data-param', this.param('data-param'))
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+        }
+    },
+
+    FormLight__action: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', 'submit')
+            this.domAttr('value', this.text())
+            this.css('background', this.parentBlock().param('action'))
+            this.css('color', this.parentBlock().param('actionText'))
+        }
+    },
+
+    FormLight__input: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+
+            let root = document.documentElement;
+            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
+            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
+            
+        }
+    },
+
+    
+})
+
+
+Beast.decl({
+    Head: {
+        expand: function () {
+            this.append(
+                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
+                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"/"},"Все продукты"),"\n                    ",Beast.node("menu-item",{"href":"about.html"},"Студия"),"\n                    ",Beast.node("menu-item",{"href":"about.html#team"},"Команда"),"\n                    ",Beast.node("menu-item",{"href":"about.html#contact"},"Связь"),"\n                ")
+            )
+
+        }
+    },
+
+    Head__link: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', 'main.html')
+
+
+        }
+    },
+
+    'Head__menu-item': {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+
+        }
+    },
+
+    Head__logo: {
+        expand: function () {
+            this.empty()
+            
+        }
+    },
+    
+
+})
 Beast.decl({
     Steps: {
 
@@ -7924,24 +7942,6 @@ Beast.decl({
 // @example <Thumb Ratio="1x1" Col="3" Shadow src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Grid src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Rounded src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
-/**
- * @block Typo Типографика
- * @tag base
- */
-
-Beast.decl({
-    Typo: {
-        // finalMod: true,
-        mod: {
-            text: '',       // @mod Text    {S M L XL}  Размер текста
-            line: '',       // @mod Line    {S M L}     Высота строки
-            caps: false,    // @mod Caps    {boolean}   Капслок
-            light: false,   // @mod Light   {boolean}   Light-начертание
-            medium: false,  // @mod Medium  {boolean}   Medium-начертание
-            bold: false,    // @mod Bold    {boolean}   Bold-начертание
-        }
-    }
-})
 Beast.decl({
 
     /**
