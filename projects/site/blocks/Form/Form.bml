@@ -9,6 +9,12 @@ let calculatedPriceDetails=[];
 let uploadedFiles = [];
 let uploadedFilesProgress = 0; 
 
+let silverDefaultLanguage = "russian";
+let silverDefaultTime = "regular";
+
+let goldDefaultLanguage = "russian";
+let goldDefaultTime = "regular";
+
 const emailJsService = "service_5zbkh3r";
 const emailJsTemplate = "template_mjdi55g";
 
@@ -259,14 +265,19 @@ Beast.decl({
             if (this.param('type') === 'silver') {
               $('.form__button[data-param="russian"]').attr('active', true)
               $('.form__button[data-param="regular"]').attr('active', true)
-              document.querySelector(".form__action-title").innerHTML = "500₽ — отправить заявку";  
+              pricingParams["language"] = silverDefaultLanguage;
+              pricingParams["time"] = silverDefaultTime;
+              
             }
 
             if (this.param('type') === 'gold') {
               $('.form__button[data-param="russian"]').attr('active', true)
               $('.form__button[data-param="regular"]').attr('active', true)
-              document.querySelector(".form__action-title").innerHTML = "2500₽ — отправить заявку";  
+              pricingParams["language"] = goldDefaultLanguage;
+              pricingParams["time"] = goldDefaultTime;
             }
+
+            document.querySelector(".form__action-title").innerHTML = prices[this.param('type')][pricingParams["language"]][pricingParams["time"]] + "₽ — отправить заявку";  
             
 
             if (selectors) {
@@ -343,7 +354,7 @@ Beast.decl({
                 uploadedFilesProgress = 0;
                 
                 let btnSend = document.querySelector(".form__action-title");
-                btnSend.value = 'Отправлено успешно';
+                btnSend.innerHTML = 'Отправлено успешно';
                 btnSend.className = "form__action";
 
               } else {
