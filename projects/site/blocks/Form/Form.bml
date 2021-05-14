@@ -304,8 +304,7 @@ Beast.decl({
               
               event.preventDefault();
               // if all validation goes well
-              if (validateForm()) {
-                
+              if (validateForm() && !this.disabled) {
                 for (var i = 0; i < uploadedFiles.length; i++) {
                   self.updloadDocumentToSanity(uploadedFiles[i]); 
                 } 
@@ -355,7 +354,7 @@ Beast.decl({
                 
                 let btnSend = document.querySelector(".form__action-title");
                 btnSend.innerHTML = 'Отправлено успешно';
-                btnSend.parentNode.className = "form__action";
+                btnSend.parentNode.className = "form__action form__disabled";
 
                 $(".form__action").attr("disabled", "disabled").off('click');
 
