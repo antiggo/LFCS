@@ -355,7 +355,7 @@ Beast.decl({
                 
                 let btnSend = document.querySelector(".form__action-title");
                 btnSend.innerHTML = 'Отправлено успешно';
-                btnSend.className = "form__action";
+                btnSend.parentNode.className = "form__action";
 
               } else {
                 setTimeout(function(){ sendEmail() }, 500);
@@ -387,6 +387,12 @@ Beast.decl({
               let phoneField = document.querySelector("#phone");
               if (phoneField.value.trim() == "") {
                 alert('Укажите номер телефона, чтобы мы знали, как с вами связаться');
+                return false;
+              }
+
+              let checkForPersonalDetails = document.querySelector(".check__input");
+              if (checkForPersonalDetails && !(checkForPersonalDetails.checked)) {
+                alert('Пожалуйста, дайте согласие на обработку данных');
                 return false;
               }
 
