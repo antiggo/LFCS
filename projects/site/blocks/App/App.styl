@@ -173,6 +173,26 @@ td
 html
     background var(--ground)
     
+.Photo + .Photo
+    margin-top 40px
+.Work
+    padding-bottom 40px
+    margin -50px 30px 0 30px
+    @media screen-phone
+        margin -50px 0px 0 0px
+        .Typo_text_M
+            font-size 20px !important
+            line-height 25px !important
+            
+    .Title, .Text
+        color #6f6f6f
+    .Photo
+        max-width 600px
+        margin-bottom 80px
+            
+    .Text__b
+        background rgb(174 174 174)
+        color #fff
 
 .App
     background #111111
@@ -199,6 +219,7 @@ html
 
 .Text
     color inherit
+    
     &__b
         background #ffffff1f
         display inline
@@ -226,21 +247,41 @@ html
     //         margin 34px 20px 42px 20px
     //         max-width 70%
 
-.uistacknavigation__layer_root
-    will-change transform
+// .uistacknavigation__layer_root
+//     will-change transform
 
-.uinavigation_popping .uistacknavigation__layer_root
-    transform translateX(0) !important
-    transition transform .400s
-    animation-timing-function cubic-bezier(0.10, 0.70, 0.10, 1)
+// .uinavigation_popping .uistacknavigation__layer_root
+//     transform translateY(0) !important
+//     transition transform .400s
+//     animation-timing-function cubic-bezier(0.10, 0.70, 0.10, 1)
     
 
-.uinavigation_pushed .uistacknavigation__layer_root
-    transform translateX(-120px)
-    transition transform .400s
-    animation-timing-function cubic-bezier(0.10, 0.70, 0.10, 1)
+// .uinavigation_pushed .uistacknavigation__layer_root
+//     transform translateY(80px)
+//     transition transform .400s
+//     animation-timing-function cubic-bezier(0.10, 0.70, 0.10, 1)
     
-    // (.18,.8,.19,1)
+//     // (.18,.8,.19,1)
+
+.uinavigation_popping .uistacknavigation__layer_root {
+    transform: scale(1) !important;
+    opacity: 1 !important;
+    transition: transform .380s, opacity .400s ;
+    animation-timing-function: cubic-bezier(0.11, 0.045, 0.185, 1);
+}
+
+.uinavigation_pushed .uistacknavigation__layer_root {
+    transform: scale(.91, .94);
+    opacity: 0;
+    transition: transform .380s, opacity .400s ;
+    animation-timing-function: cubic-bezier(0.11, 0.045, 0.185, 1);
+
+    /*animation-name: ContentOut;*/
+    /*animation-duration .300s*/
+    
+    /*animation-timing-function: cubic-bezier(0.11, 0.045, 0.185, 1);*/
+    /*transition-timing-function: cubic-bezier(.15, 1, 0, 2);*/
+}
 
 @keyframes ContentOut
     0%

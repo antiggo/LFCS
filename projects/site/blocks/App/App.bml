@@ -234,6 +234,22 @@ Beast.decl({
             if (this.mod('Size') === 'M') {
                 this.mod('Text', 'L')
             }
+
+            if (this.mod('Size') === 'S') {
+                this.mod('Text', 'M')
+            }
+        }
+
+    },
+})
+
+Beast.decl({
+    Work: {
+        expand: function () {
+                
+                
+                
+            
         }
 
     },

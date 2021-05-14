@@ -6,7 +6,7 @@
  */
 Beast.decl({
     Overlay: {
-        inherits: ['UINavigation'],
+        inherits: ['Grid', 'UINavigation'],
         mod: {
             Type: 'side', // modal, partsideleft, bottom, top, expand, custom
         },
@@ -58,9 +58,6 @@ Beast.decl({
                 this.mod('Col', '1LeftMargins')
             }
 
-            this.css('color', this.param('colorText'))
-            this.css('background-color', this.param('colorMain'))
-
             this.append(
                 <content>{this.get()}</content>
             )
@@ -75,10 +72,7 @@ Beast.decl({
                         : undefined
 
                     this.css({
-                        marginLeft: this.domNode().offsetWidth / -2,
-                        marginTop: marginTop,
-                        marginBottom: 0,
-                        top: '0%',
+                        marginLeft: this.domNode().offsetWidth / -2
                     })
 
                     if (marginTop !== undefined) {
@@ -91,17 +85,15 @@ Beast.decl({
                 }
             },
             animationend: function () {
-                // if (this.mod('Type') === 'expand' && this.param('scrollContent')) {
-                //     requestAnimationFrame(function () {
-                //         if (this.elem('content')[0].domNode().scrollTop === 0) {
-                //             this.param('options').context.css('transform', 'translate3d(0px,0px,0px)')
-                //             this.elem('content')[0].domNode().scrollTop = -this.param('scrollContent')
-                //             this.param('scrollContent', false)
-                //         }
-                //     }.bind(this))
-                // }
-
-                
+                if (this.mod('Type') === 'expand' && this.param('scrollContent')) {
+                    requestAnimationFrame(function () {
+                        if (this.elem('content')[0].domNode().scrollTop === 0) {
+                            this.param('options').context.css('transform', 'translate3d(0px,0px,0px)')
+                            this.elem('content')[0].domNode().scrollTop = -this.param('scrollContent')
+                            this.param('scrollContent', false)
+                        }
+                    }.bind(this))
+                }
 
                 if (this.mod('State') === 'release') {
                     this.param('releaseCallback')()
@@ -168,15 +160,18 @@ Beast.decl({
         expand: function () {
             var layerIndex = this.parentBlock().parentNode().index()
 
-            // this.append(
-            //     <topBarActionBack/>,
-            //     layerIndex > 1 && <topBarActionClose/>
-            // )
+            if (this.parentBlock().mod('type') === 'side') {
+                this.append(
+                    <topBarActionBack/>,
+                    layerIndex > 1 && <topBarActionClose/>
+                )
+            }
 
-            this.append(
-                // <topBarActionNav/>,
-                <topBarActionClose/>
-            )
+            if (this.parentBlock().mod('type') === 'sideBottom') {
+                this.append(
+                    <topBarActionClose/>
+                )
+            }
 
             var title = this.parentBlock().param('title')
             var subtitle = this.parentBlock().param('subtitle')
@@ -237,11 +232,9 @@ Beast.decl({
         inherits: 'Overlay__topBarAction',
         expand: function fn () {
             this.inherited(fn)
-
-            this.append(
-                <Icon Name="CornerArrowLeft"/>,
-                <topBarActionLabel>Back</topBarActionLabel>
-            )
+                .append(
+                    <Icon Name="arrow-back"/>
+                )
         },
         on: {
             Release: function () {
@@ -249,34 +242,16 @@ Beast.decl({
             }
         }
     },
-    Overlay__topBarActionNav: {
-        inherits: 'Overlay__topBarAction',
-        expand: function fn () {
-            this.inherited(fn)
-
-            this.append(
-                <topBarActionLabel>Index</topBarActionLabel>,
-                <Work><title>Test</title></Work>
-            )
-        },
-        on: {
-            Release: function () {
-                //this.parentBlock().popFromStackNavigation()
-            }
-        }
-    },
     Overlay__topBarActionClose: {
         inherits: 'Overlay__topBarAction',
         expand: function fn () {
-            //this.css('background', this.parentBlock().param('colorText'))
             this.inherited(fn)
                 .append(
-                    <topBarActionLabel>Close</topBarActionLabel>
+                    '+'
                 )
         },
         on: {
             click: function () {
-                window.history.back();
                 this.parentBlock().popAllFromStackNavigation()
             }
         }
