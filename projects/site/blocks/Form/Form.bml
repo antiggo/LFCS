@@ -357,6 +357,8 @@ Beast.decl({
                 btnSend.innerHTML = 'Отправлено успешно';
                 btnSend.parentNode.className = "form__action";
 
+                $(".form__action").attr("disabled", "disabled").off('click');
+
               } else {
                 setTimeout(function(){ sendEmail() }, 500);
               }
@@ -448,6 +450,11 @@ Beast.decl({
     Form__item: {
         expand: function () {
             this.domAttr('param', this.param('param'))
+
+            if (this.mod('Color')) {
+              this.css('background', this.parentBlock().param('color'))
+              this.css('color', this.parentBlock().param('text'))
+            }
         }
     },
 

@@ -309,6 +309,80 @@ Beast.decl({
                         </Work>
                     )    
                 }
+
+
+                if (g === 4) {
+                    var page = (
+                        <Work>
+                            <items>
+                                <Title Size="M">Дизайн оферты для Clickavia</Title>
+
+                                <Text Gap="M" Size="M">
+                                    <p>
+                                        <b>Кейс</b>: агрегатор авиаперелетов Clickavia внедряет новые условия обслуживания.
+                                    </p>
+
+                                    <p>
+                                        <b>Задача</b>: используя новые положения оферты, снизить претензионную нагрузку на сервис.
+                                    </p>
+
+                                    
+
+                                </Text>
+
+                                <Title Size="M">Шаг 1. Анализ оферты</Title>
+
+                                <Text Gap="M" Size="M">
+                                    <p>
+                                        Команда из юристов, дизайнеров и маркетологов анализирует связи между отдельными условиями оферты и их влиянием на претензии клиентов.
+                                    </p>
+
+                                    
+
+                                </Text>
+
+                                <Title Size="M">Шаг 2. Подготовка технического задания</Title>
+
+                                <Text Gap="M" Size="M">
+                                    <p>
+                                        Когда основные взаимосвязи определены, формируется задание для веб-дизайнера.
+                                    </p>
+
+                                </Text>
+
+                                <Title Size="M">Шаг 3. Веб-дизайн</Title>
+
+                                <Text Gap="M" Size="M">
+                                    <p>
+                                        Веб-дизайнер готовит дополнительные окна и страницы для сайта.
+                                    </p>
+
+                                </Text>
+
+                                <Photo>
+                                    <Thumb>/assets/cases/11.jpg</Thumb>
+                                </Photo>
+
+                                <Photo>
+                                    <Thumb>/assets/cases/12.png</Thumb>
+                                </Photo>
+
+                                <Photo>
+                                    <Thumb>/assets/cases/13.png</Thumb>
+                                </Photo>
+
+                                <Text Gap="M" Size="M">
+                                    <p>
+                                        <b>Результат</b>: основные условия оферты стали понятнее для покупателей, что снизило претензионную нагрузку на сервис.
+                                    </p>
+                                </Text>
+
+                                
+
+                            </items>
+                        </Work>
+                    )    
+                }
                 
                 
 
@@ -330,11 +404,11 @@ Beast.decl({
         }
     },
 
-    Cards__dot: {
+    Cases__dot: {
 
         expand: function () {
 
-            this.css('background', this.param('color'))
+            this.css('background', this.parentBlock().param('color'))
             
             
 
