@@ -529,6 +529,14 @@ Beast.decl({
             this.css('color', this.parentBlock().param('text'))
         }
     },
+
+    'Form__check': {
+        expand: function () {
+            this.append(
+              <Check>{this.text()}</Check>
+            )
+        }
+    },
     
     'Form__upload-input': {
         tag: 'input',

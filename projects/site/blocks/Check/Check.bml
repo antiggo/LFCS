@@ -1,0 +1,50 @@
+
+Beast.decl({
+
+    Check: {
+        
+        expand: function fn () {
+            let text = this.text();
+            this.inherited(fn)
+                .append(
+                    <label>
+                        {text}
+                        <input value="{text}"/>
+                        <mark/>
+                    </label>
+                )
+        }
+    },
+    Check__label: {
+        tag:'label',
+        expand: function () {
+            this.domAttr('for', this.parentBlock().param('name'))
+        }
+    },
+
+    Check__mark: {
+        expand: function () {
+            
+        }
+    },
+    
+    Check__input: {
+        tag:'input',
+        expand: function () {
+            this.domAttr('type', 'checkbox')
+            this.domAttr('id', this.parentBlock().param('name'))
+            this.domAttr('value', this.param('value'))
+            this.domAttr('name', this.parentBlock().param('name'))
+        }
+    }
+})
+
+/**
+ * @example
+ * <Select>
+ *     <option value="Mazda">Mazda</option>
+ *     <option value="Opel">Opel</option>
+ *     <option value="BMW">BMW</option>
+ *     <option value="Lada">Lada</option>
+ * </Select>
+ */

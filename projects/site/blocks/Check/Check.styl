@@ -1,0 +1,48 @@
+.Check
+    font-size 20px
+    padding 14px 0
+    position relative
+    border-bottom 2px solid #dedede
+    text-align left
+
+    &:last-child
+        border-bottom 0
+
+    :hover input ~ .check__mark
+        background-color #ccc
+    
+    input:checked ~ .check__mark 
+        background-color color-green
+
+    &__label
+        margin-left 34px
+        cursor pointer
+        display block
+        
+    &__mark
+        &:after
+            content ''
+            position absolute
+            left 9px
+            top 5px
+            width 5px
+            height 10px
+            border solid color-white
+            border-width 0 2px 2px 0
+            transform: rotate(45deg)
+        position absolute
+        top 19px
+        left 0
+        height 25px
+        width 25px
+        background-color color-white
+        border-radius 100%
+
+        
+
+    input
+        position absolute
+        opacity 0
+        cursor pointer
+        height 0
+        width 0
