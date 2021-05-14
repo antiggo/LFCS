@@ -1,3 +1,16 @@
+.uinavigation_popping .uistacknavigation__layer_root
+    transform scale(1) !important
+    opacity 1 !important
+    transition transform .380s, opacity .400s
+    animation-timing-function cubic-bezier(0.11, 0.045, 0.185, 1)
+
+.uinavigation_pushed .uistacknavigation__layer_root
+    transform scale(.91, .94)
+    opacity 0
+    transition transform .380s, opacity .400s
+    animation-timing-function cubic-bezier(0.11, 0.045, 0.185, 1)
+
+
 .UIStackNavigation
     animation-time = 300ms
 

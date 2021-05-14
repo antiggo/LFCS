@@ -1,0 +1,28 @@
+Beast.decl({
+    Showcase: {
+
+        expand: function () {
+            this.append(
+                
+                    this.get('items')
+                
+            )
+
+        }
+    },
+    
+    Showcase__item: {
+
+        expand: function () {
+            this.css('background', this.parentBlock().param('color'))
+            
+            this.append(
+                
+                <Thumb Ratio="{this.parentBlock().mod('Ratio')}">{this.text()}</Thumb>
+                
+            )
+
+        }
+    },
+  
+})

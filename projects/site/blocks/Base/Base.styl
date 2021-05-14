@@ -1,78 +1,9 @@
-/**
- * Constants
- */
-color-text-grey = #747474
-color-green = #006943
-color-yellow = #FFB200
-
-color-white = #fff
-color-black = #000
-color-blue = #0063E1
-
-color-neutral-100 = #E8E8E8
-color-neutral-200 = #CACACA
-color-neutral-300 = #8C8C8C
-color-neutral-400 = #3F3F3F
-
-/**
- * Screens
- */
 screen-desktop =  'screen and (min-width: 1024px)'
 screen-tablet =  'screen and (min-width: 600px) and (max-width: 1023px)'
 screen-phone =   'screen and (max-width: 599px)'
 
-select(type = none text) // Выделение текста
-    -webkit-user-select type
-    user-select type
-    if type is none
-        cursor default
-    if type is text
-        cursor text
+color-white = #fff
+color-black = #000
 
+color-dark = #111111
 
-
-touch-highlight(value = none) // Подсветка области касания
-    if value is none
-        -webkit-tap-highlight-color transparent
-        tap-highlight-color transparent
-        appearance none
-        -webkit-appearance none
-
-ellipsis(type = nowrap wrap) // Обрезание текста многоточием
-    if type is nowrap
-        white-space nowrap
-        overflow-x hidden
-        overflow-y visible
-        text-overflow ellipsis
-    if type is wrap
-        overflow-x hidden
-        overflow-y visible
-        text-overflow ellipsis
-
-background-text(background-color, blend = 98%) // Подбор цвета текста под фон
-    text-color = luminosity(background-color) > .5 ? #000 : #FFF
-    color mix(text-color, background-color, blend)
-
-control-focus(color)
-    box-shadow inset 0 0 0 2px color
-
-control-style(type = none)
-    if type is none
-        touch-highlight none
-        border none
-        background none
-        border-radius 0
-        box-sizing border-box
-        color inherit
-        &:focus
-            outline none
-
-is-light-color(color)
-    luminosity(color) > .3
-
-is-mid-color(color)
-    lum = luminosity(color)
-    lum <= .3 and lum > .1
-
-is-dark-color(color)
-    luminosity(color) <= .1

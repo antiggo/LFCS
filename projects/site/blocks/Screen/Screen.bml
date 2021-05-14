@@ -1,0 +1,23 @@
+Beast.decl({
+    Screen: {
+        
+        expand: function fn () {
+            
+
+            if (this.param('color')) {
+                this.css('background', this.param('color'))
+
+                let root = document.documentElement;
+                root.style.setProperty('--text', this.param('text'));
+                root.style.setProperty('--ground', this.param('color'));
+            }
+
+            if (this.param('text')) {
+                this.css('color', this.param('text'))
+            }
+
+            
+        },
+        
+    },
+})

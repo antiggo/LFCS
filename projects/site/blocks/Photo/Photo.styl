@@ -1,0 +1,19 @@
+.Photo
+    margin 0 20px
+    &__hint
+        margin-top 9px
+        text-transform uppercase
+        font-size 12px
+    .Thumb
+        width 100%
+        border-radius 30px
+
+
+.Photo + .Photo
+    margin-top 40px
+
+.Photo
+    .Thumb
+        filter grayscale(100%)
+        &:hover
+            filter grayscale(0)

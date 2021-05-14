@@ -1,0 +1,10 @@
+Beast.decl({
+    Contact: {
+        expand: function () {
+            
+            this.domAttr('id', 'contact')
+            
+
+        }
+    }
+})

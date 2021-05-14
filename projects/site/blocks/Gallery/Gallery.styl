@@ -1,0 +1,25 @@
+.Gallery
+    margin 0 20px 320px 20px
+    font-size 22px
+    a
+        text-decoration none
+        color inherit
+
+    &__title
+        margin-top 8px
+        
+    &__subtitle
+        opacity .6
+    &__items
+        display flex
+        flex-wrap wrap
+    &__item
+        width calc(33.3% - 40px)
+        @media screen-phone
+            width 100%
+        padding 40px 20px 40px 20px
+        
+        .Thumb
+            width 100%
+            border-radius 20px
+            background-color #a5a5a526

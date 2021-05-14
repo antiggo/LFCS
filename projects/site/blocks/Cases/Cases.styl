@@ -1,4 +1,4 @@
-.Cards
+.Cases
     margin 20px 20px 0 20px
     a
         text-decoration none
@@ -8,12 +8,26 @@
         padding-bottom 20px
         @media screen-phone
             display block
+    &__dot
+        size = 26px
+        height size
+        width size
+        border-radius 100%
+        left 16px
+        top 16px
+        position absolute
+        background #265c83
+        @media screen-phone
+          size = 20px
+          height size
+          width size
     &__item
         width 100%
         border-radius 20px
         padding 30px
         position relative
         cursor pointer
+        background #DDDDDD
         
         @media screen-phone
             width initial
@@ -22,10 +36,6 @@
                 margin-top 16px
         & + &
             margin-left 2px
-        &:after
-            content ''
-            display block
-            padding-bottom 70%
             
     &__hint
         font-size 30px
@@ -52,6 +62,7 @@
         letter-spacing -1.4px
         margin-top 42px
         height 90px
+        color #6f6f6f
         
     &__price
         font-size 50px
@@ -70,5 +81,3 @@
     &__head
         display table
         width 100%
-        
-

@@ -13,20 +13,11 @@ Beast.decl({
             device: '',
             ColCheck:true,
         },
-        // onWin: {
-        //     'Head:active': function (e, source) {
-        //         console.log(source)      
-        //     },
-        //     'Lobby:active': function (e, source) {
-                
-        //     }
-        // },
         expand: function fn () {
             this.inherited(fn)
 
             if (this.param('color')) {
                 this.css('background', this.param('color'))
-
                 let root = document.documentElement;
                 root.style.setProperty('--text', this.param('text'));
                 root.style.setProperty('--ground', this.param('color'));
@@ -35,10 +26,6 @@ Beast.decl({
             if (this.param('text')) {
                 this.css('color', this.param('text'))
             }
-
-            // this.append(
-            //     <DocInspector/>
-            // )
 
             if (MissEvent.mobile) {
                 this.mix('mobile')
@@ -67,149 +54,8 @@ Beast.decl({
 })
 
 
-Beast.decl({
-    Screen: {
-        
-        expand: function fn () {
-            
-
-            if (this.param('color')) {
-                this.css('background', this.param('color'))
-
-                let root = document.documentElement;
-                root.style.setProperty('--text', this.param('text'));
-                root.style.setProperty('--ground', this.param('color'));
-            }
-
-            if (this.param('text')) {
-                this.css('color', this.param('text'))
-            }
-
-            
-        },
-        
-    },
-})
 
 
-Beast.decl({
-    DocScreen: {
-        expand: function fn () {
-            this.append(
-
-                <Screen color="#275C83" text="#B2B2B2">
-
-                    <Head>
-                        <logo>/assets/logo.svg</logo>
-                        <menu-item>Команда</menu-item>
-                        <menu-item>Студия</menu-item>
-                        <menu-item>Связь</menu-item>
-                    </Head>
-
-                    <Title>Документы</Title>
-
-                    <Text Size="M">
-                        Превратим обычный документ в безупречный. От редакторской вычитки до инфографики и индивидуального дизайна.
-                    </Text>
-
-                    <Cards>
-                        <item href="silver.html" color="#D2D2D2" text="#6F6F6F">
-                            <hint>Silver</hint>
-                            <elem>Ag</elem>
-                            <title>Редакторская вычитка</title>
-                            <price>от 500₽</price>
-                        </item>
-                        <item href="gold.html" color="#C49B72" text="#D8D8D8">
-                            <hint>Gold</hint>
-                            <elem>Au</elem>
-                            <title>Юридический дизайн документа</title>
-                            <price>от 3750₽</price>
-                        </item>
-                        <item href="tailored.html" color="#C24035" text="#B2B2B2">
-                            <hint>Tailored</hint>
-                            <elem>Xx</elem>
-                            <title>Индивидуальный заказна дизайн</title>
-                            <price>₽₽₽</price>
-                        </item>
-                    </Cards>
-
-                </Screen>
-            )
-        },
-        domInit: function fn () {
-            
-        }
-    },
-})
-
-
-Beast.decl({
-    WebScreen: {
-        expand: function fn () {
-            this.append(
-
-                <Screen color="#005537" text="#D8D8D8">
-
-                    <Head>
-                        <logo>/assets/logo.svg</logo>
-                        <menu-item>Команда</menu-item>
-                        <menu-item>Студия</menu-item>
-                        <menu-item>Связь</menu-item>
-                    </Head>
-
-                    <Title>Cайты и фирстиль</Title>
-
-                    <Text Size="M">
-                        Внедрение в документ графических и интерактивных элементов с использованием графического и веб-дизайна.
-                    </Text>
-
-                    <Example/>
-
-                    
-                    <Inquire/>
-
-                </Screen>
-            )
-        },
-        domInit: function fn () {
-            
-        }
-    },
-})
-
-
-Beast.decl({
-    PresentationScreen: {
-        expand: function fn () {
-            this.append(
-
-                <Screen color="#866140" text="#DBDBDB">
-
-                    <Head>
-                        <logo>/assets/logo.svg</logo>
-                        <menu-item>Команда</menu-item>
-                        <menu-item>Студия</menu-item>
-                        <menu-item>Связь</menu-item>
-                    </Head>
-
-                    <Title>Презентации</Title>
-
-                    <Text Size="M">
-                        Внедрение в документ графических и интерактивных элементов с использованием графического и веб-дизайна.
-                    </Text>
-
-                    <Example/>
-
-                    <Inquire/>
-
-                </Screen>
-            )
-        },
-        domInit: function fn () {
-            
-        }
-    },
-})
 
 Beast.decl({
     Text: {
@@ -243,46 +89,6 @@ Beast.decl({
     },
 })
 
-Beast.decl({
-    Work: {
-        expand: function () {
-                
-                
-                
-            
-        }
 
-    },
-})
 
-Beast.decl({
-    
-    List: {
-        expand: function () {
-            
-        }
-    },
-    
-    List__item: {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', this.param('href'))
-        }
-    },
 
-    List__title: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'L',
-            Line: 'L'
-        }
-    },
-
-    List__hint: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'M',
-            Line: 'L'
-        }
-    },
-})

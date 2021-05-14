@@ -1,0 +1,14 @@
+Beast.decl({
+    Link: {
+        tag: 'a',
+        
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+
+            if (this.mod('New')) {
+                this.domAttr('target', '_blank')
+            }
+
+        }
+    }  
+})
