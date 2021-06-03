@@ -7063,46 +7063,6 @@ Beast.decl({
 
 
 
-Beast.decl({
-    Gallery: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'S',
-            Line: 'L'
-        },
-        expand: function () {
-            this.domAttr('id', 'team')
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
-                
-            )
-
-        }
-    },
-    
-    Gallery__image: {
-
-        expand: function () {
-            
-            
-            this.append(
-                
-                Beast.node("Thumb",{__context:this,"Ratio":"1x1"},this.text())
-                
-            )
-
-        }
-    },
-
-    Gallery__item: {
-        tag: 'a',
-        expand: function () {
-            var href = this.param('href')
-            this.domAttr('href', href)
-
-        }
-    }  
-})
 
 const emailJsTemplateGeneric = "template_al17i86";
 
@@ -7317,6 +7277,46 @@ Beast.decl({
 })
 
 
+Beast.decl({
+    Gallery: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'S',
+            Line: 'L'
+        },
+        expand: function () {
+            this.domAttr('id', 'team')
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+                
+            )
+
+        }
+    },
+    
+    Gallery__image: {
+
+        expand: function () {
+            
+            
+            this.append(
+                
+                Beast.node("Thumb",{__context:this,"Ratio":"1x1"},this.text())
+                
+            )
+
+        }
+    },
+
+    Gallery__item: {
+        tag: 'a',
+        expand: function () {
+            var href = this.param('href')
+            this.domAttr('href', href)
+
+        }
+    }  
+})
 /**
  * @block Grid Динамическая сетка
  * @tag base
@@ -7868,34 +7868,6 @@ Beast.decl({
 
 
 Beast.decl({
-    Showcase: {
-
-        expand: function () {
-            this.append(
-                
-                    this.get('items')
-                
-            )
-
-        }
-    },
-    
-    Showcase__item: {
-
-        expand: function () {
-            this.css('background', this.parentBlock().param('color'))
-            
-            this.append(
-                
-                Beast.node("Thumb",{__context:this,"Ratio":this.parentBlock().mod('Ratio')},this.text())
-                
-            )
-
-        }
-    },
-  
-})
-Beast.decl({
     Steps: {
 
         expand: function () {
@@ -7932,6 +7904,34 @@ Beast.decl({
 
         }
     }
+})
+Beast.decl({
+    Showcase: {
+
+        expand: function () {
+            this.append(
+                
+                    this.get('items')
+                
+            )
+
+        }
+    },
+    
+    Showcase__item: {
+
+        expand: function () {
+            this.css('background', this.parentBlock().param('color'))
+            
+            this.append(
+                
+                Beast.node("Thumb",{__context:this,"Ratio":this.parentBlock().mod('Ratio')},this.text())
+                
+            )
+
+        }
+    },
+  
 })
 /**
  * @block Thumb Тумбнеил
