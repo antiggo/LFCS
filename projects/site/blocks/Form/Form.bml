@@ -8,6 +8,7 @@ let calculatedPrice;
 let calculatedPriceDetails=[];
 let uploadedFiles = [];
 let uploadedFilesProgress = 0; 
+let characterNumberTracker = 2500;
 
 let silverDefaultLanguage = "russian";
 let silverDefaultTime = "regular";
@@ -17,6 +18,9 @@ let goldDefaultTime = "regular";
 
 const emailJsService = "service_5zbkh3r";
 const emailJsTemplate = "template_mjdi55g";
+
+const emailJsTemplateGold = "";
+const emailJsTemplateSilver = "";
 
 const sanityTokenWithWriteAccess = 'skmAQVJjHdsVFKS4TCsoiVvZIeEUN9qFw545I0JD4YSoBrD80kryUFXitu2g1peNqfrVZA1Mwcq48Sk0KOXCt8b8KnLIRAtNuDbwrAq6YoxsJFw2KtFhVYbQDGFEQNzLDCJTJaBYa4HfdL7wmz7H5FgAGtax1MlUdusEBfkeQsNvegVVlwPw';
 const sanityFetchUrl = 'https://spfa8rwc.api.sanity.io/v1/assets/files/production';
@@ -213,6 +217,7 @@ Beast.decl({
                 
                 // show character number
                 charNumber.innerHTML = characterNumber + " знаков";
+                characterNumberTracker = characterNumber;
 
                 //calculate the price
                 this.calculateFinalPrice();
@@ -361,6 +366,56 @@ Beast.decl({
               } else {
                 setTimeout(function(){ sendEmail() }, 500);
               }
+            }
+
+
+            //send email to client
+            function sendEmailClient() {
+                let clientEmail = document.querySelector("#email").value;
+                let price = calculatedPrice + "₽";
+                let number_docs = getNumDocsString(linksToTheDocuments.length);
+                let symbols = characterNumberTracker;
+                let language = pricingParams["language"] == "english" ? "английский" : "русский";
+                let timing = pricingParams["time"] == "urgent" ? "24 часа" : "5 дней";
+
+                let rightTemplate = "";
+                if (this.param('type') === 'gold') {
+                  rightTemplate = emailJsTemplateGold;
+                } else if (this.param('type') === 'silver'){
+                  rightTemplate = emailJsTemplateSilver;
+                } else {
+                  return;
+                }
+
+
+                emailjs.send(emailJsService, rightTemplate, {
+                  sender: clientEmail,
+                  price: price,
+                  number_docs: number_docs,
+                  symbols: symbols,
+                  language: language,
+                  timing: timing
+                })
+                .then(function() {
+                    
+                }, function(error) {
+                    console.log('Failed sendig email', error);
+                });
+            }
+
+            //get right string depending on the document number
+            function getNumDocsString(number) {
+                if (number) {
+                  if (number == 1) {
+                    return "1 документ"
+                  } else if (number == 2 || number == 3 || number == 4) {
+                    return number + " документа";
+                  } else {
+                    return number + " документов";
+                  }
+                } else {
+                  return "документы";
+                }
             }
 
             //validation of all input fields

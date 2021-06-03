@@ -5931,6 +5931,1133 @@ BemNode.prototype = {
 
 })();
 /**
+ * @block App Корневой компонент всех страниц
+ * @dep UINavigation DocInspector DocConsole
+ * @tag base
+ * @ext UIStackNavigation
+ */
+Beast.decl({
+    App: {
+        inherits: ['Grid', 'UIStackNavigation'],
+        tag:'body',
+        mod: {
+            platform: '',
+            device: '',
+            ColCheck:true,
+        },
+        expand: function fn () {
+            this.inherited(fn)
+
+            if (this.param('color')) {
+                this.css('background', this.param('color'))
+                let root = document.documentElement;
+                root.style.setProperty('--text', this.param('text'));
+                root.style.setProperty('--ground', this.param('color'));
+            }
+
+            if (this.param('text')) {
+                this.css('color', this.param('text'))
+            }
+
+            if (MissEvent.mobile) {
+                this.mix('mobile')
+            }
+
+            if (MissEvent.android) {
+                this.mix('android')
+            }
+
+            if (MissEvent.ios) {
+                this.mix('ios')
+            }
+
+            if (MissEvent.qs('exp')) {
+                MissEvent.qs('exp').split(',').forEach(function (expName) {
+                    this.mix('exp_' + expName)
+                }.bind(this))
+            }
+        },
+        domInit: function fn () {
+            this.inherited(fn)
+            // history.pushState({}, '', '')
+            
+        }
+    },
+})
+
+
+
+
+
+Beast.decl({
+    Text: {
+        inherits: 'Typo',
+        mod: {
+            Line: 'L'
+        },
+        expand: function () {
+            this.mod('Text', this.mod('Size'))
+        }
+    },
+})
+
+Beast.decl({
+    Title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'XXL',
+            Line: 'L'
+        },
+        expand: function () {
+            if (this.mod('Size') === 'M') {
+                this.mod('Text', 'L')
+            }
+
+            if (this.mod('Size') === 'S') {
+                this.mod('Text', 'M')
+            }
+        }
+
+    },
+})
+
+
+
+
+
+Beast.decl({
+    Cases: {
+
+        expand: function () {
+            
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+
+                
+            )
+
+        }
+    },
+    
+    Cases__item: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+            
+            this.append(
+                this.get('title'),
+                Beast.node("dot",{__context:this})
+                
+            )
+
+            this.on('click', function () {
+
+                var g = this.param('id')
+                console.log(g)
+
+                if (g === 1) {
+                    console.log('yes')
+                    var page = (
+                        Beast.node("Work",{__context:this},"\n                            ",Beast.node("items",undefined,"\n                                ",Beast.node("Title",{"Size":"M"},"Дизайн возражений в деле о банкротстве"),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        ",Beast.node("b",undefined,"Кейс"),": клиента привлекают к субсидиарной ответственности. Юристы клиента подготовили возражения в суд.\n                                    "),"\n\n                                    ",Beast.node("p",undefined,"\n                                        ",Beast.node("b",undefined,"Задача"),": повысить эффективность письменных возражений.\n                                    "),"\n\n                                "),"\n\n                                ",Beast.node("Title",{"Size":"M"},"Шаг 1. Структурирование аргументации"),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        На этом шаге наши юристы работают со структурой документа, добиваясь максимально эффективного изложения аргументов.\n                                    "),"\n\n                                    ",Beast.node("p",undefined,"\n                                        — Устраняем смысловые повторения",Beast.node("br"),"\n                                        — Выстраиваем оптимальную последовательность аргументов",Beast.node("br"),"\n                                        — Пишем удобное введение, позволяющее с первого взгляда понять аргументацию\n                                    "),"\n\n                                "),"\n\n                                ",Beast.node("Title",{"Size":"M"},"Шаг 2. Редакторская правка"),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        Профессиональный редактор упрощает восприятие текста судьей.\n                                    "),"\n\n                                "),"\n\n                                ",Beast.node("Photo",undefined,"\n                                    ",Beast.node("Thumb",undefined,"/assets/cases/01.png"),"\n                                "),"\n\n                                ",Beast.node("Title",{"Size":"M"},"Шаг 3. Дизайн документа"),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        Дизайнер создает облик документа, отвечающий стратегическим задачам клиента. В нашем случае цель: привлечь внимание судьи, не вызвав раздражения.\n                                    "),"\n                                "),"\n\n                                ",Beast.node("Photo",undefined,"\n                                    ",Beast.node("Thumb",undefined,"/assets/cases/02.png"),"\n                                "),"\n\n                                ",Beast.node("Photo",undefined,"\n                                    ",Beast.node("Thumb",undefined,"/assets/cases/03.png"),"\n                                "),"\n\n                                ",Beast.node("Photo",undefined,"\n                                    ",Beast.node("Thumb",undefined,"/assets/cases/04.png"),"\n                                "),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        Количественные данные отражаем в таблицах и диаграммах, выгодно иллюстрируя аргументацию клиента.\n                                    "),"\n                                "),"\n\n                                ",Beast.node("Photo",undefined,"\n                                    ",Beast.node("Thumb",undefined,"/assets/cases/06.png"),"\n                                "),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        Важные аргументы поддерживаем графикой.\n                                    "),"\n                                "),"\n\n                                ",Beast.node("Photo",undefined,"\n                                    ",Beast.node("Thumb",undefined,"/assets/cases/07.png"),"\n                                "),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        ",Beast.node("b",undefined,"Результат"),": судья заинтересовался документом и внимательно изучил каждый аргумент. Представители в судебном заседании успешно использовали графики и диаграммы для иллюстрации своих доводов.\n                                    "),"\n                                "),"\n\n                                \n\n                            "),"\n                        ")
+                    )    
+                }
+
+                if (g === 2) {
+                    var page = (
+                        Beast.node("Work",{__context:this},"\n                            ",Beast.node("items",undefined,"\n                                ",Beast.node("Title",{"Size":"M"},"Дизайн меморандума по английскому праву"),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        ",Beast.node("b",undefined,"Кейс"),": инвестор вложил средства в девелоперский проект по постройке недвижимости в Лондоне. После нескольких просрочек, от девелопера поступила просьба о дополнительном финансировании проекта.\n                                    "),"\n\n                                    ",Beast.node("p",undefined,"\n                                        ",Beast.node("b",undefined,"Задача"),": в рамках общего анализа взаимоотношений сторон, проанализировать договорные последствия ответа инвестора на запрос девелопера.\n                                    "),"\n\n                                "),"\n\n                                ",Beast.node("Title",{"Size":"M"},"Без дизайна"),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        Без дизайна, анализ договорных последствий письма инвестора мог бы выглядеть так:\n                                    "),"\n\n                                    \n\n                                "),"\n\n                                ",Beast.node("Photo",undefined,"\n                                    ",Beast.node("Thumb",undefined,"/assets/cases/09.jpg"),"\n                                "),"\n\n                                ",Beast.node("Title",{"Size":"M"},"С дизайном"),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        После доработки меморандума с помощью legal design, эта часть меморандума стала выглядеть так:\n                                    "),"\n\n                                "),"\n\n                                ",Beast.node("Photo",undefined,"\n                                    ",Beast.node("Thumb",undefined,"/assets/cases/08.png"),"\n                                "),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        ",Beast.node("b",undefined,"Результат"),": клиенту понадобилось всего несколько минут, чтобы понять договорные последствия направления запроса контрагенту и принять информированное стратегическое решение.\n                                    "),"\n                                "),"\n\n                                \n\n                            "),"\n                        ")
+                    )    
+                }
+
+                if (g === 3) {
+                    var page = (
+                        Beast.node("Work",{__context:this},"\n                            ",Beast.node("items",undefined,"\n                                ",Beast.node("Title",{"Size":"M"},"Дизайн ходатайства в арбитражный суд"),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        ",Beast.node("b",undefined,"Кейс"),": клиент участвует в сложном судебном процессе. В деле более 40 томов и 20 участников.\n                                    "),"\n\n                                    ",Beast.node("p",undefined,"\n                                        ",Beast.node("b",undefined,"Задача"),": не дожидаясь перехода в основное заседание развеять ложное представление о структуре бизнеса клиента, которое навязывал оппонент.\n                                    "),"\n\n                                    ",Beast.node("p",undefined,"\n                                        ",Beast.node("b",undefined,"Процессуальные ограничения"),": действующие процессуальные нормы не дают возможности высказываться по существу спора в предварительном судебном заседании.\n                                    "),"\n\n                                    ",Beast.node("p",undefined,"\n                                        ",Beast.node("b",undefined,"Временные ограничения"),": учитывая количество участников процесса и загруженность суда, у клиента будет не более 20 секунд на выступление.\n                                    "),"\n\n                                "),"\n\n                                ",Beast.node("Title",{"Size":"M"},"Шаг 1. Разработка решения"),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        Используя техники дизайн-мышления, команда из юристов и дизайнеров проектирует решение:\n                                    "),"\n\n                                    ",Beast.node("p",undefined,"\n\n                                        — Сверстать яркий и необычный документ, объясняющий структуру бизнеса клиента;",Beast.node("br"),"\n                                        — На заседании заявить ходатайство о приобщении к делу дополнительных доказательств и предъявить суду этот документ;",Beast.node("br"),"\n                                        — В образовавшейся паузе прокомментировать документ, разрушив представление, навязанное суду оппонентом.\n                                    "),"\n\n                                    \n\n                                "),"\n\n                                ",Beast.node("Title",{"Size":"M"},"Шаг 2. Дизайн документа"),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        Дизайнер верстает документ для выполнения задачи в судебном заседании.\n                                    "),"\n\n                                "),"\n\n                                ",Beast.node("Photo",undefined,"\n                                    ",Beast.node("Thumb",undefined,"/assets/cases/10.png"),"\n                                "),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        ",Beast.node("b",undefined,"Результат"),": документ привлек внимание судьи и позволил представителю выполнить поставленную задачу уже на стадии предварительного заседания.\n                                    "),"\n                                "),"\n\n                                \n\n                            "),"\n                        ")
+                    )    
+                }
+
+
+                if (g === 4) {
+                    var page = (
+                        Beast.node("Work",{__context:this},"\n                            ",Beast.node("items",undefined,"\n                                ",Beast.node("Title",{"Size":"M"},"Дизайн оферты для Clickavia"),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        ",Beast.node("b",undefined,"Кейс"),": агрегатор авиаперелетов Clickavia внедряет новые условия обслуживания.\n                                    "),"\n\n                                    ",Beast.node("p",undefined,"\n                                        ",Beast.node("b",undefined,"Задача"),": используя новые положения оферты, снизить претензионную нагрузку на сервис.\n                                    "),"\n\n                                    \n\n                                "),"\n\n                                ",Beast.node("Title",{"Size":"M"},"Шаг 1. Анализ оферты"),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        Команда из юристов, дизайнеров и маркетологов анализирует связи между отдельными условиями оферты и их влиянием на претензии клиентов.\n                                    "),"\n\n                                    \n\n                                "),"\n\n                                ",Beast.node("Title",{"Size":"M"},"Шаг 2. Подготовка технического задания"),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        Когда основные взаимосвязи определены, формируется задание для веб-дизайнера.\n                                    "),"\n\n                                "),"\n\n                                ",Beast.node("Title",{"Size":"M"},"Шаг 3. Веб-дизайн"),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        Веб-дизайнер готовит дополнительные окна и страницы для сайта.\n                                    "),"\n\n                                "),"\n\n                                ",Beast.node("Photo",undefined,"\n                                    ",Beast.node("Thumb",undefined,"/assets/cases/11.jpg"),"\n                                "),"\n\n                                ",Beast.node("Photo",undefined,"\n                                    ",Beast.node("Thumb",undefined,"/assets/cases/12.png"),"\n                                "),"\n\n                                ",Beast.node("Photo",undefined,"\n                                    ",Beast.node("Thumb",undefined,"/assets/cases/13.png"),"\n                                "),"\n\n                                ",Beast.node("Text",{"Gap":"M","Size":"M"},"\n                                    ",Beast.node("p",undefined,"\n                                        ",Beast.node("b",undefined,"Результат"),": основные условия оферты стали понятнее для покупателей, что снизило претензионную нагрузку на сервис.\n                                    "),"\n                                "),"\n\n                                \n\n                            "),"\n                        ")
+                    )    
+                }
+                
+                
+
+                Beast.node("Overlay",{__context:this,"Type":"sideBottom"},"\n                    ",page,"\n                ")
+                    .param({
+                        topBar: true,
+                        scrollContent: true
+                    })
+                    .pushToStackNavigation({
+                        context: this,
+                        onDidPop: function () {
+                            page.detach()
+                        }
+                    })
+            })
+
+        }
+    },
+
+    Cases__dot: {
+
+        expand: function () {
+
+            this.css('background', this.parentBlock().param('color'))
+            
+            
+
+        }
+    },
+    
+
+})
+
+
+
+
+
+Beast.decl({
+    Cards: {
+
+        expand: function () {
+            
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+
+                
+            )
+
+        }
+    },
+    
+    Cards__item: {
+        tag: 'a',
+        expand: function () {
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
+            this.domAttr('href', this.param('href'))
+            
+            this.append(
+                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
+                this.get('title'),
+                Beast.node("cross",{__context:this},"+"),
+                this.get('price')
+                
+            )
+
+        }
+    },
+
+    
+    
+
+})
+
+
+
+
+
+
+
+Beast.decl({
+
+    Check: {
+        
+        expand: function fn () {
+            let text = this.text();
+            this.inherited(fn)
+                .append(
+                    Beast.node("label",{__context:this},"\n                        ",text,"\n                        ",Beast.node("input",{"value":text}),"\n                        ",Beast.node("mark"),"\n                    ")
+                )
+        }
+    },
+    Check__label: {
+        tag:'label',
+        expand: function () {
+            this.domAttr('for', this.parentBlock().param('name'))
+        }
+    },
+
+    Check__mark: {
+        expand: function () {
+            
+        }
+    },
+    
+    Check__input: {
+        tag:'input',
+        expand: function () {
+            this.domAttr('type', 'checkbox')
+            this.domAttr('id', this.parentBlock().param('name'))
+            this.domAttr('value', this.param('value'))
+            this.domAttr('name', this.parentBlock().param('name'))
+        }
+    }
+})
+
+/**
+ * @example
+ * <Select>
+ *     <option value="Mazda">Mazda</option>
+ *     <option value="Opel">Opel</option>
+ *     <option value="BMW">BMW</option>
+ *     <option value="Lada">Lada</option>
+ * </Select>
+ */
+
+Beast.decl({
+    Contact: {
+        expand: function () {
+            
+            this.domAttr('id', 'contact')
+            
+
+        }
+    }
+})
+// global variables for calculations
+let price;
+let characterNumber = 2500;
+let currrentType = "silver";
+let uploadedDocument = false;
+let linksToTheDocuments = [];
+let calculatedPrice;
+let calculatedPriceDetails=[];
+let uploadedFiles = [];
+let uploadedFilesProgress = 0; 
+let characterNumberTracker = 2500;
+
+let silverDefaultLanguage = "russian";
+let silverDefaultTime = "regular";
+
+let goldDefaultLanguage = "russian";
+let goldDefaultTime = "regular";
+
+const emailJsService = "service_5zbkh3r";
+const emailJsTemplate = "template_mjdi55g";
+
+const emailJsTemplateGold = "";
+const emailJsTemplateSilver = "";
+
+const sanityTokenWithWriteAccess = 'skmAQVJjHdsVFKS4TCsoiVvZIeEUN9qFw545I0JD4YSoBrD80kryUFXitu2g1peNqfrVZA1Mwcq48Sk0KOXCt8b8KnLIRAtNuDbwrAq6YoxsJFw2KtFhVYbQDGFEQNzLDCJTJaBYa4HfdL7wmz7H5FgAGtax1MlUdusEBfkeQsNvegVVlwPw';
+const sanityFetchUrl = 'https://spfa8rwc.api.sanity.io/v1/assets/files/production';
+
+const pageCharacterNumber = 2500;
+
+const prices = {
+  silver: {
+    russian: {
+      regular: 500,
+      urgent: 750
+    },
+    english: {
+      regular: 2000,
+      urgent: 3000
+    }
+  },
+  gold: {
+    russian: {
+      regular: 2500,
+      urgent: 3750
+    },
+    english: {
+      regular: 5000,
+      urgent: 7500
+    }
+  }
+}
+
+// variable holding current selection
+let pricingParams = {
+  "type": "silver",
+  "language" : null,
+  "time": null
+}
+
+var dropzoneComponent;
+
+Beast.decl({
+    Form: {
+
+        //set one of the params
+        setPricingParam: function (key, value) {
+            pricingParams[key] = value;
+            this.calculateFinalPrice();
+
+        },
+
+        //calculate final price
+        calculateFinalPrice: function () {
+
+            // Gold or Silver type
+            let type = this.param('type')
+            if (type)
+              pricingParams["type"] = type;
+            
+              if (pricingParams["language"] && pricingParams["time"]) {
+                price = prices[pricingParams["type"]][pricingParams["language"]][pricingParams["time"]];
+
+                let tmpPageCounterFloat = characterNumber/pageCharacterNumber;
+                let pageCount;
+                if (Number.isInteger(tmpPageCounterFloat)) {
+                  pageCount = Math.floor(characterNumber/pageCharacterNumber);
+                } else {
+                  pageCount = Math.floor(1 + characterNumber/pageCharacterNumber);
+                }
+
+                document.querySelector(".form__action-title").innerHTML = price*pageCount + "₽ — отправить заявку";
+
+                calculatedPrice = price*pageCount;
+                calculatedPriceDetails = [price, pageCount];
+
+            }
+        },
+
+        calculateCharNumber: function(dropfiles) {
+            
+            // input for files
+            var docs = document.querySelector("#file-upload");
+            
+            //another way to get files from dropzone
+            //var dropzoneFiles = dropzoneComponent.getAcceptedFiles();
+
+            //recalculate character number
+            characterNumber = 0;
+            let documentNameContainer = document.querySelector(".form__upload-doc-name");
+            documentNameContainer.innerHTML = "";
+
+            
+            // if files are not selected stop
+            if (docs.files.length === 0 && dropfiles.length === 0) {
+                return;
+            }            
+            
+            if (docs.files.length > 0)
+              this.mergeFiles(docs.files);
+
+            if (dropfiles && dropfiles.length > 0)
+              this.mergeFiles(dropfiles);
+            
+
+            for (var i = 0; i < uploadedFiles.length; i++) {
+              this.parseFile(uploadedFiles[i], i);
+            }
+            
+          
+        },
+
+        mergeFiles: function(files){
+          var fileUploadedAlready = false;
+          for (var i = 0; i < files.length; i++){
+            for (var k = 0; k < uploadedFiles.length; k++){
+              if (uploadedFiles[k].name == files[i].name && uploadedFiles[k].size == files[i].size) {
+                fileUploadedAlready = true;
+                break
+              }
+            }
+            if (!fileUploadedAlready) {
+              uploadedFiles.push(files[i])
+            } else {
+              fileUploadedAlready = false;
+            }
+          }
+        },
+
+        parseFile: function(file, index) {
+          var self = this
+
+          // define reader
+          var reader = new FileReader();
+            
+          //check extension
+          let documentName = file.name;
+          let ext = documentName.split('.').pop().toLowerCase();
+
+          try {
+            gtag('event', 'document_upload', {
+              'event_category' : 'extension',
+              'event_label' : ext
+            });
+          } catch(err) {
+             console.log(err);
+          }          
+
+          // supported extensions
+          if (ext == "docx" || ext == "txt") {
+              let documentNameContainer = document.querySelector(".form__upload-doc-name");
+              documentNameContainer.innerHTML += "<div class='form__upload-filename'>" + documentName + "</div>";
+
+              let documentUploadLabel = document.querySelector(".form__upload-label");
+              documentUploadLabel.innerHTML = "Загрузить еще";
+          }
+
+          // if it's DOCX
+          if (ext == "docx") {
+
+              reader.readAsBinaryString(file);
+
+              // on error
+              reader.onerror = function (evt) {
+                  console.log("error reading file", evt);
+                  alert("Не удалось прочитать документ. Укажите количество символов вручную")
+              }
+
+              // on success
+              reader.onload = function (evt) {
+                  const content = evt.target.result;
+                  var zip = new PizZip(content);
+                  var doc = new Docxtemplater().loadZip(zip);
+
+                  self.setCharactedNum(doc.getFullText());
+              }
+          } else if (ext == "txt") { 
+
+              reader.onload = function(evt) {
+                  self.setCharactedNum(evt.target.result)
+              };
+              
+              reader.readAsText(file, "UTF-8");
+              
+          } else {
+            uploadedFiles.splice(index, 1);
+              alert('Пожалуйста, загрузите DOCX или TXT файл.')
+          }
+        },
+
+        setCharactedNum: function (text) {
+            // element to display char number
+            var charNumber = document.querySelector(".form__hint");
+
+            if (text && text.length > 0) {
+                //set variable for char number 
+                characterNumber = characterNumber + text.length;
+                
+                // show character number
+                charNumber.innerHTML = characterNumber + " знаков";
+                characterNumberTracker = characterNumber;
+
+                //calculate the price
+                this.calculateFinalPrice();
+
+                uploadedDocument = true;
+            }
+        },
+
+        //upload documnent to Sanity
+        updloadDocumentToSanity: function (file){
+
+            // create reference to the file
+            var src = URL.createObjectURL(file);
+
+            //fetching
+            fetch(sanityFetchUrl, {
+                method: 'post',
+                headers: {
+                    'Content-type': file.type,
+                    Authorization: 'Bearer ' + sanityTokenWithWriteAccess
+                },
+                body: file
+              })
+              .then(response => response.json())
+              .then(function(data) {      
+                    //set public URL link to the document in the following variable
+                    if (data && data.document) {
+                        linksToTheDocuments.push(data.document.url);
+                        uploadedFilesProgress++;
+                    }
+                });
+        },
+
+        expand: function () {
+
+            this.append(
+                Beast.node("form",{__context:this},"\n                    ",this.get('head', 'item'),"\n                ")
+                
+            )
+
+        },
+
+        domInit: function () {
+
+            let selectors = document.querySelectorAll(".form__button_select");
+            var self = this
+
+            if (this.param('type') === 'silver') {
+              $('.form__button[data-param="russian"]').attr('active', true)
+              $('.form__button[data-param="regular"]').attr('active', true)
+              pricingParams["language"] = silverDefaultLanguage;
+              pricingParams["time"] = silverDefaultTime;
+              
+            }
+
+            if (this.param('type') === 'gold') {
+              $('.form__button[data-param="russian"]').attr('active', true)
+              $('.form__button[data-param="regular"]').attr('active', true)
+              pricingParams["language"] = goldDefaultLanguage;
+              pricingParams["time"] = goldDefaultTime;
+            }
+
+            document.querySelector(".form__action-title").innerHTML = prices[this.param('type')][pricingParams["language"]][pricingParams["time"]] + "₽ — отправить заявку";  
+            
+
+            if (selectors) {
+              for (var i = 0; i < selectors.length; i++) {
+
+                //when click on selector
+                selectors[i].onclick = function(evt) {
+                  //manupulations for visual selection
+                  let selectorButtons = evt.target.parentNode.querySelectorAll(".form__button_select");
+                  for (var j = 0; j < selectorButtons.length; j++) {
+                    selectorButtons[j].setAttribute("active", false);
+                  }
+                  evt.target.setAttribute("active", true);
+                  
+                  // set price depending on selection
+                  self.setPricingParam(evt.target.parentNode.getAttribute("param"), evt.target.getAttribute("data-param"));
+                }
+              }
+            }
+
+            let requestForm = document.querySelector(".form__action");
+
+            requestForm.onclick = function(event) {
+              
+              event.preventDefault();
+              // if all validation goes well
+              if (validateForm() && !this.disabled) {
+                for (var i = 0; i < uploadedFiles.length; i++) {
+                  self.updloadDocumentToSanity(uploadedFiles[i]); 
+                } 
+                this.value = 'Отправляю...';
+                this.disabled = true;
+                this.classList.add("button-loading");
+                sendEmail();
+                
+              } else return false;
+            }
+
+            function sendRquestEmail(name, email, phone) {
+
+              let type = pricingParams["type"] == "silver" ? "Пакет Silver | " : "Пакет Gold | ";
+              let language = pricingParams["language"] == "english" ? "Документ на английском |" : "Документ на русском |";
+              let time = pricingParams["time"] == "urgent" ? " 24 часа" : " 5 дн.";
+              let docsView = "";
+              for (var i = 0; i < linksToTheDocuments.length; i++){
+                docsView +=  "<p><a style='font-size: 24px;' href='" + linksToTheDocuments[i] + "'>Документ " + (i+1) + "</a></p>";
+              }
+
+              emailjs.send(emailJsService, emailJsTemplate, {
+                name: name,
+                email: email,
+                phone: phone,
+                type: type + language + time,
+                link: docsView,
+                price: calculatedPriceDetails[0] + " ₽ * " + calculatedPriceDetails[1] + " стр. = " + calculatedPrice
+              })
+              .then(function() {
+                  //alert('Ваша заявка успешно оправлена');
+                  //location.reload();
+              }, function(error) {
+                  console.log('Failed sendig email', error);
+              });
+            }
+
+            function sendEmail() {
+              //if all files were uploaded
+              if (uploadedFilesProgress == uploadedFiles.length) {
+                sendRquestEmail(
+                  document.querySelector("#name").value,
+                  document.querySelector("#email").value,
+                  document.querySelector("#phone").value
+                );
+                uploadedFilesProgress = 0;
+                
+                let btnSend = document.querySelector(".form__action-title");
+                btnSend.innerHTML = 'Отправлено успешно';
+                btnSend.parentNode.className = "form__action form__disabled";
+
+                $(".form__action").attr("disabled", "disabled").off('click');
+
+              } else {
+                setTimeout(function(){ sendEmail() }, 500);
+              }
+            }
+
+
+            //send email to client
+            function sendEmailClient() {
+                let clientEmail = document.querySelector("#email").value;
+                let price = calculatedPrice + "₽";
+                let number_docs = getNumDocsString(linksToTheDocuments.length);
+                let symbols = characterNumberTracker;
+                let language = pricingParams["language"] == "english" ? "английский" : "русский";
+                let timing = pricingParams["time"] == "urgent" ? "24 часа" : "5 дней";
+
+                let rightTemplate = "";
+                if (this.param('type') === 'gold') {
+                  rightTemplate = emailJsTemplateGold;
+                } else if (this.param('type') === 'silver'){
+                  rightTemplate = emailJsTemplateSilver;
+                } else {
+                  return;
+                }
+
+
+                emailjs.send(emailJsService, rightTemplate, {
+                  sender: clientEmail,
+                  price: price,
+                  number_docs: number_docs,
+                  symbols: symbols,
+                  language: language,
+                  timing: timing
+                })
+                .then(function() {
+                    
+                }, function(error) {
+                    console.log('Failed sendig email', error);
+                });
+            }
+
+            //get right string depending on the document number
+            function getNumDocsString(number) {
+                if (number) {
+                  if (number == 1) {
+                    return "1 документ"
+                  } else if (number == 2 || number == 3 || number == 4) {
+                    return number + " документа";
+                  } else {
+                    return number + " документов";
+                  }
+                } else {
+                  return "документы";
+                }
+            }
+
+            //validation of all input fields
+            function validateForm() {
+              if (!pricingParams["language"] || !pricingParams["time"]) {
+                alert('Для отправки заявки необходимо указать язык документа и срок')
+                return false;
+              }
+              if (!uploadedDocument) {
+                alert('Для отправки заявки нужно загрузить документ, с которым будет необходимо работать')
+                return false;
+              }
+              let nameField = document.querySelector("#name");
+              if (nameField.value.trim() == "") {
+                alert('Пожалуйста, укажите ваше имя, чтобы мы знали как к вам обращаться');
+                return false;
+              }
+
+              let emailField = document.querySelector("#email");
+              if (emailField.value.trim() == "") {
+                alert('Укажите адрес электронной почты, чтобы мы знали, как с вами связаться');
+                return false;
+              }
+
+              let phoneField = document.querySelector("#phone");
+              if (phoneField.value.trim() == "") {
+                alert('Укажите номер телефона, чтобы мы знали, как с вами связаться');
+                return false;
+              }
+
+              let checkForPersonalDetails = document.querySelector(".check__input");
+              if (checkForPersonalDetails && !(checkForPersonalDetails.checked)) {
+                alert('Пожалуйста, дайте согласие на обработку данных');
+                return false;
+              }
+
+              return true;
+            }
+
+            var parentBlockRef = this.parentBlock();
+            dropzoneComponent = new Dropzone("#dropzone-component", {
+                url: "#",
+                paramName: 'file',
+                previewsContainer: '.form__upload-doc-name',
+                autoQueue: false,
+                autoProcessQueue: false,
+                addRemoveLinks: false,
+                clickable: false,
+                thumbnailWidth: 80,
+                thumbnailHeight: 100,
+                maxFiles: 10,
+                acceptedFiles: '.docx, .doc, .txt',
+                parallelUploads: 1,
+                uploadMultiple: true,
+                dictDefaultMessage: 'Или перетащите файлы сюда',
+                init: function() {
+                  this.on("addedfiles", function() {
+                      parentBlockRef.calculateCharNumber(this.files);
+                  });
+                }
+              },
+            );
+
+            $('#dropzone-component').on('dragenter', function() {
+                $(this).css({'outline' : '2px dashed green'})
+            });
+
+            $('#dropzone-component').on('dragleave', function() {
+              $(this).css({'outline' : 'none'})
+            });
+            
+
+        }
+    },
+
+    Form__form: {
+        tag: 'div',
+        expand: function () {
+
+            this.domAttr('action', this.parentBlock().param('action'))
+            this.domAttr('id', this.parentBlock().param('id'))
+
+        }
+    },
+
+    Form__item: {
+        expand: function () {
+            this.domAttr('param', this.param('param'))
+
+            if (this.mod('Color')) {
+              this.css('background', this.parentBlock().param('color'))
+              this.css('color', this.parentBlock().param('text'))
+            }
+        }
+    },
+
+    Form__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
+    },
+
+    Form__hint: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
+    },
+
+    Form__button: {
+        expand: function () {
+            this.domAttr('data-param', this.param('data-param'))
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+        }
+    },
+
+    Form__action: {
+        // tag: 'input',
+        expand: function () {
+            // this.domAttr('type', 'submit')
+            // this.domAttr('value', this.text())
+            this.append(
+              Beast.node("action-title",{__context:this},this.text()),
+              Beast.node("action-subtitle",{__context:this},"(конфиденциально)")
+            )
+            this.css('background', this.parentBlock().param('action'))
+            this.css('color', this.parentBlock().param('actionText'))
+        }
+    },
+
+    Form__input: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+
+            let root = document.documentElement;
+            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
+            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
+            
+        }
+    },
+
+    Form__upload: {
+        expand: function () {
+            this.append(
+                Beast.node("upload-label",{__context:this,"for":"file-upload"},"Загрузить документы"),
+                Beast.node("upload-doc-name",{__context:this}),
+                Beast.node("upload-input",{__context:this,"id":"file-upload","type":"file"})
+            )
+            this.domAttr('id', 'dropzone-component');
+        }
+    },
+
+    'Form__upload-label': {
+        tag: 'label',
+        expand: function () {
+            this.domAttr('for', this.param('for'))
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+        }
+    },
+
+    'Form__upload-doc-name': {
+        tag: 'div',
+        expand: function () {
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+        }
+    },
+
+    'Form__check': {
+        expand: function () {
+            this.append(
+              Beast.node("Check",{__context:this},this.text())
+            )
+        }
+    },
+    
+    'Form__upload-input': {
+        tag: 'input',
+        on: {
+            // Listen to change event on file input
+            change: function () {
+                // add and remove modificator for every change
+                this.parentBlock().calculateCharNumber()
+
+            }
+        },
+
+        expand: function () {
+            this.domAttr('id', this.param('id'))
+            this.domAttr('multiple', true)
+            this.domAttr('type', this.param('type'))
+            // this.domAttr('onchnage', 'calculateCharNumber()')
+        }
+    },
+})
+
+
+
+
+
+Beast.decl({
+    FormLight: {
+
+        expand: function () {
+
+            this.append(
+                Beast.node("form",{__context:this},"\n                    ",this.get('head', 'item'),"\n                ")
+                
+            )
+
+        },
+
+        domInit: function () {
+            let requestForm = document.querySelector(".formLight__action");
+            var typeName = this.param('typeName')
+            console.log(typeName)
+
+            requestForm.onclick = function(event) {
+              
+              event.preventDefault();
+
+              // if all validation goes well
+              if (validateForm()) {
+                this.value = 'Отправляю...';
+                this.disabled = true;
+                this.classList.add("button-loading");  
+                 
+                sendEmail();
+                
+              } else return false;
+            }
+
+            function sendRquestEmail(name, email, phone) {
+
+              emailjs.send(emailJsService, emailJsTemplate, {
+                name: name,
+                email: email,
+                phone: phone,
+                type: typeName,
+                link: '—',
+                price: '0'
+              })
+              .then(function() {
+                  //alert('Ваша заявка успешно оправлена');
+                  //location.reload();
+              }, function(error) {
+                  console.log('Failed sendig email', error);
+              });
+            }
+
+            function sendEmail() {
+              //if all files were uploaded
+              if (uploadedFilesProgress == uploadedFiles.length) {
+                sendRquestEmail(
+                  document.querySelector("#name").value,
+                  document.querySelector("#email").value,
+                  document.querySelector("#phone").value
+                );
+                uploadedFilesProgress = 0;
+                
+                let btnSend = document.querySelector(".formLight__action");
+                btnSend.value = 'Отправлено успешно';
+                btnSend.className = "formLight__action";
+
+              } else {
+                setTimeout(function(){ sendEmail() }, 500);
+              }
+            }
+
+            //validation of all input fields
+            function validateForm() {
+
+              let nameField = document.querySelector("#name");
+              if (nameField.value.trim() == "") {
+                alert('Пожалуйста, укажите ваше имя, чтобы мы знали как к вам обращаться');
+                return false;
+              }
+
+              let emailField = document.querySelector("#email");
+              if (emailField.value.trim() == "") {
+                alert('Укажите адрес электронной почты, чтобы мы знали, как с вами связаться');
+                return false;
+              }
+
+              let phoneField = document.querySelector("#phone");
+              if (phoneField.value.trim() == "") {
+                alert('Укажите номер телефона, чтобы мы знали, как с вами связаться');
+                return false;
+              }
+
+              return true;
+            }
+
+            
+            
+
+        }
+    },
+
+    FormLight__form: {
+        tag: 'div',
+        expand: function () {
+
+            this.domAttr('action', this.parentBlock().param('action'))
+            this.domAttr('id', this.parentBlock().param('id'))
+
+        }
+    },
+
+    FormLight__item: {
+        expand: function () {
+            this.domAttr('param', this.param('param'))
+        }
+    },
+
+    FormLight__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
+    },
+
+    FormLight__hint: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
+    },
+
+    FormLight__button: {
+        expand: function () {
+            this.domAttr('data-param', this.param('data-param'))
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+        }
+    },
+
+    FormLight__action: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', 'submit')
+            this.domAttr('value', this.text())
+            this.css('background', this.parentBlock().param('action'))
+            this.css('color', this.parentBlock().param('actionText'))
+        }
+    },
+
+    FormLight__input: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+
+            let root = document.documentElement;
+            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
+            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
+            
+        }
+    },
+
+    
+})
+
+
+Beast.decl({
+    Gallery: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'S',
+            Line: 'L'
+        },
+        expand: function () {
+            this.domAttr('id', 'team')
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+                
+            )
+
+        }
+    },
+    
+    Gallery__image: {
+
+        expand: function () {
+            
+            
+            this.append(
+                
+                Beast.node("Thumb",{__context:this,"Ratio":"1x1"},this.text())
+                
+            )
+
+        }
+    },
+
+    Gallery__item: {
+        tag: 'a',
+        expand: function () {
+            var href = this.param('href')
+            this.domAttr('href', href)
+
+        }
+    }  
+})
+/**
  * @block Grid Динамическая сетка
  * @tag base
  */
@@ -6049,715 +7176,12 @@ function grid (num, col, gap, margin) {
     var gridWidth = col * num + gap * (num - 1) + margin * 2
     return gridWidth
 }
-/**
- * @block Typo Типографика
- * @tag base
- */
-
-Beast.decl({
-    Typo: {
-        // finalMod: true,
-        mod: {
-            text: '',       // @mod Text    {S M L XL}  Размер текста
-            line: '',       // @mod Line    {S M L}     Высота строки
-            caps: false,    // @mod Caps    {boolean}   Капслок
-            light: false,   // @mod Light   {boolean}   Light-начертание
-            medium: false,  // @mod Medium  {boolean}   Medium-начертание
-            bold: false,    // @mod Bold    {boolean}   Bold-начертание
-        }
-    }
-})
-/**
- * @block App Корневой компонент всех страниц
- * @dep UINavigation DocInspector DocConsole
- * @tag base
- * @ext UIStackNavigation
- */
-Beast.decl({
-    App: {
-        inherits: ['Grid', 'UIStackNavigation'],
-        tag:'body',
-        mod: {
-            platform: '',
-            device: '',
-            ColCheck:true,
-        },
-        // onWin: {
-        //     'Head:active': function (e, source) {
-        //         console.log(source)      
-        //     },
-        //     'Lobby:active': function (e, source) {
-                
-        //     }
-        // },
-        expand: function fn () {
-            this.inherited(fn)
-
-            if (this.param('color')) {
-                this.css('background', this.param('color'))
-
-                let root = document.documentElement;
-                root.style.setProperty('--text', this.param('text'));
-                root.style.setProperty('--ground', this.param('color'));
-            }
-
-            if (this.param('text')) {
-                this.css('color', this.param('text'))
-            }
-
-            // this.append(
-            //     <DocInspector/>
-            // )
-
-            if (MissEvent.mobile) {
-                this.mix('mobile')
-            }
-
-            if (MissEvent.android) {
-                this.mix('android')
-            }
-
-            if (MissEvent.ios) {
-                this.mix('ios')
-            }
-
-            if (MissEvent.qs('exp')) {
-                MissEvent.qs('exp').split(',').forEach(function (expName) {
-                    this.mix('exp_' + expName)
-                }.bind(this))
-            }
-        },
-        domInit: function fn () {
-            this.inherited(fn)
-            history.pushState({}, '', '')
-            
-        }
-    },
-})
-
-
-Beast.decl({
-    Screen: {
-        
-        expand: function fn () {
-            
-
-            if (this.param('color')) {
-                this.css('background', this.param('color'))
-
-                let root = document.documentElement;
-                root.style.setProperty('--text', this.param('text'));
-                root.style.setProperty('--ground', this.param('color'));
-            }
-
-            if (this.param('text')) {
-                this.css('color', this.param('text'))
-            }
-
-            
-        },
-        
-    },
-})
-
-
-Beast.decl({
-    DocScreen: {
-        expand: function fn () {
-            this.append(
-
-                Beast.node("Screen",{__context:this,"color":"#275C83","text":"#B2B2B2"},"\n\n                    ",Beast.node("Head",undefined,"\n                        ",Beast.node("logo",undefined,"/assets/logo.svg"),"\n                        ",Beast.node("menu-item",undefined,"Команда"),"\n                        ",Beast.node("menu-item",undefined,"Студия"),"\n                        ",Beast.node("menu-item",undefined,"Связь"),"\n                    "),"\n\n                    ",Beast.node("Title",undefined,"Документы"),"\n\n                    ",Beast.node("Text",{"Size":"M"},"\n                        Превратим обычный документ в безупречный. От редакторской вычитки до инфографики и индивидуального дизайна.\n                    "),"\n\n                    ",Beast.node("Cards",undefined,"\n                        ",Beast.node("item",{"href":"silver.html","color":"#D2D2D2","text":"#6F6F6F"},"\n                            ",Beast.node("hint",undefined,"Silver"),"\n                            ",Beast.node("elem",undefined,"Ag"),"\n                            ",Beast.node("title",undefined,"Редакторская вычитка"),"\n                            ",Beast.node("price",undefined,"от 500₽"),"\n                        "),"\n                        ",Beast.node("item",{"href":"gold.html","color":"#C49B72","text":"#D8D8D8"},"\n                            ",Beast.node("hint",undefined,"Gold"),"\n                            ",Beast.node("elem",undefined,"Au"),"\n                            ",Beast.node("title",undefined,"Юридический дизайн документа"),"\n                            ",Beast.node("price",undefined,"от 3750₽"),"\n                        "),"\n                        ",Beast.node("item",{"href":"tailored.html","color":"#C24035","text":"#B2B2B2"},"\n                            ",Beast.node("hint",undefined,"Tailored"),"\n                            ",Beast.node("elem",undefined,"Xx"),"\n                            ",Beast.node("title",undefined,"Индивидуальный заказна дизайн"),"\n                            ",Beast.node("price",undefined,"₽₽₽"),"\n                        "),"\n                    "),"\n\n                ")
-            )
-        },
-        domInit: function fn () {
-            
-        }
-    },
-})
-
-
-Beast.decl({
-    WebScreen: {
-        expand: function fn () {
-            this.append(
-
-                Beast.node("Screen",{__context:this,"color":"#005537","text":"#D8D8D8"},"\n\n                    ",Beast.node("Head",undefined,"\n                        ",Beast.node("logo",undefined,"/assets/logo.svg"),"\n                        ",Beast.node("menu-item",undefined,"Команда"),"\n                        ",Beast.node("menu-item",undefined,"Студия"),"\n                        ",Beast.node("menu-item",undefined,"Связь"),"\n                    "),"\n\n                    ",Beast.node("Title",undefined,"Cайты и фирстиль"),"\n\n                    ",Beast.node("Text",{"Size":"M"},"\n                        Внедрение в документ графических и интерактивных элементов с использованием графического и веб-дизайна.\n                    "),"\n\n                    ",Beast.node("Example"),"\n\n                    \n                    ",Beast.node("Inquire"),"\n\n                ")
-            )
-        },
-        domInit: function fn () {
-            
-        }
-    },
-})
-
-
-Beast.decl({
-    PresentationScreen: {
-        expand: function fn () {
-            this.append(
-
-                Beast.node("Screen",{__context:this,"color":"#866140","text":"#DBDBDB"},"\n\n                    ",Beast.node("Head",undefined,"\n                        ",Beast.node("logo",undefined,"/assets/logo.svg"),"\n                        ",Beast.node("menu-item",undefined,"Команда"),"\n                        ",Beast.node("menu-item",undefined,"Студия"),"\n                        ",Beast.node("menu-item",undefined,"Связь"),"\n                    "),"\n\n                    ",Beast.node("Title",undefined,"Презентации"),"\n\n                    ",Beast.node("Text",{"Size":"M"},"\n                        Внедрение в документ графических и интерактивных элементов с использованием графического и веб-дизайна.\n                    "),"\n\n                    ",Beast.node("Example"),"\n\n                    ",Beast.node("Inquire"),"\n\n                ")
-            )
-        },
-        domInit: function fn () {
-            
-        }
-    },
-})
-
-Beast.decl({
-    Cards: {
-
-        expand: function () {
-            
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
-
-                
-            )
-
-        }
-    },
-    
-    Cards__item: {
-        tag: 'a',
-        expand: function () {
-            this.css('background', this.param('color'))
-            this.css('color', this.param('text'))
-            this.domAttr('href', this.param('href'))
-            
-            this.append(
-                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
-                this.get('title'),
-                Beast.node("cross",{__context:this},"+"),
-                this.get('price')
-                
-            )
-
-        }
-    },
-
-    Shelf__dot: {
-
-        expand: function () {
-
-            this.css('background', this.param('color'))
-            
-            
-
-        }
-    },
-    
-
-})
-
-
-
-
-
-
-// global variables for calculations
-let price;
-let characterNumber = 2500;
-let currrentType = "silver";
-let uploadedDocument = false;
-let linksToTheDocuments = [];
-let calculatedPrice;
-let uploadedFiles = [];
-let uploadedFilesProgress = 0; 
-
-const emailJsService = "service_5zbkh3r";
-const emailJsTemplate = "template_mjdi55g";
-
-const sanityTokenWithWriteAccess = 'skmAQVJjHdsVFKS4TCsoiVvZIeEUN9qFw545I0JD4YSoBrD80kryUFXitu2g1peNqfrVZA1Mwcq48Sk0KOXCt8b8KnLIRAtNuDbwrAq6YoxsJFw2KtFhVYbQDGFEQNzLDCJTJaBYa4HfdL7wmz7H5FgAGtax1MlUdusEBfkeQsNvegVVlwPw';
-const sanityFetchUrl = 'https://spfa8rwc.api.sanity.io/v1/assets/files/production';
-
-const pageCharacterNumber = 2500;
-
-const prices = {
-  silver: {
-    russian: {
-      regular: 500,
-      urgent: 750
-    },
-    english: {
-      regular: 2000,
-      urgent: 3000
-    }
-  },
-  gold: {
-    russian: {
-      regular: 2500,
-      urgent: 3750
-    },
-    english: {
-      regular: 5000,
-      urgent: 7500
-    }
-  }
-}
-
-// variable holding current selection
-let pricingParams = {
-  "type": "silver",
-  "language" : null,
-  "time": null
-}
-
-var dropzoneComponent;
-
-Beast.decl({
-    Form: {
-
-        //set one of the params
-        setPricingParam: function (key, value) {
-            pricingParams[key] = value;
-            this.calculateFinalPrice();
-
-        },
-
-        //calculate final price
-        calculateFinalPrice: function () {
-
-            // Gold or Silver type
-            let type = this.param('type')
-            if (type)
-              pricingParams["type"] = type;
-            
-              if (pricingParams["language"] && pricingParams["time"]) {
-                price = prices[pricingParams["type"]][pricingParams["language"]][pricingParams["time"]];
-
-                let tmpPageCounterFloat = characterNumber/pageCharacterNumber;
-                let pageCount;
-                if (Number.isInteger(tmpPageCounterFloat)) {
-                  pageCount = Math.floor(characterNumber/pageCharacterNumber);
-                } else {
-                  pageCount = Math.floor(1 + characterNumber/pageCharacterNumber);
-                }
-
-                document.querySelector(".form__action").value = price*pageCount + "₽ — отправить заявку";
-
-                calculatedPrice = price*pageCount;
-
-            }
-        },
-
-        calculateCharNumber: function(dropfiles) {
-            
-            // input for files
-            var docs = document.querySelector("#file-upload");
-            
-            //another way to get files from dropzone
-            //var dropzoneFiles = dropzoneComponent.getAcceptedFiles();
-
-            //recalculate character number
-            characterNumber = 0;
-            let documentNameContainer = document.querySelector(".form__upload-doc-name");
-            documentNameContainer.innerHTML = "";
-
-            
-            // if files are not selected stop
-            if (docs.files.length === 0 && dropfiles.length === 0) {
-                return;
-            }            
-            
-            if (docs.files.length > 0)
-              this.mergeFiles(docs.files);
-
-            if (dropfiles && dropfiles.length > 0)
-              this.mergeFiles(dropfiles);
-            
-
-            for (var i = 0; i < uploadedFiles.length; i++) {
-              this.parseFile(uploadedFiles[i], i);
-            }
-            
-          
-        },
-
-        mergeFiles: function(files){
-          var fileUploadedAlready = false;
-          for (var i = 0; i < files.length; i++){
-            for (var k = 0; k < uploadedFiles.length; k++){
-              if (uploadedFiles[k].name == files[i].name && uploadedFiles[k].size == files[i].size) {
-                fileUploadedAlready = true;
-                break
-              }
-            }
-            if (!fileUploadedAlready) {
-              uploadedFiles.push(files[i])
-            } else {
-              fileUploadedAlready = false;
-            }
-          }
-        },
-
-        parseFile: function(file, index) {
-          var self = this
-
-          // define reader
-          var reader = new FileReader();
-            
-          //check extension
-          let documentName = file.name;
-          let ext = documentName.split('.').pop().toLowerCase();
-
-          // supported extensions
-          if (ext == "docx" || ext == "txt") {
-              let documentNameContainer = document.querySelector(".form__upload-doc-name");
-              documentNameContainer.innerHTML += "<div class='form__upload-filename'>" + documentName + "</div>";
-
-              let documentUploadLabel = document.querySelector(".form__upload-label");
-              documentUploadLabel.innerHTML = "Загрузить еще документы";
-          }
-
-          // if it's DOCX
-          if (ext == "docx") {
-
-              reader.readAsBinaryString(file);
-
-              // on error
-              reader.onerror = function (evt) {
-                  console.log("error reading file", evt);
-                  alert("Не удалось прочитать документ. Укажите количество символов вручную")
-              }
-
-              // on success
-              reader.onload = function (evt) {
-                  const content = evt.target.result;
-                  var zip = new PizZip(content);
-                  var doc = new Docxtemplater().loadZip(zip);
-
-                  self.setCharactedNum(doc.getFullText());
-              }
-          } else if (ext == "txt") { 
-
-              reader.onload = function(evt) {
-                  self.setCharactedNum(evt.target.result)
-              };
-              
-              reader.readAsText(file, "UTF-8");
-              
-          } else {
-            uploadedFiles.splice(index, 1);
-              alert('Пожалуйста, загрузите DOCX или TXT файл.')
-          }
-        },
-
-        setCharactedNum: function (text) {
-            // element to display char number
-            var charNumber = document.querySelector(".form__hint");
-
-            if (text && text.length > 0) {
-                //set variable for char number 
-                characterNumber = characterNumber + text.length;
-                
-                // show character number
-                charNumber.innerHTML = characterNumber + " знаков";
-
-                //calculate the price
-                this.calculateFinalPrice();
-
-                uploadedDocument = true;
-            }
-        },
-
-        //upload documnent to Sanity
-        updloadDocumentToSanity: function (file){
-
-            // create reference to the file
-            var src = URL.createObjectURL(file);
-
-            //fetching
-            fetch(sanityFetchUrl, {
-                method: 'post',
-                headers: {
-                    'Content-type': file.type,
-                    Authorization: 'Bearer ' + sanityTokenWithWriteAccess
-                },
-                body: file
-              })
-              .then(response => response.json())
-              .then(function(data) {      
-                    //set public URL link to the document in the following variable
-                    if (data && data.document) {
-                        linksToTheDocuments.push(data.document.url);
-                        uploadedFilesProgress++;
-                    }
-                });
-        },
-
-        expand: function () {
-
-            this.append(
-                Beast.node("form",{__context:this},"\n                    ",this.get('head', 'item'),"\n                ")
-                
-            )
-
-        },
-
-        domInit: function () {
-
-            let selectors = document.querySelectorAll(".form__button_select");
-            var self = this
-
-            if (selectors) {
-              for (var i = 0; i < selectors.length; i++) {
-
-                //when click on selector
-                selectors[i].onclick = function(evt) {
-                  //manupulations for visual selection
-                  let selectorButtons = evt.target.parentNode.querySelectorAll(".form__button_select");
-                  for (var j = 0; j < selectorButtons.length; j++) {
-                    selectorButtons[j].setAttribute("active", false);
-                  }
-                  evt.target.setAttribute("active", true);
-                  
-                  // set price depending on selection
-                  self.setPricingParam(evt.target.parentNode.getAttribute("param"), evt.target.getAttribute("data-param"));
-                }
-              }
-            }
-
-            let requestForm = document.querySelector(".form__action");
-
-            requestForm.onclick = function(event) {
-              this.value = 'Отправляю...';
-              this.disabled = true;
-              this.classList.add("button-loading");
-              event.preventDefault();
-              // if all validation goes well
-              if (validateForm()) {
-                
-                for (var i = 0; i < uploadedFiles.length; i++) {
-                  self.updloadDocumentToSanity(uploadedFiles[i]); 
-                } 
-                sendEmail();
-                
-              } else return false;
-            }
-
-            function sendRquestEmail(name, email, phone) {
-
-              let type = pricingParams["type"] == "silver" ? "Пакет Silver | " : "Пакет Gold | ";
-              let language = pricingParams["language"] == "english" ? "Документ на английском |" : "Документ на русском |";
-              let time = pricingParams["time"] == "urgent" ? " 24 часа" : " 2 дня";
-              let docsView = "";
-              for (var i = 0; i < linksToTheDocuments.length; i++){
-                docsView +=  "<p><a style='font-size: 24px;' href='" + linksToTheDocuments[i] + "'>Документ " + (i+1) + "</a></p>";
-              }
-
-              emailjs.send(emailJsService, emailJsTemplate, {
-                name: name,
-                email: email,
-                phone: phone,
-                type: type + language + time,
-                link: docsView,
-                price: calculatedPrice
-              })
-              .then(function() {
-                  //alert('Ваша заявка успешно оправлена');
-                  //location.reload();
-              }, function(error) {
-                  console.log('Failed sendig email', error);
-              });
-            }
-
-            function sendEmail() {
-              //if all files were uploaded
-              if (uploadedFilesProgress == uploadedFiles.length) {
-                sendRquestEmail(
-                  document.querySelector("#name").value,
-                  document.querySelector("#email").value,
-                  document.querySelector("#phone").value
-                );
-                uploadedFilesProgress = 0;
-                
-                let btnSend = document.querySelector(".form__action");
-                btnSend.value = 'Отправлено успешно';
-                btnSend.className = "form__action";
-
-              } else {
-                setTimeout(function(){ sendEmail() }, 500);
-              }
-            }
-
-            //validation of all input fields
-            function validateForm() {
-              if (!pricingParams["language"] || !pricingParams["time"]) {
-                alert('Для отправки заявки необходимо указать язык документа и срок')
-                return false;
-              }
-              if (!uploadedDocument) {
-                alert('Для отправки заявки нужно загрузить документ, с которым будет необходимо работать')
-                return false;
-              }
-              let nameField = document.querySelector("#name");
-              if (nameField.value.trim() == "") {
-                alert('Пожалуйста, укажите ваше имя, чтобы мы знали как к вам обращаться');
-                return false;
-              }
-
-              let emailField = document.querySelector("#email");
-              if (emailField.value.trim() == "") {
-                alert('Укажите адрес электронной почты, чтобы мы знали, как с вами связаться');
-                return false;
-              }
-
-              let phoneField = document.querySelector("#phone");
-              if (phoneField.value.trim() == "") {
-                alert('Укажите номер телефона, чтобы мы знали, как с вами связаться');
-                return false;
-              }
-
-              return true;
-            }
-
-            var parentBlockRef = this.parentBlock();
-            dropzoneComponent = new Dropzone("#dropzone-component", {
-                url: "#",
-                paramName: 'file',
-                previewsContainer: '.form__upload-doc-name',
-                autoQueue: false,
-                autoProcessQueue: false,
-                addRemoveLinks: false,
-                clickable: false,
-                thumbnailWidth: 80,
-                thumbnailHeight: 100,
-                maxFiles: 10,
-                acceptedFiles: '.docx, .doc, .txt',
-                parallelUploads: 1,
-                uploadMultiple: true,
-                dictDefaultMessage: 'Или перетащите файлы сюда',
-                init: function() {
-                  this.on("addedfiles", function() {
-                      parentBlockRef.calculateCharNumber(this.files);
-                  });
-                }
-              },
-            );
-
-            $('#dropzone-component').on('dragenter', function() {
-                $(this).css({'outline' : '2px dashed green'})
-            });
-
-            $('#dropzone-component').on('dragleave', function() {
-              $(this).css({'outline' : 'none'})
-            });
-            
-
-        }
-    },
-
-    Form__form: {
-        tag: 'div',
-        expand: function () {
-
-            this.domAttr('action', this.parentBlock().param('action'))
-            this.domAttr('id', this.parentBlock().param('id'))
-
-        }
-    },
-
-    Form__item: {
-        expand: function () {
-            this.domAttr('param', this.param('param'))
-        }
-    },
-
-    Form__button: {
-        expand: function () {
-            this.domAttr('data-param', this.param('data-param'))
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-        }
-    },
-
-    Form__action: {
-        tag: 'input',
-        expand: function () {
-            this.domAttr('type', 'submit')
-            this.domAttr('value', this.text())
-            this.css('background', this.parentBlock().param('action'))
-            this.css('color', this.parentBlock().param('actionText'))
-        }
-    },
-
-    Form__input: {
-        tag: 'input',
-        expand: function () {
-            this.domAttr('type', this.param('type'))
-            this.domAttr('id', this.param('id'))
-            this.domAttr('placeholder', this.param('placeholder'))
-            this.domAttr('required', true)
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-
-            let root = document.documentElement;
-            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
-            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
-            
-        }
-    },
-
-    Form__upload: {
-        expand: function () {
-            this.append(
-                Beast.node("upload-label",{__context:this,"for":"file-upload"},"Загрузить документы"),
-                Beast.node("upload-doc-name",{__context:this}),
-                Beast.node("upload-input",{__context:this,"id":"file-upload","type":"file"})
-            )
-            this.domAttr('id', 'dropzone-component');
-        }
-    },
-
-    'Form__upload-label': {
-        tag: 'label',
-        expand: function () {
-            this.domAttr('for', this.param('for'))
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-        }
-    },
-
-    'Form__upload-doc-name': {
-        tag: 'div',
-        expand: function () {
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-        }
-    },
-    
-    'Form__upload-input': {
-        tag: 'input',
-        on: {
-            // Listen to change event on file input
-            change: function () {
-                // add and remove modificator for every change
-                this.parentBlock().calculateCharNumber()
-
-            }
-        },
-
-        expand: function () {
-            this.domAttr('id', this.param('id'))
-            this.domAttr('multiple', true)
-            this.domAttr('type', this.param('type'))
-            // this.domAttr('onchnage', 'calculateCharNumber()')
-        }
-    },
-})
-
-
-
-
-
 Beast.decl({
     Head: {
         expand: function () {
             this.append(
                 Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
-                Beast.node("menu",{__context:this},"\n                    ",this.get('menu-item'),"\n                ")
+                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"/"},"Все продукты"),"\n                    ",Beast.node("menu-item",{"href":"about.html"},"О нас"),"\n                    ",Beast.node("menu-item",{"href":"about.html#contact"},"Связь"),"\n                ")
             )
 
         }
@@ -6772,15 +7196,67 @@ Beast.decl({
         }
     },
 
+    'Head__menu-item': {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+
+        }
+    },
+
     Head__logo: {
         expand: function () {
             this.empty()
             
-
         }
     },
     
 
+})
+Beast.decl({
+    Link: {
+        tag: 'a',
+        
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+
+            if (this.mod('New')) {
+                this.domAttr('target', '_blank')
+            }
+
+        }
+    }  
+})
+Beast.decl({
+    
+    List: {
+        expand: function () {
+            
+        }
+    },
+    
+    List__item: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+        }
+    },
+
+    List__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        }
+    },
+
+    List__hint: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'M',
+            Line: 'L'
+        }
+    },
 })
 /**
  * @block Overlay Интерфейс модальных окон
@@ -6790,7 +7266,7 @@ Beast.decl({
  */
 Beast.decl({
     Overlay: {
-        inherits: ['UINavigation'],
+        inherits: ['Grid', 'UINavigation'],
         mod: {
             Type: 'side', // modal, partsideleft, bottom, top, expand, custom
         },
@@ -6842,9 +7318,6 @@ Beast.decl({
                 this.mod('Col', '1LeftMargins')
             }
 
-            this.css('color', this.param('colorText'))
-            this.css('background-color', this.param('colorMain'))
-
             this.append(
                 Beast.node("content",{__context:this},this.get())
             )
@@ -6859,10 +7332,7 @@ Beast.decl({
                         : undefined
 
                     this.css({
-                        marginLeft: this.domNode().offsetWidth / -2,
-                        marginTop: marginTop,
-                        marginBottom: 0,
-                        top: '0%',
+                        marginLeft: this.domNode().offsetWidth / -2
                     })
 
                     if (marginTop !== undefined) {
@@ -6875,17 +7345,15 @@ Beast.decl({
                 }
             },
             animationend: function () {
-                // if (this.mod('Type') === 'expand' && this.param('scrollContent')) {
-                //     requestAnimationFrame(function () {
-                //         if (this.elem('content')[0].domNode().scrollTop === 0) {
-                //             this.param('options').context.css('transform', 'translate3d(0px,0px,0px)')
-                //             this.elem('content')[0].domNode().scrollTop = -this.param('scrollContent')
-                //             this.param('scrollContent', false)
-                //         }
-                //     }.bind(this))
-                // }
-
-                
+                if (this.mod('Type') === 'expand' && this.param('scrollContent')) {
+                    requestAnimationFrame(function () {
+                        if (this.elem('content')[0].domNode().scrollTop === 0) {
+                            this.param('options').context.css('transform', 'translate3d(0px,0px,0px)')
+                            this.elem('content')[0].domNode().scrollTop = -this.param('scrollContent')
+                            this.param('scrollContent', false)
+                        }
+                    }.bind(this))
+                }
 
                 if (this.mod('State') === 'release') {
                     this.param('releaseCallback')()
@@ -6952,15 +7420,18 @@ Beast.decl({
         expand: function () {
             var layerIndex = this.parentBlock().parentNode().index()
 
-            // this.append(
-            //     <topBarActionBack/>,
-            //     layerIndex > 1 && <topBarActionClose/>
-            // )
+            if (this.parentBlock().mod('type') === 'side') {
+                this.append(
+                    Beast.node("topBarActionBack",{__context:this}),
+                    layerIndex > 1 && Beast.node("topBarActionClose",{__context:this})
+                )
+            }
 
-            this.append(
-                // <topBarActionNav/>,
-                Beast.node("topBarActionClose",{__context:this})
-            )
+            if (this.parentBlock().mod('type') === 'sideBottom') {
+                this.append(
+                    Beast.node("topBarActionClose",{__context:this})
+                )
+            }
 
             var title = this.parentBlock().param('title')
             var subtitle = this.parentBlock().param('subtitle')
@@ -7019,11 +7490,9 @@ Beast.decl({
         inherits: 'Overlay__topBarAction',
         expand: function fn () {
             this.inherited(fn)
-
-            this.append(
-                Beast.node("Icon",{__context:this,"Name":"CornerArrowLeft"}),
-                Beast.node("topBarActionLabel",{__context:this},"Back")
-            )
+                .append(
+                    Beast.node("Icon",{__context:this,"Name":"arrow-back"})
+                )
         },
         on: {
             Release: function () {
@@ -7031,34 +7500,16 @@ Beast.decl({
             }
         }
     },
-    Overlay__topBarActionNav: {
-        inherits: 'Overlay__topBarAction',
-        expand: function fn () {
-            this.inherited(fn)
-
-            this.append(
-                Beast.node("topBarActionLabel",{__context:this},"Index"),
-                Beast.node("Work",{__context:this},Beast.node("title",undefined,"Test"))
-            )
-        },
-        on: {
-            Release: function () {
-                //this.parentBlock().popFromStackNavigation()
-            }
-        }
-    },
     Overlay__topBarActionClose: {
         inherits: 'Overlay__topBarAction',
         expand: function fn () {
-            //this.css('background', this.parentBlock().param('colorText'))
             this.inherited(fn)
                 .append(
-                    Beast.node("topBarActionLabel",{__context:this},"Close")
+                    '+'
                 )
         },
         on: {
             click: function () {
-                window.history.back();
                 this.parentBlock().popAllFromStackNavigation()
             }
         }
@@ -7067,6 +7518,29 @@ Beast.decl({
     
 })
 
+Beast.decl({
+    Screen: {
+        
+        expand: function fn () {
+            
+
+            if (this.param('color')) {
+                this.css('background', this.param('color'))
+
+                let root = document.documentElement;
+                root.style.setProperty('--text', this.param('text'));
+                root.style.setProperty('--ground', this.param('color'));
+            }
+
+            if (this.param('text')) {
+                this.css('color', this.param('text'))
+            }
+
+            
+        },
+        
+    },
+})
 Beast.decl({
     Shelf: {
 
@@ -7081,7 +7555,7 @@ Beast.decl({
     },
     
     Shelf__item: {
-
+        tag: 'a',
         expand: function () {
 
             this.css('background', this.param('color'))
@@ -7090,56 +7564,8 @@ Beast.decl({
             this.append(
                 Beast.node("dot",{__context:this,"color":dot}),
                 this.get('num', 'title', 'subtitle')
-                
             )    
-
-            if (this.param('name') === 'closed') {
-                
-            } else {
-
-
-
-            this.on('click', function () {
-
-                var g = this.param('name')
-                console.log(g)
-
-                if (this.param('name') === 'docs') {
-                    var chatPage = (
-                        Beast.node("DocScreen",{__context:this,"":true})
-                    )
-                }
-
-                if (this.param('name') === 'web') {
-                    var chatPage = (
-                        Beast.node("WebScreen",{__context:this,"":true})
-                    )
-                }
-
-                if (this.param('name') === 'presenation') {
-                    var chatPage = (
-                        Beast.node("PresentationScreen",{__context:this,"":true})
-                    )
-                }
-
-                if (history.pushState) {
-                    history.pushState(null, null, this.param('href'));
-                }
-
-                Beast.node("Overlay",{__context:this,"Type":"side"},"\n                    ",chatPage,"\n                ")
-                    .param({
-                        topBar: true,
-                        scrollContent: true
-                    })
-                    .pushToStackNavigation({
-                        context: this,
-                        onDidPop: function () {
-                            chatPage.detach()
-                        }
-                    })
-            })
-
-            }
+            this.domAttr('href', this.param('href'))
 
         }
     },
@@ -7154,6 +7580,25 @@ Beast.decl({
 
         }
     },
+
+    Shelf__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'XL',
+            Line: 'L'
+        },
+        expand: function () {
+
+            this.css('background', this.param('color'))
+
+            if (this.parentBlock().mod('Size') === 'M') {
+                this.mod('Text', 'L')   
+            }
+            
+            
+
+        }
+    },
     
 
 })
@@ -7162,6 +7607,34 @@ Beast.decl({
 
 
 
+Beast.decl({
+    Showcase: {
+
+        expand: function () {
+            this.append(
+                
+                    this.get('items')
+                
+            )
+
+        }
+    },
+    
+    Showcase__item: {
+
+        expand: function () {
+            this.css('background', this.parentBlock().param('color'))
+            
+            this.append(
+                
+                Beast.node("Thumb",{__context:this,"Ratio":this.parentBlock().mod('Ratio')},this.text())
+                
+            )
+
+        }
+    },
+  
+})
 Beast.decl({
     Steps: {
 
@@ -7198,17 +7671,8 @@ Beast.decl({
             
 
         }
-    },
-
-    
-    
-
+    }
 })
-
-
-
-
-
 /**
  * @block Thumb Тумбнеил
  * @dep grid link
@@ -7217,7 +7681,7 @@ Beast.decl({
  */
 Beast.decl({
     Thumb: {
-        inherits: ['Grid', 'Link'],
+        inherits: ['Grid'],
         mod: {
             Ratio:'',               // @mod Ratio {1x1 1x2 2x1 2x3 3x2 3x4 4x3 16x10} Пропорция
             Fit:'cover',            // @mod Fit {cover! contain} Растягивание картинки по контейнеру
@@ -7516,6 +7980,24 @@ Beast.decl({
 // @example <Thumb Ratio="1x1" Col="3" Shadow src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Grid src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Rounded src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
+/**
+ * @block Typo Типографика
+ * @tag base
+ */
+
+Beast.decl({
+    Typo: {
+        // finalMod: true,
+        mod: {
+            text: '',       // @mod Text    {S M L XL}  Размер текста
+            line: '',       // @mod Line    {S M L}     Высота строки
+            caps: false,    // @mod Caps    {boolean}   Капслок
+            light: false,   // @mod Light   {boolean}   Light-начертание
+            medium: false,  // @mod Medium  {boolean}   Medium-начертание
+            bold: false,    // @mod Bold    {boolean}   Bold-начертание
+        }
+    }
+})
 Beast.decl({
 
     /**
