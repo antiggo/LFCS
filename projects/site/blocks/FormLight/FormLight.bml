@@ -1,3 +1,25 @@
+
+const emailJsTemplateGeneric = "template_al17i86";
+
+const emailContent = {
+  web : {
+    title: "Сайты и стиль",
+    message: "Вы отправили заявку на сайты и стиль. Мы свяжемся с вами в течение двух рабочих дней, чтобы обсудить детали."
+  },
+  support : {
+    title: "Дизайн-поддержка",
+    message: "Вы отправили заявку на дизайн-поддержку по подписке. Мы свяжемся с вами в течение двух рабочих дней, чтобы обсудить детали."
+  },
+  presentation : {
+    title: "Дизайн презентации",
+    message: "Вы отправили заявку на дизайн презентации. У вас уже есть текст или слайды? Пожалуйста, отправьте их ответным письмом, чтобы мы смогли оценить объем работы."
+  },
+  tailored : {
+    title: "Индивидуальный дизайн",
+    message: "Вы отправили заявку на индивидуальный дизайн. Мы свяжемся с вами в течение двух рабочих дней, чтобы обсудить детали."
+  },
+}
+
 Beast.decl({
     FormLight: {
 
@@ -15,6 +37,8 @@ Beast.decl({
         domInit: function () {
             let requestForm = document.querySelector(".formLight__action");
             var typeName = this.param('typeName')
+            var self = this;
+
             console.log(typeName)
 
             requestForm.onclick = function(event) {
@@ -45,10 +69,28 @@ Beast.decl({
               .then(function() {
                   //alert('Ваша заявка успешно оправлена');
                   //location.reload();
+
+                  sendEmailClient();
               }, function(error) {
                   console.log('Failed sendig email', error);
               });
             }
+
+            function sendEmailClient() {
+              let clientEmail = document.querySelector("#email").value;
+              
+
+              emailjs.send(emailJsService, emailJsTemplateGeneric, {
+                sender: clientEmail,
+                subject: emailContent[self.param('type')].title,
+                message: emailContent[self.param('type')].message
+              })
+              .then(function() {
+                  
+              }, function(error) {
+                  console.log('Failed sendig email', error);
+              });
+          }
 
             function sendEmail() {
               //if all files were uploaded

@@ -6108,6 +6108,43 @@ Beast.decl({
     },
 
 })
+Beast.decl({
+    AdminHead: {
+        expand: function () {
+            this.append(
+                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
+                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"main.html"},"Выход"),"\n                ")
+            )
+
+        }
+    },
+
+    AdminHead__link: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', 'main.html')
+
+
+        }
+    },
+
+    'AdminHead__menu-item': {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+
+        }
+    },
+
+    AdminHead__logo: {
+        expand: function () {
+            this.empty()
+            
+        }
+    },
+    
+
+})
 /**
  * @block App Корневой компонент всех страниц
  * @dep UINavigation DocInspector DocConsole
@@ -6203,43 +6240,6 @@ Beast.decl({
 
 
 
-Beast.decl({
-    AdminHead: {
-        expand: function () {
-            this.append(
-                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
-                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"main.html"},"Выход"),"\n                ")
-            )
-
-        }
-    },
-
-    AdminHead__link: {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', 'main.html')
-
-
-        }
-    },
-
-    'AdminHead__menu-item': {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', this.param('href'))
-
-        }
-    },
-
-    AdminHead__logo: {
-        expand: function () {
-            this.empty()
-            
-        }
-    },
-    
-
-})
 Beast.decl({
     Cards: {
 
@@ -6452,8 +6452,8 @@ let goldDefaultTime = "regular";
 const emailJsService = "service_5zbkh3r";
 const emailJsTemplate = "template_mjdi55g";
 
-const emailJsTemplateGold = "";
-const emailJsTemplateSilver = "";
+const emailJsTemplateGold = "template_2buwr3y";
+const emailJsTemplateSilver = "template_twtm0tr";
 
 const sanityTokenWithWriteAccess = 'skmAQVJjHdsVFKS4TCsoiVvZIeEUN9qFw545I0JD4YSoBrD80kryUFXitu2g1peNqfrVZA1Mwcq48Sk0KOXCt8b8KnLIRAtNuDbwrAq6YoxsJFw2KtFhVYbQDGFEQNzLDCJTJaBYa4HfdL7wmz7H5FgAGtax1MlUdusEBfkeQsNvegVVlwPw';
 const sanityFetchUrl = 'https://spfa8rwc.api.sanity.io/v1/assets/files/production';
@@ -6771,8 +6771,11 @@ Beast.decl({
                 price: calculatedPriceDetails[0] + " ₽ * " + calculatedPriceDetails[1] + " стр. = " + calculatedPrice
               })
               .then(function() {
-                  //alert('Ваша заявка успешно оправлена');
-                  //location.reload();
+
+                  //only in successful case send email to client
+
+                  sendEmailClient();
+                  
               }, function(error) {
                   console.log('Failed sendig email', error);
               });
@@ -7061,6 +7064,68 @@ Beast.decl({
 
 
 Beast.decl({
+    Gallery: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'S',
+            Line: 'L'
+        },
+        expand: function () {
+            this.domAttr('id', 'team')
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+                
+            )
+
+        }
+    },
+    
+    Gallery__image: {
+
+        expand: function () {
+            
+            
+            this.append(
+                
+                Beast.node("Thumb",{__context:this,"Ratio":"1x1"},this.text())
+                
+            )
+
+        }
+    },
+
+    Gallery__item: {
+        tag: 'a',
+        expand: function () {
+            var href = this.param('href')
+            this.domAttr('href', href)
+
+        }
+    }  
+})
+
+const emailJsTemplateGeneric = "template_al17i86";
+
+const emailContent = {
+  web : {
+    title: "Сайты и стиль",
+    message: "Вы отправили заявку на сайты и стиль. Мы свяжемся с вами в течение двух рабочих дней, чтобы обсудить детали."
+  },
+  support : {
+    title: "Дизайн-поддержка",
+    message: "Вы отправили заявку на дизайн-поддержку по подписке. Мы свяжемся с вами в течение двух рабочих дней, чтобы обсудить детали."
+  },
+  presentation : {
+    title: "Дизайн презентации",
+    message: "Вы отправили заявку на дизайн презентации. У вас уже есть текст или слайды? Пожалуйста, отправьте их ответным письмом, чтобы мы смогли оценить объем работы."
+  },
+  tailored : {
+    title: "Индивидуальный дизайн",
+    message: "Вы отправили заявку на индивидуальный дизайн. Мы свяжемся с вами в течение двух рабочих дней, чтобы обсудить детали."
+  },
+}
+
+Beast.decl({
     FormLight: {
 
         expand: function () {
@@ -7075,6 +7140,8 @@ Beast.decl({
         domInit: function () {
             let requestForm = document.querySelector(".formLight__action");
             var typeName = this.param('typeName')
+            var self = this;
+
             console.log(typeName)
 
             requestForm.onclick = function(event) {
@@ -7105,10 +7172,28 @@ Beast.decl({
               .then(function() {
                   //alert('Ваша заявка успешно оправлена');
                   //location.reload();
+
+                  sendEmailClient();
               }, function(error) {
                   console.log('Failed sendig email', error);
               });
             }
+
+            function sendEmailClient() {
+              let clientEmail = document.querySelector("#email").value;
+              
+
+              emailjs.send(emailJsService, emailJsTemplateGeneric, {
+                sender: clientEmail,
+                subject: emailContent[self.param('type')].title,
+                message: emailContent[self.param('type')].message
+              })
+              .then(function() {
+                  
+              }, function(error) {
+                  console.log('Failed sendig email', error);
+              });
+          }
 
             function sendEmail() {
               //if all files were uploaded
@@ -7232,46 +7317,6 @@ Beast.decl({
 })
 
 
-Beast.decl({
-    Gallery: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'S',
-            Line: 'L'
-        },
-        expand: function () {
-            this.domAttr('id', 'team')
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
-                
-            )
-
-        }
-    },
-    
-    Gallery__image: {
-
-        expand: function () {
-            
-            
-            this.append(
-                
-                Beast.node("Thumb",{__context:this,"Ratio":"1x1"},this.text())
-                
-            )
-
-        }
-    },
-
-    Gallery__item: {
-        tag: 'a',
-        expand: function () {
-            var href = this.param('href')
-            this.domAttr('href', href)
-
-        }
-    }  
-})
 /**
  * @block Grid Динамическая сетка
  * @tag base

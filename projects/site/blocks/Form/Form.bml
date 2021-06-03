@@ -19,8 +19,8 @@ let goldDefaultTime = "regular";
 const emailJsService = "service_5zbkh3r";
 const emailJsTemplate = "template_mjdi55g";
 
-const emailJsTemplateGold = "";
-const emailJsTemplateSilver = "";
+const emailJsTemplateGold = "template_2buwr3y";
+const emailJsTemplateSilver = "template_twtm0tr";
 
 const sanityTokenWithWriteAccess = 'skmAQVJjHdsVFKS4TCsoiVvZIeEUN9qFw545I0JD4YSoBrD80kryUFXitu2g1peNqfrVZA1Mwcq48Sk0KOXCt8b8KnLIRAtNuDbwrAq6YoxsJFw2KtFhVYbQDGFEQNzLDCJTJaBYa4HfdL7wmz7H5FgAGtax1MlUdusEBfkeQsNvegVVlwPw';
 const sanityFetchUrl = 'https://spfa8rwc.api.sanity.io/v1/assets/files/production';
@@ -340,8 +340,11 @@ Beast.decl({
                 price: calculatedPriceDetails[0] + " ₽ * " + calculatedPriceDetails[1] + " стр. = " + calculatedPrice
               })
               .then(function() {
-                  //alert('Ваша заявка успешно оправлена');
-                  //location.reload();
+
+                  //only in successful case send email to client
+
+                  sendEmailClient();
+                  
               }, function(error) {
                   console.log('Failed sendig email', error);
               });
