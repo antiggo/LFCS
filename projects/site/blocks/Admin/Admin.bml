@@ -1,0 +1,199 @@
+const emailJsService2 = "service_5zbkh3r";
+const emailJsTemplate2 = "template_mjdi55g";
+
+Beast.decl({
+    Admin: {
+		expand: function () {
+            
+            this.domAttr('id', 'admin')
+            
+
+        },
+		domInit: function () {
+			let requestForm = document.querySelector(".admin__action");
+
+            requestForm.onclick = function(event) {
+
+				let btnTitle = document.querySelector(".admin__action-title")
+				btnTitle.innerHTML = 'Отправляю...';
+                this.disabled = true;
+                this.classList.add("button-loading");
+			}
+
+			function sendEmail() {
+
+				emailjs.send(emailJsService2, emailJsTemplate2, {
+					
+				})
+				.then(function() {
+					let btnSend = document.querySelector(".admin__action-title");
+					btnSend.innerHTML = 'Отправлено успешно';
+					btnSend.parentNode.className = "admin__action admin__disabled";
+
+                	$(".admin__action").attr("disabled", "disabled").off('click');
+				}, function(error) {
+					console.log('Failed sendig email', error);
+				});
+			}
+			
+		}
+	},
+
+	Admin__form: {
+        tag: 'div',
+        expand: function () {
+
+            this.domAttr('action', this.parentBlock().param('action'))
+            this.domAttr('id', this.parentBlock().param('id'))
+
+        }
+    },
+
+	Admin__item: {
+        expand: function () {
+            this.domAttr('param', this.param('param'))
+        }
+    },
+
+	Admin__input: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+
+            let root = document.documentElement;
+            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
+            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
+            
+        }
+    },
+
+	Admin__serviceName: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            
+        }
+    },
+
+	
+
+	Admin__detailsValue: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            
+        }
+    },
+
+	Admin__summaryPrice: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            
+        }
+    },
+
+	Admin__deadlineDate: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            
+        }
+    },
+
+	Admin__servicePrice: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            
+        }
+    },
+
+	Admin__item: {
+        expand: function () {
+            this.domAttr('param', this.param('param'))
+        }
+    },
+
+	Admin__service: {
+        expand: function () {
+        }
+    },
+
+	Admin__addService: {
+		expand: function () {
+            this.on('click', function() {
+				var newService = (
+					<service>
+						<servicePrice placeholder="Цена, ₽"></servicePrice>
+						<naming>
+							<serviceType>Юридический дизайн документа </serviceType>
+							<serviceName placeholder="Наименование документа"></serviceName>
+						</naming>
+						<details>
+							<row>
+								<detailsTitle>Особые пожелания: </detailsTitle>
+								<detailsValue></detailsValue>
+							</row>
+							<row>
+								<detailsTitle>Объем исходного документа: </detailsTitle>
+								<detailsValue></detailsValue>
+							</row>
+							<row>
+								<detailsTitle>Срок выполнения: </detailsTitle>
+								<detailsValue></detailsValue>
+							</row>
+						</details>
+						<serviceRemove>Удалить </serviceRemove>
+					</service>
+				)
+				this.parentNode().append(newService)
+			})
+        }
+	},
+
+	Admin__action: {
+        // tag: 'input',
+        expand: function () {
+            // this.domAttr('type', 'submit')
+            // this.domAttr('value', this.text())
+            this.append(
+              <action-title>{this.text()}</action-title>
+            )
+            
+        }
+    },
+
+	Admin__serviceRemove: {
+		expand: function () {
+            this.on('click', function() {
+				this.parentNode().remove();
+			})
+		}
+	},
+
+	Admin__logo: {
+        expand: function () {
+            {this.get('logo')}
+        }
+    },
+
+})

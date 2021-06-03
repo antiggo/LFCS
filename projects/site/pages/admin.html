@@ -1,0 +1,103 @@
+<meta charset="utf8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, userpic-scalable=0, viewport-fit=cover">
+<meta property="og:title" content="LFCS — Legal Design Studio">
+<link rel="icon" href="../../../assets/favicon.png"/>
+
+<script type="text/javascript" src="../../../build/site/build.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TE03R75GWF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-TE03R75GWF');
+</script>
+<link type="text/css" rel="stylesheet" href="../../../build/site/build.css">
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(77123167, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/77123167" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
+<title>LFCS — Отправление письма</title> 
+
+<script type="bml">
+    <App color="#7D7D7D" text="#D8D8D8">
+
+        <AdminHead>
+            <logo>/assets/logo.svg</logo>
+            <menu-item>Выход</menu-item>
+        </AdminHead>
+
+        <Title>Отправление письма</Title>
+		<Admin>
+			<form>
+				<item>
+					<input type="email" id="email" requred placeholder="Почта клиента"></input>
+				</item>
+				<logo></logo>
+				<item>
+					<Text Gap="M" Size="M">
+						Данное письмо повторяет существенные условия договора, указанные в счете, который вам отправил наш агент, ЮКасса. Оплачивая счет, вы заключаете с ООО «ЮФКР» договор оказания услуг на условиях, изложенных на странице lfcs.design/terms.
+					</Text>
+				</item>
+				<item>
+					<serviceTitle>Услуга</serviceTitle>
+					<priceTitle>Цена</priceTitle>
+				</item>
+				<item>
+					<separator></separator>
+				</item>
+				<services>
+					<addservice>Добавить услугу</addservice>
+					<service>
+						<servicePrice placeholder="Цена, ₽"></servicePrice>
+						<naming>
+							<serviceType>Юридический дизайн документа </serviceType>
+							<serviceName placeholder="Наименование документа"></serviceName>
+						</naming>
+						<details>
+							<row>
+								<detailsTitle>Особые пожелания: </detailsTitle>
+								<detailsValue></detailsValue>
+							</row>
+							<row>
+								<detailsTitle>Объем исходного документа: </detailsTitle>
+								<detailsValue></detailsValue>
+							</row>
+							<row>
+								<detailsTitle>Срок выполнения: </detailsTitle>
+								<detailsValue></detailsValue>
+							</row>
+						</details>
+						<serviceRemove>Удалить </serviceRemove>
+					</service>
+				</services>
+				<summary>
+					<summaryTitle>итого, без ндс</summaryTitle>
+					<summaryPrice placeholder="Цена, ₽"></summaryPrice>
+				</summary>
+				<deadline>
+					<deadlineTitle>Срок действия оферты — до</deadlineTitle>
+					<deadlineDate placeholder="Дата"></deadlineDate>
+				</deadline>
+				<item>
+					<action>Отправить письмо</action>
+				</item>
+			</form>
+		</Admin>
+        
+
+    </App>
+</script>

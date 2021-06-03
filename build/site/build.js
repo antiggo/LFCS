@@ -5930,6 +5930,184 @@ BemNode.prototype = {
 }
 
 })();
+const emailJsService2 = "service_5zbkh3r";
+const emailJsTemplate2 = "template_mjdi55g";
+
+Beast.decl({
+    Admin: {
+		expand: function () {
+            
+            this.domAttr('id', 'admin')
+            
+
+        },
+		domInit: function () {
+			let requestForm = document.querySelector(".admin__action");
+
+            requestForm.onclick = function(event) {
+
+				let btnTitle = document.querySelector(".admin__action-title")
+				btnTitle.innerHTML = 'Отправляю...';
+                this.disabled = true;
+                this.classList.add("button-loading");
+			}
+
+			function sendEmail() {
+
+				emailjs.send(emailJsService2, emailJsTemplate2, {
+					
+				})
+				.then(function() {
+					let btnSend = document.querySelector(".admin__action-title");
+					btnSend.innerHTML = 'Отправлено успешно';
+					btnSend.parentNode.className = "admin__action admin__disabled";
+
+                	$(".admin__action").attr("disabled", "disabled").off('click');
+				}, function(error) {
+					console.log('Failed sendig email', error);
+				});
+			}
+			
+		}
+	},
+
+	Admin__form: {
+        tag: 'div',
+        expand: function () {
+
+            this.domAttr('action', this.parentBlock().param('action'))
+            this.domAttr('id', this.parentBlock().param('id'))
+
+        }
+    },
+
+	Admin__item: {
+        expand: function () {
+            this.domAttr('param', this.param('param'))
+        }
+    },
+
+	Admin__input: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+
+            let root = document.documentElement;
+            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
+            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
+            
+        }
+    },
+
+	Admin__serviceName: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            
+        }
+    },
+
+	
+
+	Admin__detailsValue: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            
+        }
+    },
+
+	Admin__summaryPrice: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            
+        }
+    },
+
+	Admin__deadlineDate: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            
+        }
+    },
+
+	Admin__servicePrice: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            
+        }
+    },
+
+	Admin__item: {
+        expand: function () {
+            this.domAttr('param', this.param('param'))
+        }
+    },
+
+	Admin__service: {
+        expand: function () {
+        }
+    },
+
+	Admin__addService: {
+		expand: function () {
+            this.on('click', function() {
+				var newService = (
+					Beast.node("service",{__context:this},"\n						",Beast.node("servicePrice",{"placeholder":"Цена, ₽"}),"\n						",Beast.node("naming",undefined,"\n							",Beast.node("serviceType",undefined,"Юридический дизайн документа "),"\n							",Beast.node("serviceName",{"placeholder":"Наименование документа"}),"\n						"),"\n						",Beast.node("details",undefined,"\n							",Beast.node("row",undefined,"\n								",Beast.node("detailsTitle",undefined,"Особые пожелания: "),"\n								",Beast.node("detailsValue"),"\n							"),"\n							",Beast.node("row",undefined,"\n								",Beast.node("detailsTitle",undefined,"Объем исходного документа: "),"\n								",Beast.node("detailsValue"),"\n							"),"\n							",Beast.node("row",undefined,"\n								",Beast.node("detailsTitle",undefined,"Срок выполнения: "),"\n								",Beast.node("detailsValue"),"\n							"),"\n						"),"\n						",Beast.node("serviceRemove",undefined,"Удалить "),"\n					")
+				)
+				this.parentNode().append(newService)
+			})
+        }
+	},
+
+	Admin__action: {
+        // tag: 'input',
+        expand: function () {
+            // this.domAttr('type', 'submit')
+            // this.domAttr('value', this.text())
+            this.append(
+              Beast.node("action-title",{__context:this},this.text())
+            )
+            
+        }
+    },
+
+	Admin__serviceRemove: {
+		expand: function () {
+            this.on('click', function() {
+				this.parentNode().remove();
+			})
+		}
+	},
+
+	Admin__logo: {
+        expand: function () {
+            {this.get('logo')}
+        }
+    },
+
+})
 /**
  * @block App Корневой компонент всех страниц
  * @dep UINavigation DocInspector DocConsole
@@ -6026,6 +6204,85 @@ Beast.decl({
 
 
 Beast.decl({
+    AdminHead: {
+        expand: function () {
+            this.append(
+                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
+                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"main.html"},"Выход"),"\n                ")
+            )
+
+        }
+    },
+
+    AdminHead__link: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', 'main.html')
+
+
+        }
+    },
+
+    'AdminHead__menu-item': {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+
+        }
+    },
+
+    AdminHead__logo: {
+        expand: function () {
+            this.empty()
+            
+        }
+    },
+    
+
+})
+Beast.decl({
+    Cards: {
+
+        expand: function () {
+            
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+
+                
+            )
+
+        }
+    },
+    
+    Cards__item: {
+        tag: 'a',
+        expand: function () {
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
+            this.domAttr('href', this.param('href'))
+            
+            this.append(
+                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
+                this.get('title'),
+                Beast.node("cross",{__context:this},"+"),
+                this.get('price')
+                
+            )
+
+        }
+    },
+
+    
+    
+
+})
+
+
+
+
+
+
+Beast.decl({
     Cases: {
 
         expand: function () {
@@ -6112,48 +6369,6 @@ Beast.decl({
     
 
 })
-
-
-
-
-
-Beast.decl({
-    Cards: {
-
-        expand: function () {
-            
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
-
-                
-            )
-
-        }
-    },
-    
-    Cards__item: {
-        tag: 'a',
-        expand: function () {
-            this.css('background', this.param('color'))
-            this.css('color', this.param('text'))
-            this.domAttr('href', this.param('href'))
-            
-            this.append(
-                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
-                this.get('title'),
-                Beast.node("cross",{__context:this},"+"),
-                this.get('price')
-                
-            )
-
-        }
-    },
-
-    
-    
-
-})
-
 
 
 
