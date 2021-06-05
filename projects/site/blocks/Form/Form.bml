@@ -382,9 +382,9 @@ Beast.decl({
                 let timing = pricingParams["time"] == "urgent" ? "24 часа" : "5 дней";
 
                 let rightTemplate = "";
-                if (this.param('type') === 'gold') {
+                if (self.param('type') === 'gold') {
                   rightTemplate = emailJsTemplateGold;
-                } else if (this.param('type') === 'silver'){
+                } else if (self.param('type') === 'silver'){
                   rightTemplate = emailJsTemplateSilver;
                 } else {
                   return;

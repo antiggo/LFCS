@@ -5930,6 +5930,43 @@ BemNode.prototype = {
 }
 
 })();
+Beast.decl({
+    AdminHead: {
+        expand: function () {
+            this.append(
+                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
+                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"main.html"},"Выход"),"\n                ")
+            )
+
+        }
+    },
+
+    AdminHead__link: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', 'main.html')
+
+
+        }
+    },
+
+    'AdminHead__menu-item': {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+
+        }
+    },
+
+    AdminHead__logo: {
+        expand: function () {
+            this.empty()
+            
+        }
+    },
+    
+
+})
 const emailJsService2 = "service_5zbkh3r";
 const emailJsTemplate2 = "template_mjdi55g";
 
@@ -6109,42 +6146,47 @@ Beast.decl({
 
 })
 Beast.decl({
-    AdminHead: {
+    Cards: {
+
         expand: function () {
+            
             this.append(
-                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
-                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"main.html"},"Выход"),"\n                ")
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+
+                
+            )
+
+        }
+    },
+    
+    Cards__item: {
+        tag: 'a',
+        expand: function () {
+            this.css('background', this.param('color'))
+            this.css('color', this.param('text'))
+            this.domAttr('href', this.param('href'))
+            
+            this.append(
+                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
+                this.get('title'),
+                Beast.node("cross",{__context:this},"+"),
+                this.get('price')
+                
             )
 
         }
     },
 
-    AdminHead__link: {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', 'main.html')
-
-
-        }
-    },
-
-    'AdminHead__menu-item': {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', this.param('href'))
-
-        }
-    },
-
-    AdminHead__logo: {
-        expand: function () {
-            this.empty()
-            
-        }
-    },
+    
     
 
 })
+
+
+
+
+
+
 /**
  * @block App Корневой компонент всех страниц
  * @dep UINavigation DocInspector DocConsole
@@ -6235,48 +6277,6 @@ Beast.decl({
 
     },
 })
-
-
-
-
-
-Beast.decl({
-    Cards: {
-
-        expand: function () {
-            
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
-
-                
-            )
-
-        }
-    },
-    
-    Cards__item: {
-        tag: 'a',
-        expand: function () {
-            this.css('background', this.param('color'))
-            this.css('color', this.param('text'))
-            this.domAttr('href', this.param('href'))
-            
-            this.append(
-                Beast.node("head",{__context:this},"\n                    ",this.get('hint', 'elem'),"\n                "),
-                this.get('title'),
-                Beast.node("cross",{__context:this},"+"),
-                this.get('price')
-                
-            )
-
-        }
-    },
-
-    
-    
-
-})
-
 
 
 
@@ -6420,648 +6420,6 @@ Beast.decl({
  *     <option value="Lada">Lada</option>
  * </Select>
  */
-
-Beast.decl({
-    Contact: {
-        expand: function () {
-            
-            this.domAttr('id', 'contact')
-            
-
-        }
-    }
-})
-// global variables for calculations
-let price;
-let characterNumber = 2500;
-let currrentType = "silver";
-let uploadedDocument = false;
-let linksToTheDocuments = [];
-let calculatedPrice;
-let calculatedPriceDetails=[];
-let uploadedFiles = [];
-let uploadedFilesProgress = 0; 
-let characterNumberTracker = 2500;
-
-let silverDefaultLanguage = "russian";
-let silverDefaultTime = "regular";
-
-let goldDefaultLanguage = "russian";
-let goldDefaultTime = "regular";
-
-const emailJsService = "service_5zbkh3r";
-const emailJsTemplate = "template_mjdi55g";
-
-const emailJsTemplateGold = "template_2buwr3y";
-const emailJsTemplateSilver = "template_twtm0tr";
-
-const sanityTokenWithWriteAccess = 'skmAQVJjHdsVFKS4TCsoiVvZIeEUN9qFw545I0JD4YSoBrD80kryUFXitu2g1peNqfrVZA1Mwcq48Sk0KOXCt8b8KnLIRAtNuDbwrAq6YoxsJFw2KtFhVYbQDGFEQNzLDCJTJaBYa4HfdL7wmz7H5FgAGtax1MlUdusEBfkeQsNvegVVlwPw';
-const sanityFetchUrl = 'https://spfa8rwc.api.sanity.io/v1/assets/files/production';
-
-const pageCharacterNumber = 2500;
-
-const prices = {
-  silver: {
-    russian: {
-      regular: 500,
-      urgent: 750
-    },
-    english: {
-      regular: 2000,
-      urgent: 3000
-    }
-  },
-  gold: {
-    russian: {
-      regular: 2500,
-      urgent: 3750
-    },
-    english: {
-      regular: 5000,
-      urgent: 7500
-    }
-  }
-}
-
-// variable holding current selection
-let pricingParams = {
-  "type": "silver",
-  "language" : null,
-  "time": null
-}
-
-var dropzoneComponent;
-
-Beast.decl({
-    Form: {
-
-        //set one of the params
-        setPricingParam: function (key, value) {
-            pricingParams[key] = value;
-            this.calculateFinalPrice();
-
-        },
-
-        //calculate final price
-        calculateFinalPrice: function () {
-
-            // Gold or Silver type
-            let type = this.param('type')
-            if (type)
-              pricingParams["type"] = type;
-            
-              if (pricingParams["language"] && pricingParams["time"]) {
-                price = prices[pricingParams["type"]][pricingParams["language"]][pricingParams["time"]];
-
-                let tmpPageCounterFloat = characterNumber/pageCharacterNumber;
-                let pageCount;
-                if (Number.isInteger(tmpPageCounterFloat)) {
-                  pageCount = Math.floor(characterNumber/pageCharacterNumber);
-                } else {
-                  pageCount = Math.floor(1 + characterNumber/pageCharacterNumber);
-                }
-
-                document.querySelector(".form__action-title").innerHTML = price*pageCount + "₽ — отправить заявку";
-
-                calculatedPrice = price*pageCount;
-                calculatedPriceDetails = [price, pageCount];
-
-            }
-        },
-
-        calculateCharNumber: function(dropfiles) {
-            
-            // input for files
-            var docs = document.querySelector("#file-upload");
-            
-            //another way to get files from dropzone
-            //var dropzoneFiles = dropzoneComponent.getAcceptedFiles();
-
-            //recalculate character number
-            characterNumber = 0;
-            let documentNameContainer = document.querySelector(".form__upload-doc-name");
-            documentNameContainer.innerHTML = "";
-
-            
-            // if files are not selected stop
-            if (docs.files.length === 0 && dropfiles.length === 0) {
-                return;
-            }            
-            
-            if (docs.files.length > 0)
-              this.mergeFiles(docs.files);
-
-            if (dropfiles && dropfiles.length > 0)
-              this.mergeFiles(dropfiles);
-            
-
-            for (var i = 0; i < uploadedFiles.length; i++) {
-              this.parseFile(uploadedFiles[i], i);
-            }
-            
-          
-        },
-
-        mergeFiles: function(files){
-          var fileUploadedAlready = false;
-          for (var i = 0; i < files.length; i++){
-            for (var k = 0; k < uploadedFiles.length; k++){
-              if (uploadedFiles[k].name == files[i].name && uploadedFiles[k].size == files[i].size) {
-                fileUploadedAlready = true;
-                break
-              }
-            }
-            if (!fileUploadedAlready) {
-              uploadedFiles.push(files[i])
-            } else {
-              fileUploadedAlready = false;
-            }
-          }
-        },
-
-        parseFile: function(file, index) {
-          var self = this
-
-          // define reader
-          var reader = new FileReader();
-            
-          //check extension
-          let documentName = file.name;
-          let ext = documentName.split('.').pop().toLowerCase();
-
-          try {
-            gtag('event', 'document_upload', {
-              'event_category' : 'extension',
-              'event_label' : ext
-            });
-          } catch(err) {
-             console.log(err);
-          }          
-
-          // supported extensions
-          if (ext == "docx" || ext == "txt") {
-              let documentNameContainer = document.querySelector(".form__upload-doc-name");
-              documentNameContainer.innerHTML += "<div class='form__upload-filename'>" + documentName + "</div>";
-
-              let documentUploadLabel = document.querySelector(".form__upload-label");
-              documentUploadLabel.innerHTML = "Загрузить еще";
-          }
-
-          // if it's DOCX
-          if (ext == "docx") {
-
-              reader.readAsBinaryString(file);
-
-              // on error
-              reader.onerror = function (evt) {
-                  console.log("error reading file", evt);
-                  alert("Не удалось прочитать документ. Укажите количество символов вручную")
-              }
-
-              // on success
-              reader.onload = function (evt) {
-                  const content = evt.target.result;
-                  var zip = new PizZip(content);
-                  var doc = new Docxtemplater().loadZip(zip);
-
-                  self.setCharactedNum(doc.getFullText());
-              }
-          } else if (ext == "txt") { 
-
-              reader.onload = function(evt) {
-                  self.setCharactedNum(evt.target.result)
-              };
-              
-              reader.readAsText(file, "UTF-8");
-              
-          } else {
-            uploadedFiles.splice(index, 1);
-              alert('Пожалуйста, загрузите DOCX или TXT файл.')
-          }
-        },
-
-        setCharactedNum: function (text) {
-            // element to display char number
-            var charNumber = document.querySelector(".form__hint");
-
-            if (text && text.length > 0) {
-                //set variable for char number 
-                characterNumber = characterNumber + text.length;
-                
-                // show character number
-                charNumber.innerHTML = characterNumber + " знаков";
-                characterNumberTracker = characterNumber;
-
-                //calculate the price
-                this.calculateFinalPrice();
-
-                uploadedDocument = true;
-            }
-        },
-
-        //upload documnent to Sanity
-        updloadDocumentToSanity: function (file){
-
-            // create reference to the file
-            var src = URL.createObjectURL(file);
-
-            //fetching
-            fetch(sanityFetchUrl, {
-                method: 'post',
-                headers: {
-                    'Content-type': file.type,
-                    Authorization: 'Bearer ' + sanityTokenWithWriteAccess
-                },
-                body: file
-              })
-              .then(response => response.json())
-              .then(function(data) {      
-                    //set public URL link to the document in the following variable
-                    if (data && data.document) {
-                        linksToTheDocuments.push(data.document.url);
-                        uploadedFilesProgress++;
-                    }
-                });
-        },
-
-        expand: function () {
-
-            this.append(
-                Beast.node("form",{__context:this},"\n                    ",this.get('head', 'item'),"\n                ")
-                
-            )
-
-        },
-
-        domInit: function () {
-
-            let selectors = document.querySelectorAll(".form__button_select");
-            var self = this
-
-            if (this.param('type') === 'silver') {
-              $('.form__button[data-param="russian"]').attr('active', true)
-              $('.form__button[data-param="regular"]').attr('active', true)
-              pricingParams["language"] = silverDefaultLanguage;
-              pricingParams["time"] = silverDefaultTime;
-              
-            }
-
-            if (this.param('type') === 'gold') {
-              $('.form__button[data-param="russian"]').attr('active', true)
-              $('.form__button[data-param="regular"]').attr('active', true)
-              pricingParams["language"] = goldDefaultLanguage;
-              pricingParams["time"] = goldDefaultTime;
-            }
-
-            document.querySelector(".form__action-title").innerHTML = prices[this.param('type')][pricingParams["language"]][pricingParams["time"]] + "₽ — отправить заявку";  
-            
-
-            if (selectors) {
-              for (var i = 0; i < selectors.length; i++) {
-
-                //when click on selector
-                selectors[i].onclick = function(evt) {
-                  //manupulations for visual selection
-                  let selectorButtons = evt.target.parentNode.querySelectorAll(".form__button_select");
-                  for (var j = 0; j < selectorButtons.length; j++) {
-                    selectorButtons[j].setAttribute("active", false);
-                  }
-                  evt.target.setAttribute("active", true);
-                  
-                  // set price depending on selection
-                  self.setPricingParam(evt.target.parentNode.getAttribute("param"), evt.target.getAttribute("data-param"));
-                }
-              }
-            }
-
-            let requestForm = document.querySelector(".form__action");
-
-            requestForm.onclick = function(event) {
-              
-              event.preventDefault();
-              // if all validation goes well
-              if (validateForm() && !this.disabled) {
-                for (var i = 0; i < uploadedFiles.length; i++) {
-                  self.updloadDocumentToSanity(uploadedFiles[i]); 
-                } 
-                this.value = 'Отправляю...';
-                this.disabled = true;
-                this.classList.add("button-loading");
-                sendEmail();
-                
-              } else return false;
-            }
-
-            function sendRquestEmail(name, email, phone) {
-
-              let type = pricingParams["type"] == "silver" ? "Пакет Silver | " : "Пакет Gold | ";
-              let language = pricingParams["language"] == "english" ? "Документ на английском |" : "Документ на русском |";
-              let time = pricingParams["time"] == "urgent" ? " 24 часа" : " 5 дн.";
-              let docsView = "";
-              for (var i = 0; i < linksToTheDocuments.length; i++){
-                docsView +=  "<p><a style='font-size: 24px;' href='" + linksToTheDocuments[i] + "'>Документ " + (i+1) + "</a></p>";
-              }
-
-              emailjs.send(emailJsService, emailJsTemplate, {
-                name: name,
-                email: email,
-                phone: phone,
-                type: type + language + time,
-                link: docsView,
-                price: calculatedPriceDetails[0] + " ₽ * " + calculatedPriceDetails[1] + " стр. = " + calculatedPrice
-              })
-              .then(function() {
-
-                  //only in successful case send email to client
-
-                  sendEmailClient();
-                  
-              }, function(error) {
-                  console.log('Failed sendig email', error);
-              });
-            }
-
-            function sendEmail() {
-              //if all files were uploaded
-              if (uploadedFilesProgress == uploadedFiles.length) {
-                sendRquestEmail(
-                  document.querySelector("#name").value,
-                  document.querySelector("#email").value,
-                  document.querySelector("#phone").value
-                );
-                uploadedFilesProgress = 0;
-                
-                let btnSend = document.querySelector(".form__action-title");
-                btnSend.innerHTML = 'Отправлено успешно';
-                btnSend.parentNode.className = "form__action form__disabled";
-
-                $(".form__action").attr("disabled", "disabled").off('click');
-
-              } else {
-                setTimeout(function(){ sendEmail() }, 500);
-              }
-            }
-
-
-            //send email to client
-            function sendEmailClient() {
-                let clientEmail = document.querySelector("#email").value;
-                let price = calculatedPrice + "₽";
-                let number_docs = getNumDocsString(linksToTheDocuments.length);
-                let symbols = characterNumberTracker;
-                let language = pricingParams["language"] == "english" ? "английский" : "русский";
-                let timing = pricingParams["time"] == "urgent" ? "24 часа" : "5 дней";
-
-                let rightTemplate = "";
-                if (this.param('type') === 'gold') {
-                  rightTemplate = emailJsTemplateGold;
-                } else if (this.param('type') === 'silver'){
-                  rightTemplate = emailJsTemplateSilver;
-                } else {
-                  return;
-                }
-
-
-                emailjs.send(emailJsService, rightTemplate, {
-                  sender: clientEmail,
-                  price: price,
-                  number_docs: number_docs,
-                  symbols: symbols,
-                  language: language,
-                  timing: timing
-                })
-                .then(function() {
-                    
-                }, function(error) {
-                    console.log('Failed sendig email', error);
-                });
-            }
-
-            //get right string depending on the document number
-            function getNumDocsString(number) {
-                if (number) {
-                  if (number == 1) {
-                    return "1 документ"
-                  } else if (number == 2 || number == 3 || number == 4) {
-                    return number + " документа";
-                  } else {
-                    return number + " документов";
-                  }
-                } else {
-                  return "документы";
-                }
-            }
-
-            //validation of all input fields
-            function validateForm() {
-              if (!pricingParams["language"] || !pricingParams["time"]) {
-                alert('Для отправки заявки необходимо указать язык документа и срок')
-                return false;
-              }
-              if (!uploadedDocument) {
-                alert('Для отправки заявки нужно загрузить документ, с которым будет необходимо работать')
-                return false;
-              }
-              let nameField = document.querySelector("#name");
-              if (nameField.value.trim() == "") {
-                alert('Пожалуйста, укажите ваше имя, чтобы мы знали как к вам обращаться');
-                return false;
-              }
-
-              let emailField = document.querySelector("#email");
-              if (emailField.value.trim() == "") {
-                alert('Укажите адрес электронной почты, чтобы мы знали, как с вами связаться');
-                return false;
-              }
-
-              let phoneField = document.querySelector("#phone");
-              if (phoneField.value.trim() == "") {
-                alert('Укажите номер телефона, чтобы мы знали, как с вами связаться');
-                return false;
-              }
-
-              let checkForPersonalDetails = document.querySelector(".check__input");
-              if (checkForPersonalDetails && !(checkForPersonalDetails.checked)) {
-                alert('Пожалуйста, дайте согласие на обработку данных');
-                return false;
-              }
-
-              return true;
-            }
-
-            var parentBlockRef = this.parentBlock();
-            dropzoneComponent = new Dropzone("#dropzone-component", {
-                url: "#",
-                paramName: 'file',
-                previewsContainer: '.form__upload-doc-name',
-                autoQueue: false,
-                autoProcessQueue: false,
-                addRemoveLinks: false,
-                clickable: false,
-                thumbnailWidth: 80,
-                thumbnailHeight: 100,
-                maxFiles: 10,
-                acceptedFiles: '.docx, .doc, .txt',
-                parallelUploads: 1,
-                uploadMultiple: true,
-                dictDefaultMessage: 'Или перетащите файлы сюда',
-                init: function() {
-                  this.on("addedfiles", function() {
-                      parentBlockRef.calculateCharNumber(this.files);
-                  });
-                }
-              },
-            );
-
-            $('#dropzone-component').on('dragenter', function() {
-                $(this).css({'outline' : '2px dashed green'})
-            });
-
-            $('#dropzone-component').on('dragleave', function() {
-              $(this).css({'outline' : 'none'})
-            });
-            
-
-        }
-    },
-
-    Form__form: {
-        tag: 'div',
-        expand: function () {
-
-            this.domAttr('action', this.parentBlock().param('action'))
-            this.domAttr('id', this.parentBlock().param('id'))
-
-        }
-    },
-
-    Form__item: {
-        expand: function () {
-            this.domAttr('param', this.param('param'))
-
-            if (this.mod('Color')) {
-              this.css('background', this.parentBlock().param('color'))
-              this.css('color', this.parentBlock().param('text'))
-            }
-        }
-    },
-
-    Form__title: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'L',
-            Line: 'L'
-        },
-        
-    },
-
-    Form__hint: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'L',
-            Line: 'L'
-        },
-        
-    },
-
-    Form__button: {
-        expand: function () {
-            this.domAttr('data-param', this.param('data-param'))
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-        }
-    },
-
-    Form__action: {
-        // tag: 'input',
-        expand: function () {
-            // this.domAttr('type', 'submit')
-            // this.domAttr('value', this.text())
-            this.append(
-              Beast.node("action-title",{__context:this},this.text()),
-              Beast.node("action-subtitle",{__context:this},"(конфиденциально)")
-            )
-            this.css('background', this.parentBlock().param('action'))
-            this.css('color', this.parentBlock().param('actionText'))
-        }
-    },
-
-    Form__input: {
-        tag: 'input',
-        expand: function () {
-            this.domAttr('type', this.param('type'))
-            this.domAttr('id', this.param('id'))
-            this.domAttr('placeholder', this.param('placeholder'))
-            this.domAttr('required', true)
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-
-            let root = document.documentElement;
-            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
-            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
-            
-        }
-    },
-
-    Form__upload: {
-        expand: function () {
-            this.append(
-                Beast.node("upload-label",{__context:this,"for":"file-upload"},"Загрузить документы"),
-                Beast.node("upload-doc-name",{__context:this}),
-                Beast.node("upload-input",{__context:this,"id":"file-upload","type":"file"})
-            )
-            this.domAttr('id', 'dropzone-component');
-        }
-    },
-
-    'Form__upload-label': {
-        tag: 'label',
-        expand: function () {
-            this.domAttr('for', this.param('for'))
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-        }
-    },
-
-    'Form__upload-doc-name': {
-        tag: 'div',
-        expand: function () {
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-        }
-    },
-
-    'Form__check': {
-        expand: function () {
-            this.append(
-              Beast.node("Check",{__context:this},this.text())
-            )
-        }
-    },
-    
-    'Form__upload-input': {
-        tag: 'input',
-        on: {
-            // Listen to change event on file input
-            change: function () {
-                // add and remove modificator for every change
-                this.parentBlock().calculateCharNumber()
-
-            }
-        },
-
-        expand: function () {
-            this.domAttr('id', this.param('id'))
-            this.domAttr('multiple', true)
-            this.domAttr('type', this.param('type'))
-            // this.domAttr('onchnage', 'calculateCharNumber()')
-        }
-    },
-})
-
-
-
-
 
 
 const emailJsTemplateGeneric = "template_al17i86";
@@ -7277,46 +6635,6 @@ Beast.decl({
 })
 
 
-Beast.decl({
-    Gallery: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'S',
-            Line: 'L'
-        },
-        expand: function () {
-            this.domAttr('id', 'team')
-            this.append(
-                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
-                
-            )
-
-        }
-    },
-    
-    Gallery__image: {
-
-        expand: function () {
-            
-            
-            this.append(
-                
-                Beast.node("Thumb",{__context:this,"Ratio":"1x1"},this.text())
-                
-            )
-
-        }
-    },
-
-    Gallery__item: {
-        tag: 'a',
-        expand: function () {
-            var href = this.param('href')
-            this.domAttr('href', href)
-
-        }
-    }  
-})
 /**
  * @block Grid Динамическая сетка
  * @tag base
@@ -7778,6 +7096,688 @@ Beast.decl({
     
 })
 
+// global variables for calculations
+let price;
+let characterNumber = 2500;
+let currrentType = "silver";
+let uploadedDocument = false;
+let linksToTheDocuments = [];
+let calculatedPrice;
+let calculatedPriceDetails=[];
+let uploadedFiles = [];
+let uploadedFilesProgress = 0; 
+let characterNumberTracker = 2500;
+
+let silverDefaultLanguage = "russian";
+let silverDefaultTime = "regular";
+
+let goldDefaultLanguage = "russian";
+let goldDefaultTime = "regular";
+
+const emailJsService = "service_5zbkh3r";
+const emailJsTemplate = "template_mjdi55g";
+
+const emailJsTemplateGold = "template_2buwr3y";
+const emailJsTemplateSilver = "template_twtm0tr";
+
+const sanityTokenWithWriteAccess = 'skmAQVJjHdsVFKS4TCsoiVvZIeEUN9qFw545I0JD4YSoBrD80kryUFXitu2g1peNqfrVZA1Mwcq48Sk0KOXCt8b8KnLIRAtNuDbwrAq6YoxsJFw2KtFhVYbQDGFEQNzLDCJTJaBYa4HfdL7wmz7H5FgAGtax1MlUdusEBfkeQsNvegVVlwPw';
+const sanityFetchUrl = 'https://spfa8rwc.api.sanity.io/v1/assets/files/production';
+
+const pageCharacterNumber = 2500;
+
+const prices = {
+  silver: {
+    russian: {
+      regular: 500,
+      urgent: 750
+    },
+    english: {
+      regular: 2000,
+      urgent: 3000
+    }
+  },
+  gold: {
+    russian: {
+      regular: 2500,
+      urgent: 3750
+    },
+    english: {
+      regular: 5000,
+      urgent: 7500
+    }
+  }
+}
+
+// variable holding current selection
+let pricingParams = {
+  "type": "silver",
+  "language" : null,
+  "time": null
+}
+
+var dropzoneComponent;
+
+Beast.decl({
+    Form: {
+
+        //set one of the params
+        setPricingParam: function (key, value) {
+            pricingParams[key] = value;
+            this.calculateFinalPrice();
+
+        },
+
+        //calculate final price
+        calculateFinalPrice: function () {
+
+            // Gold or Silver type
+            let type = this.param('type')
+            if (type)
+              pricingParams["type"] = type;
+            
+              if (pricingParams["language"] && pricingParams["time"]) {
+                price = prices[pricingParams["type"]][pricingParams["language"]][pricingParams["time"]];
+
+                let tmpPageCounterFloat = characterNumber/pageCharacterNumber;
+                let pageCount;
+                if (Number.isInteger(tmpPageCounterFloat)) {
+                  pageCount = Math.floor(characterNumber/pageCharacterNumber);
+                } else {
+                  pageCount = Math.floor(1 + characterNumber/pageCharacterNumber);
+                }
+
+                document.querySelector(".form__action-title").innerHTML = price*pageCount + "₽ — отправить заявку";
+
+                calculatedPrice = price*pageCount;
+                calculatedPriceDetails = [price, pageCount];
+
+            }
+        },
+
+        calculateCharNumber: function(dropfiles) {
+            
+            // input for files
+            var docs = document.querySelector("#file-upload");
+            
+            //another way to get files from dropzone
+            //var dropzoneFiles = dropzoneComponent.getAcceptedFiles();
+
+            //recalculate character number
+            characterNumber = 0;
+            let documentNameContainer = document.querySelector(".form__upload-doc-name");
+            documentNameContainer.innerHTML = "";
+
+            
+            // if files are not selected stop
+            if (docs.files.length === 0 && dropfiles.length === 0) {
+                return;
+            }            
+            
+            if (docs.files.length > 0)
+              this.mergeFiles(docs.files);
+
+            if (dropfiles && dropfiles.length > 0)
+              this.mergeFiles(dropfiles);
+            
+
+            for (var i = 0; i < uploadedFiles.length; i++) {
+              this.parseFile(uploadedFiles[i], i);
+            }
+            
+          
+        },
+
+        mergeFiles: function(files){
+          var fileUploadedAlready = false;
+          for (var i = 0; i < files.length; i++){
+            for (var k = 0; k < uploadedFiles.length; k++){
+              if (uploadedFiles[k].name == files[i].name && uploadedFiles[k].size == files[i].size) {
+                fileUploadedAlready = true;
+                break
+              }
+            }
+            if (!fileUploadedAlready) {
+              uploadedFiles.push(files[i])
+            } else {
+              fileUploadedAlready = false;
+            }
+          }
+        },
+
+        parseFile: function(file, index) {
+          var self = this
+
+          // define reader
+          var reader = new FileReader();
+            
+          //check extension
+          let documentName = file.name;
+          let ext = documentName.split('.').pop().toLowerCase();
+
+          try {
+            gtag('event', 'document_upload', {
+              'event_category' : 'extension',
+              'event_label' : ext
+            });
+          } catch(err) {
+             console.log(err);
+          }          
+
+          // supported extensions
+          if (ext == "docx" || ext == "txt") {
+              let documentNameContainer = document.querySelector(".form__upload-doc-name");
+              documentNameContainer.innerHTML += "<div class='form__upload-filename'>" + documentName + "</div>";
+
+              let documentUploadLabel = document.querySelector(".form__upload-label");
+              documentUploadLabel.innerHTML = "Загрузить еще";
+          }
+
+          // if it's DOCX
+          if (ext == "docx") {
+
+              reader.readAsBinaryString(file);
+
+              // on error
+              reader.onerror = function (evt) {
+                  console.log("error reading file", evt);
+                  alert("Не удалось прочитать документ. Укажите количество символов вручную")
+              }
+
+              // on success
+              reader.onload = function (evt) {
+                  const content = evt.target.result;
+                  var zip = new PizZip(content);
+                  var doc = new Docxtemplater().loadZip(zip);
+
+                  self.setCharactedNum(doc.getFullText());
+              }
+          } else if (ext == "txt") { 
+
+              reader.onload = function(evt) {
+                  self.setCharactedNum(evt.target.result)
+              };
+              
+              reader.readAsText(file, "UTF-8");
+              
+          } else {
+            uploadedFiles.splice(index, 1);
+              alert('Пожалуйста, загрузите DOCX или TXT файл.')
+          }
+        },
+
+        setCharactedNum: function (text) {
+            // element to display char number
+            var charNumber = document.querySelector(".form__hint");
+
+            if (text && text.length > 0) {
+                //set variable for char number 
+                characterNumber = characterNumber + text.length;
+                
+                // show character number
+                charNumber.innerHTML = characterNumber + " знаков";
+                characterNumberTracker = characterNumber;
+
+                //calculate the price
+                this.calculateFinalPrice();
+
+                uploadedDocument = true;
+            }
+        },
+
+        //upload documnent to Sanity
+        updloadDocumentToSanity: function (file){
+
+            // create reference to the file
+            var src = URL.createObjectURL(file);
+
+            //fetching
+            fetch(sanityFetchUrl, {
+                method: 'post',
+                headers: {
+                    'Content-type': file.type,
+                    Authorization: 'Bearer ' + sanityTokenWithWriteAccess
+                },
+                body: file
+              })
+              .then(response => response.json())
+              .then(function(data) {      
+                    //set public URL link to the document in the following variable
+                    if (data && data.document) {
+                        linksToTheDocuments.push(data.document.url);
+                        uploadedFilesProgress++;
+                    }
+                });
+        },
+
+        expand: function () {
+
+            this.append(
+                Beast.node("form",{__context:this},"\n                    ",this.get('head', 'item'),"\n                ")
+                
+            )
+
+        },
+
+        domInit: function () {
+
+            let selectors = document.querySelectorAll(".form__button_select");
+            var self = this
+
+            if (this.param('type') === 'silver') {
+              $('.form__button[data-param="russian"]').attr('active', true)
+              $('.form__button[data-param="regular"]').attr('active', true)
+              pricingParams["language"] = silverDefaultLanguage;
+              pricingParams["time"] = silverDefaultTime;
+              
+            }
+
+            if (this.param('type') === 'gold') {
+              $('.form__button[data-param="russian"]').attr('active', true)
+              $('.form__button[data-param="regular"]').attr('active', true)
+              pricingParams["language"] = goldDefaultLanguage;
+              pricingParams["time"] = goldDefaultTime;
+            }
+
+            document.querySelector(".form__action-title").innerHTML = prices[this.param('type')][pricingParams["language"]][pricingParams["time"]] + "₽ — отправить заявку";  
+            
+
+            if (selectors) {
+              for (var i = 0; i < selectors.length; i++) {
+
+                //when click on selector
+                selectors[i].onclick = function(evt) {
+                  //manupulations for visual selection
+                  let selectorButtons = evt.target.parentNode.querySelectorAll(".form__button_select");
+                  for (var j = 0; j < selectorButtons.length; j++) {
+                    selectorButtons[j].setAttribute("active", false);
+                  }
+                  evt.target.setAttribute("active", true);
+                  
+                  // set price depending on selection
+                  self.setPricingParam(evt.target.parentNode.getAttribute("param"), evt.target.getAttribute("data-param"));
+                }
+              }
+            }
+
+            let requestForm = document.querySelector(".form__action");
+
+            requestForm.onclick = function(event) {
+              
+              event.preventDefault();
+              // if all validation goes well
+              if (validateForm() && !this.disabled) {
+                for (var i = 0; i < uploadedFiles.length; i++) {
+                  self.updloadDocumentToSanity(uploadedFiles[i]); 
+                } 
+                this.value = 'Отправляю...';
+                this.disabled = true;
+                this.classList.add("button-loading");
+                sendEmail();
+                
+              } else return false;
+            }
+
+            function sendRquestEmail(name, email, phone) {
+
+              let type = pricingParams["type"] == "silver" ? "Пакет Silver | " : "Пакет Gold | ";
+              let language = pricingParams["language"] == "english" ? "Документ на английском |" : "Документ на русском |";
+              let time = pricingParams["time"] == "urgent" ? " 24 часа" : " 5 дн.";
+              let docsView = "";
+              for (var i = 0; i < linksToTheDocuments.length; i++){
+                docsView +=  "<p><a style='font-size: 24px;' href='" + linksToTheDocuments[i] + "'>Документ " + (i+1) + "</a></p>";
+              }
+
+              emailjs.send(emailJsService, emailJsTemplate, {
+                name: name,
+                email: email,
+                phone: phone,
+                type: type + language + time,
+                link: docsView,
+                price: calculatedPriceDetails[0] + " ₽ * " + calculatedPriceDetails[1] + " стр. = " + calculatedPrice
+              })
+              .then(function() {
+
+                  //only in successful case send email to client
+
+                  sendEmailClient();
+                  
+              }, function(error) {
+                  console.log('Failed sendig email', error);
+              });
+            }
+
+            function sendEmail() {
+              //if all files were uploaded
+              if (uploadedFilesProgress == uploadedFiles.length) {
+                sendRquestEmail(
+                  document.querySelector("#name").value,
+                  document.querySelector("#email").value,
+                  document.querySelector("#phone").value
+                );
+                uploadedFilesProgress = 0;
+                
+                let btnSend = document.querySelector(".form__action-title");
+                btnSend.innerHTML = 'Отправлено успешно';
+                btnSend.parentNode.className = "form__action form__disabled";
+
+                $(".form__action").attr("disabled", "disabled").off('click');
+
+              } else {
+                setTimeout(function(){ sendEmail() }, 500);
+              }
+            }
+
+
+            //send email to client
+            function sendEmailClient() {
+                let clientEmail = document.querySelector("#email").value;
+                let price = calculatedPrice + "₽";
+                let number_docs = getNumDocsString(linksToTheDocuments.length);
+                let symbols = characterNumberTracker;
+                let language = pricingParams["language"] == "english" ? "английский" : "русский";
+                let timing = pricingParams["time"] == "urgent" ? "24 часа" : "5 дней";
+
+                let rightTemplate = "";
+                if (self.param('type') === 'gold') {
+                  rightTemplate = emailJsTemplateGold;
+                } else if (self.param('type') === 'silver'){
+                  rightTemplate = emailJsTemplateSilver;
+                } else {
+                  return;
+                }
+
+
+                emailjs.send(emailJsService, rightTemplate, {
+                  sender: clientEmail,
+                  price: price,
+                  number_docs: number_docs,
+                  symbols: symbols,
+                  language: language,
+                  timing: timing
+                })
+                .then(function() {
+                    
+                }, function(error) {
+                    console.log('Failed sendig email', error);
+                });
+            }
+
+            //get right string depending on the document number
+            function getNumDocsString(number) {
+                if (number) {
+                  if (number == 1) {
+                    return "1 документ"
+                  } else if (number == 2 || number == 3 || number == 4) {
+                    return number + " документа";
+                  } else {
+                    return number + " документов";
+                  }
+                } else {
+                  return "документы";
+                }
+            }
+
+            //validation of all input fields
+            function validateForm() {
+              if (!pricingParams["language"] || !pricingParams["time"]) {
+                alert('Для отправки заявки необходимо указать язык документа и срок')
+                return false;
+              }
+              if (!uploadedDocument) {
+                alert('Для отправки заявки нужно загрузить документ, с которым будет необходимо работать')
+                return false;
+              }
+              let nameField = document.querySelector("#name");
+              if (nameField.value.trim() == "") {
+                alert('Пожалуйста, укажите ваше имя, чтобы мы знали как к вам обращаться');
+                return false;
+              }
+
+              let emailField = document.querySelector("#email");
+              if (emailField.value.trim() == "") {
+                alert('Укажите адрес электронной почты, чтобы мы знали, как с вами связаться');
+                return false;
+              }
+
+              let phoneField = document.querySelector("#phone");
+              if (phoneField.value.trim() == "") {
+                alert('Укажите номер телефона, чтобы мы знали, как с вами связаться');
+                return false;
+              }
+
+              let checkForPersonalDetails = document.querySelector(".check__input");
+              if (checkForPersonalDetails && !(checkForPersonalDetails.checked)) {
+                alert('Пожалуйста, дайте согласие на обработку данных');
+                return false;
+              }
+
+              return true;
+            }
+
+            var parentBlockRef = this.parentBlock();
+            dropzoneComponent = new Dropzone("#dropzone-component", {
+                url: "#",
+                paramName: 'file',
+                previewsContainer: '.form__upload-doc-name',
+                autoQueue: false,
+                autoProcessQueue: false,
+                addRemoveLinks: false,
+                clickable: false,
+                thumbnailWidth: 80,
+                thumbnailHeight: 100,
+                maxFiles: 10,
+                acceptedFiles: '.docx, .doc, .txt',
+                parallelUploads: 1,
+                uploadMultiple: true,
+                dictDefaultMessage: 'Или перетащите файлы сюда',
+                init: function() {
+                  this.on("addedfiles", function() {
+                      parentBlockRef.calculateCharNumber(this.files);
+                  });
+                }
+              },
+            );
+
+            $('#dropzone-component').on('dragenter', function() {
+                $(this).css({'outline' : '2px dashed green'})
+            });
+
+            $('#dropzone-component').on('dragleave', function() {
+              $(this).css({'outline' : 'none'})
+            });
+            
+
+        }
+    },
+
+    Form__form: {
+        tag: 'div',
+        expand: function () {
+
+            this.domAttr('action', this.parentBlock().param('action'))
+            this.domAttr('id', this.parentBlock().param('id'))
+
+        }
+    },
+
+    Form__item: {
+        expand: function () {
+            this.domAttr('param', this.param('param'))
+
+            if (this.mod('Color')) {
+              this.css('background', this.parentBlock().param('color'))
+              this.css('color', this.parentBlock().param('text'))
+            }
+        }
+    },
+
+    Form__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
+    },
+
+    Form__hint: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
+    },
+
+    Form__button: {
+        expand: function () {
+            this.domAttr('data-param', this.param('data-param'))
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+        }
+    },
+
+    Form__action: {
+        // tag: 'input',
+        expand: function () {
+            // this.domAttr('type', 'submit')
+            // this.domAttr('value', this.text())
+            this.append(
+              Beast.node("action-title",{__context:this},this.text()),
+              Beast.node("action-subtitle",{__context:this},"(конфиденциально)")
+            )
+            this.css('background', this.parentBlock().param('action'))
+            this.css('color', this.parentBlock().param('actionText'))
+        }
+    },
+
+    Form__input: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+
+            let root = document.documentElement;
+            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
+            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
+            
+        }
+    },
+
+    Form__upload: {
+        expand: function () {
+            this.append(
+                Beast.node("upload-label",{__context:this,"for":"file-upload"},"Загрузить документы"),
+                Beast.node("upload-doc-name",{__context:this}),
+                Beast.node("upload-input",{__context:this,"id":"file-upload","type":"file"})
+            )
+            this.domAttr('id', 'dropzone-component');
+        }
+    },
+
+    'Form__upload-label': {
+        tag: 'label',
+        expand: function () {
+            this.domAttr('for', this.param('for'))
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+        }
+    },
+
+    'Form__upload-doc-name': {
+        tag: 'div',
+        expand: function () {
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+        }
+    },
+
+    'Form__check': {
+        expand: function () {
+            this.append(
+              Beast.node("Check",{__context:this},this.text())
+            )
+        }
+    },
+    
+    'Form__upload-input': {
+        tag: 'input',
+        on: {
+            // Listen to change event on file input
+            change: function () {
+                // add and remove modificator for every change
+                this.parentBlock().calculateCharNumber()
+
+            }
+        },
+
+        expand: function () {
+            this.domAttr('id', this.param('id'))
+            this.domAttr('multiple', true)
+            this.domAttr('type', this.param('type'))
+            // this.domAttr('onchnage', 'calculateCharNumber()')
+        }
+    },
+})
+
+
+
+
+
+Beast.decl({
+    Contact: {
+        expand: function () {
+            
+            this.domAttr('id', 'contact')
+            
+
+        }
+    }
+})
+Beast.decl({
+    Gallery: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'S',
+            Line: 'L'
+        },
+        expand: function () {
+            this.domAttr('id', 'team')
+            this.append(
+                Beast.node("items",{__context:this},"\n                    ",this.get('item'),"\n                ")
+                
+            )
+
+        }
+    },
+    
+    Gallery__image: {
+
+        expand: function () {
+            
+            
+            this.append(
+                
+                Beast.node("Thumb",{__context:this,"Ratio":"1x1"},this.text())
+                
+            )
+
+        }
+    },
+
+    Gallery__item: {
+        tag: 'a',
+        expand: function () {
+            var href = this.param('href')
+            this.domAttr('href', href)
+
+        }
+    }  
+})
 Beast.decl({
     Screen: {
         
@@ -7800,6 +7800,34 @@ Beast.decl({
         },
         
     },
+})
+Beast.decl({
+    Showcase: {
+
+        expand: function () {
+            this.append(
+                
+                    this.get('items')
+                
+            )
+
+        }
+    },
+    
+    Showcase__item: {
+
+        expand: function () {
+            this.css('background', this.parentBlock().param('color'))
+            
+            this.append(
+                
+                Beast.node("Thumb",{__context:this,"Ratio":this.parentBlock().mod('Ratio')},this.text())
+                
+            )
+
+        }
+    },
+  
 })
 Beast.decl({
     Shelf: {
@@ -7904,34 +7932,6 @@ Beast.decl({
 
         }
     }
-})
-Beast.decl({
-    Showcase: {
-
-        expand: function () {
-            this.append(
-                
-                    this.get('items')
-                
-            )
-
-        }
-    },
-    
-    Showcase__item: {
-
-        expand: function () {
-            this.css('background', this.parentBlock().param('color'))
-            
-            this.append(
-                
-                Beast.node("Thumb",{__context:this,"Ratio":this.parentBlock().mod('Ratio')},this.text())
-                
-            )
-
-        }
-    },
-  
 })
 /**
  * @block Thumb Тумбнеил
