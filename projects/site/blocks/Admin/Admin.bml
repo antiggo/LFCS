@@ -71,7 +71,7 @@ Beast.decl({
     },
 
 	Admin__serviceName: {
-        tag: 'input',
+        tag: 'textarea',
         expand: function () {
             this.domAttr('type', this.param('type'))
             this.domAttr('id', this.param('id'))

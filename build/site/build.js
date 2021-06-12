@@ -5930,42 +5930,142 @@ BemNode.prototype = {
 }
 
 })();
+/**
+ * @block Grid Динамическая сетка
+ * @tag base
+ */
 Beast.decl({
-    AdminHead: {
-        expand: function () {
-            this.append(
-                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
-                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"main.html"},"Выход"),"\n                ")
-            )
+    Grid: {
+        // finalMod: true,
+        mod: {
+            Col: '',                // @mod Col {number} Ширина в колонках
+            Wrap: false,            // @mod Wrap {boolean} Основной контейнер сетки
+            Margin: false,          // @mod Margin {boolean} Поля
+            MarginX: false,         // @mod MarginX {boolean} Горизонтальные поля
+            MarginY: false,         // @mod MarginY {boolean} Вертикальные поля
+            Unmargin: false,        // @mod Unmargin {boolean} Отрицательные поля
+            UnmarginX: false,       // @mod UnmarginX {boolean} Отрицательные горизоантальные поля
+            UnmarginY: false,       // @mod UnmarginY {boolean} Отрацательные вертикальные поля
+            MarginRightGap: false,  // @mod MarginRightGap {boolean} Правый отступ равен — горизоантальное поле
+            MarginLeftGap: false,   // @mod MarginLeftGap {boolean} Левый отступ равен — горизоантальное поле
+            Cell: false,            // @mod Cell {boolean} Горизонтальный отступ между соседями — межколонник
+            Row: false,             // @mod Row {boolean} Вертикальынй отступ между соседями — межколонник
+            Rows: false,            // @mod Rows {boolean} Дочерние компоненты отступают на горизонтальное поле
+            Tile: false,            // @mod Tile {boolean} Модификатор дочернего компонента (для модификатора Tiles)
+            Tiles: false,           // @mod Tiles {boolean} Дочерние компоненты плиткой с отступами в поле
+            Center: false,          // @mod Center {boolean} Выравнивание по центру
+            Hidden: false,          // @mod Hidden {boolean} Спрятать компонент
+            ColCheck: false,        // @mod ColCheck {boolean} Считать ширину в колонках
+            Ratio: '',              // @mod Ratio {1x1 1x2 3x4 ...} Пропорция
+        },
+        param: {
+            isMaxCol: false,
+        },
+        onMod: {
+            Col: {
+                '*': function (fromParentGrid) {
+                    if (fromParentGrid === undefined) {
+                        this.param('isMaxCol', this.mod('col') === 'max')
+                    }
+                }
+            }
+        },
+        onCol: undefined,
+        domInit: function () {
+            this.param('isMaxCol', this.mod('col') === 'max')
 
+            if (this.mod('ColCheck')) {
+                this.onWin('resize', this.checkColWidth)
+                requestAnimationFrame(function () {
+                    this.checkColWidth()
+                }.bind(this))
+            }
+        },
+        onAttach: function (firstTime) {
+            this.setParentGrid(!firstTime)
+        },
+        checkColWidth: function () {
+            var prop = this.css('content').slice(1,-1).split(' ')
+            var col = parseInt(prop[0])
+            var gap = parseInt(prop[1])
+            var maxCol = parseInt(prop[2])
+            var marginX = parseInt(prop[3])
+            var marginY = parseFloat(prop[4])
+
+            if (isNaN(col)) {
+                return
+            }
+
+            var width = this.domNode().offsetWidth
+            var colNum = Math.floor((width + gap) / (col + gap))
+
+            if (colNum > maxCol) {
+                colNum = maxCol
+            }
+
+            this.trigger('Col', {
+                num: colNum,
+                edge: window.innerWidth === (colNum * col + (colNum-1) * gap + marginX * 2),
+                col: col,
+                gap: gap,
+                marginX: marginX,
+                marginY: marginY,
+            })
+        },
+        setParentGrid: function (recursive, parentGrid) {
+            if (this.onCol !== undefined || this.onEdge !== undefined || this.param('isMaxCol')) {
+                var that = this
+
+                if (parentGrid === undefined) {
+                    parentGrid = this._parentNode
+                    while (parentGrid !== undefined && !(parentGrid.isKindOf('Grid') && parentGrid.mod('ColCheck'))) {
+                        parentGrid = parentGrid._parentNode
+                    }
+                }
+
+                if (parentGrid !== undefined) {
+                    if (this.onCol || this.param('isMaxCol')) {
+                        parentGrid.on('Col', function (e, data) {
+                            that.onCol && that.onCol(data.num, data.edge, data)
+                            that.param('isMaxCol') && that.mod('Col', data.num, true)
+                        })
+                    }
+                }
+            }
+
+            if (recursive !== undefined) {
+                var children = this.get('/')
+                for (var i = 0, ii = children.length; i < ii; i++) {
+                    if (children[i].isKindOf('grid') && !children[i].mod('ColCheck')) {
+                        children[i].setParentGrid(recursive, parentGrid)
+                    }
+                }
+            }
         }
-    },
+    }
+})
 
-    AdminHead__link: {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', 'main.html')
+function grid (num, col, gap, margin) {
+    var gridWidth = col * num + gap * (num - 1) + margin * 2
+    return gridWidth
+}
+/**
+ * @block Typo Типографика
+ * @tag base
+ */
 
-
+Beast.decl({
+    Typo: {
+        // finalMod: true,
+        mod: {
+            text: '',       // @mod Text    {S M L XL}  Размер текста
+            line: '',       // @mod Line    {S M L}     Высота строки
+            caps: false,    // @mod Caps    {boolean}   Капслок
+            light: false,   // @mod Light   {boolean}   Light-начертание
+            medium: false,  // @mod Medium  {boolean}   Medium-начертание
+            bold: false,    // @mod Bold    {boolean}   Bold-начертание
         }
-    },
-
-    'AdminHead__menu-item': {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', this.param('href'))
-
-        }
-    },
-
-    AdminHead__logo: {
-        expand: function () {
-            this.empty()
-            
-        }
-    },
-    
-
+    }
 })
 const emailJsService2 = "service_5zbkh3r";
 const emailJsTemplate2 = "template_mjdi55g";
@@ -6040,7 +6140,7 @@ Beast.decl({
     },
 
 	Admin__serviceName: {
-        tag: 'input',
+        tag: 'textarea',
         expand: function () {
             this.domAttr('type', this.param('type'))
             this.domAttr('id', this.param('id'))
@@ -6187,6 +6287,43 @@ Beast.decl({
 
 
 
+Beast.decl({
+    AdminHead: {
+        expand: function () {
+            this.append(
+                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
+                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"main.html"},"Выход"),"\n                ")
+            )
+
+        }
+    },
+
+    AdminHead__link: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', 'main.html')
+
+
+        }
+    },
+
+    'AdminHead__menu-item': {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+
+        }
+    },
+
+    AdminHead__logo: {
+        expand: function () {
+            this.empty()
+            
+        }
+    },
+    
+
+})
 /**
  * @block App Корневой компонент всех страниц
  * @dep UINavigation DocInspector DocConsole
@@ -6421,681 +6558,16 @@ Beast.decl({
  * </Select>
  */
 
-
-const emailJsTemplateGeneric = "template_al17i86";
-
-const emailContent = {
-  web : {
-    title: "Сайты и стиль",
-    message: "Вы отправили заявку на сайты и стиль. Мы свяжемся с вами в течение двух рабочих дней, чтобы обсудить детали."
-  },
-  support : {
-    title: "Дизайн-поддержка",
-    message: "Вы отправили заявку на дизайн-поддержку по подписке. Мы свяжемся с вами в течение двух рабочих дней, чтобы обсудить детали."
-  },
-  presentation : {
-    title: "Дизайн презентации",
-    message: "Вы отправили заявку на дизайн презентации. У вас уже есть текст или слайды? Пожалуйста, отправьте их ответным письмом, чтобы мы смогли оценить объем работы."
-  },
-  tailored : {
-    title: "Индивидуальный дизайн",
-    message: "Вы отправили заявку на индивидуальный дизайн. Мы свяжемся с вами в течение двух рабочих дней, чтобы обсудить детали."
-  },
-}
-
 Beast.decl({
-    FormLight: {
-
+    Contact: {
         expand: function () {
-
-            this.append(
-                Beast.node("form",{__context:this},"\n                    ",this.get('head', 'item'),"\n                ")
-                
-            )
-
-        },
-
-        domInit: function () {
-            let requestForm = document.querySelector(".formLight__action");
-            var typeName = this.param('typeName')
-            var self = this;
-
-            console.log(typeName)
-
-            requestForm.onclick = function(event) {
-              
-              event.preventDefault();
-
-              // if all validation goes well
-              if (validateForm()) {
-                this.value = 'Отправляю...';
-                this.disabled = true;
-                this.classList.add("button-loading");  
-                 
-                sendEmail();
-                
-              } else return false;
-            }
-
-            function sendRquestEmail(name, email, phone) {
-
-              emailjs.send(emailJsService, emailJsTemplate, {
-                name: name,
-                email: email,
-                phone: phone,
-                type: typeName,
-                link: '—',
-                price: '0'
-              })
-              .then(function() {
-                  //alert('Ваша заявка успешно оправлена');
-                  //location.reload();
-
-                  sendEmailClient();
-              }, function(error) {
-                  console.log('Failed sendig email', error);
-              });
-            }
-
-            function sendEmailClient() {
-              let clientEmail = document.querySelector("#email").value;
-              
-
-              emailjs.send(emailJsService, emailJsTemplateGeneric, {
-                sender: clientEmail,
-                subject: emailContent[self.param('type')].title,
-                message: emailContent[self.param('type')].message
-              })
-              .then(function() {
-                  
-              }, function(error) {
-                  console.log('Failed sendig email', error);
-              });
-          }
-
-            function sendEmail() {
-              //if all files were uploaded
-              if (uploadedFilesProgress == uploadedFiles.length) {
-                sendRquestEmail(
-                  document.querySelector("#name").value,
-                  document.querySelector("#email").value,
-                  document.querySelector("#phone").value
-                );
-                uploadedFilesProgress = 0;
-                
-                let btnSend = document.querySelector(".formLight__action");
-                btnSend.value = 'Отправлено успешно';
-                btnSend.className = "formLight__action";
-
-              } else {
-                setTimeout(function(){ sendEmail() }, 500);
-              }
-            }
-
-            //validation of all input fields
-            function validateForm() {
-
-              let nameField = document.querySelector("#name");
-              if (nameField.value.trim() == "") {
-                alert('Пожалуйста, укажите ваше имя, чтобы мы знали как к вам обращаться');
-                return false;
-              }
-
-              let emailField = document.querySelector("#email");
-              if (emailField.value.trim() == "") {
-                alert('Укажите адрес электронной почты, чтобы мы знали, как с вами связаться');
-                return false;
-              }
-
-              let phoneField = document.querySelector("#phone");
-              if (phoneField.value.trim() == "") {
-                alert('Укажите номер телефона, чтобы мы знали, как с вами связаться');
-                return false;
-              }
-
-              return true;
-            }
-
             
+            this.domAttr('id', 'contact')
             
 
-        }
-    },
-
-    FormLight__form: {
-        tag: 'div',
-        expand: function () {
-
-            this.domAttr('action', this.parentBlock().param('action'))
-            this.domAttr('id', this.parentBlock().param('id'))
-
-        }
-    },
-
-    FormLight__item: {
-        expand: function () {
-            this.domAttr('param', this.param('param'))
-        }
-    },
-
-    FormLight__title: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'L',
-            Line: 'L'
-        },
-        
-    },
-
-    FormLight__hint: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'L',
-            Line: 'L'
-        },
-        
-    },
-
-    FormLight__button: {
-        expand: function () {
-            this.domAttr('data-param', this.param('data-param'))
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-        }
-    },
-
-    FormLight__action: {
-        tag: 'input',
-        expand: function () {
-            this.domAttr('type', 'submit')
-            this.domAttr('value', this.text())
-            this.css('background', this.parentBlock().param('action'))
-            this.css('color', this.parentBlock().param('actionText'))
-        }
-    },
-
-    FormLight__input: {
-        tag: 'input',
-        expand: function () {
-            this.domAttr('type', this.param('type'))
-            this.domAttr('id', this.param('id'))
-            this.domAttr('placeholder', this.param('placeholder'))
-            this.domAttr('required', true)
-            this.css('background', this.parentBlock().param('color'))
-            this.css('color', this.parentBlock().param('text'))
-
-            let root = document.documentElement;
-            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
-            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
-            
-        }
-    },
-
-    
-})
-
-
-/**
- * @block Grid Динамическая сетка
- * @tag base
- */
-Beast.decl({
-    Grid: {
-        // finalMod: true,
-        mod: {
-            Col: '',                // @mod Col {number} Ширина в колонках
-            Wrap: false,            // @mod Wrap {boolean} Основной контейнер сетки
-            Margin: false,          // @mod Margin {boolean} Поля
-            MarginX: false,         // @mod MarginX {boolean} Горизонтальные поля
-            MarginY: false,         // @mod MarginY {boolean} Вертикальные поля
-            Unmargin: false,        // @mod Unmargin {boolean} Отрицательные поля
-            UnmarginX: false,       // @mod UnmarginX {boolean} Отрицательные горизоантальные поля
-            UnmarginY: false,       // @mod UnmarginY {boolean} Отрацательные вертикальные поля
-            MarginRightGap: false,  // @mod MarginRightGap {boolean} Правый отступ равен — горизоантальное поле
-            MarginLeftGap: false,   // @mod MarginLeftGap {boolean} Левый отступ равен — горизоантальное поле
-            Cell: false,            // @mod Cell {boolean} Горизонтальный отступ между соседями — межколонник
-            Row: false,             // @mod Row {boolean} Вертикальынй отступ между соседями — межколонник
-            Rows: false,            // @mod Rows {boolean} Дочерние компоненты отступают на горизонтальное поле
-            Tile: false,            // @mod Tile {boolean} Модификатор дочернего компонента (для модификатора Tiles)
-            Tiles: false,           // @mod Tiles {boolean} Дочерние компоненты плиткой с отступами в поле
-            Center: false,          // @mod Center {boolean} Выравнивание по центру
-            Hidden: false,          // @mod Hidden {boolean} Спрятать компонент
-            ColCheck: false,        // @mod ColCheck {boolean} Считать ширину в колонках
-            Ratio: '',              // @mod Ratio {1x1 1x2 3x4 ...} Пропорция
-        },
-        param: {
-            isMaxCol: false,
-        },
-        onMod: {
-            Col: {
-                '*': function (fromParentGrid) {
-                    if (fromParentGrid === undefined) {
-                        this.param('isMaxCol', this.mod('col') === 'max')
-                    }
-                }
-            }
-        },
-        onCol: undefined,
-        domInit: function () {
-            this.param('isMaxCol', this.mod('col') === 'max')
-
-            if (this.mod('ColCheck')) {
-                this.onWin('resize', this.checkColWidth)
-                requestAnimationFrame(function () {
-                    this.checkColWidth()
-                }.bind(this))
-            }
-        },
-        onAttach: function (firstTime) {
-            this.setParentGrid(!firstTime)
-        },
-        checkColWidth: function () {
-            var prop = this.css('content').slice(1,-1).split(' ')
-            var col = parseInt(prop[0])
-            var gap = parseInt(prop[1])
-            var maxCol = parseInt(prop[2])
-            var marginX = parseInt(prop[3])
-            var marginY = parseFloat(prop[4])
-
-            if (isNaN(col)) {
-                return
-            }
-
-            var width = this.domNode().offsetWidth
-            var colNum = Math.floor((width + gap) / (col + gap))
-
-            if (colNum > maxCol) {
-                colNum = maxCol
-            }
-
-            this.trigger('Col', {
-                num: colNum,
-                edge: window.innerWidth === (colNum * col + (colNum-1) * gap + marginX * 2),
-                col: col,
-                gap: gap,
-                marginX: marginX,
-                marginY: marginY,
-            })
-        },
-        setParentGrid: function (recursive, parentGrid) {
-            if (this.onCol !== undefined || this.onEdge !== undefined || this.param('isMaxCol')) {
-                var that = this
-
-                if (parentGrid === undefined) {
-                    parentGrid = this._parentNode
-                    while (parentGrid !== undefined && !(parentGrid.isKindOf('Grid') && parentGrid.mod('ColCheck'))) {
-                        parentGrid = parentGrid._parentNode
-                    }
-                }
-
-                if (parentGrid !== undefined) {
-                    if (this.onCol || this.param('isMaxCol')) {
-                        parentGrid.on('Col', function (e, data) {
-                            that.onCol && that.onCol(data.num, data.edge, data)
-                            that.param('isMaxCol') && that.mod('Col', data.num, true)
-                        })
-                    }
-                }
-            }
-
-            if (recursive !== undefined) {
-                var children = this.get('/')
-                for (var i = 0, ii = children.length; i < ii; i++) {
-                    if (children[i].isKindOf('grid') && !children[i].mod('ColCheck')) {
-                        children[i].setParentGrid(recursive, parentGrid)
-                    }
-                }
-            }
         }
     }
 })
-
-function grid (num, col, gap, margin) {
-    var gridWidth = col * num + gap * (num - 1) + margin * 2
-    return gridWidth
-}
-Beast.decl({
-    Head: {
-        expand: function () {
-            this.append(
-                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
-                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"/"},"Все продукты"),"\n                    ",Beast.node("menu-item",{"href":"about.html"},"О нас"),"\n                    ",Beast.node("menu-item",{"href":"about.html#contact"},"Связь"),"\n                ")
-            )
-
-        }
-    },
-
-    Head__link: {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', 'main.html')
-
-
-        }
-    },
-
-    'Head__menu-item': {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', this.param('href'))
-
-        }
-    },
-
-    Head__logo: {
-        expand: function () {
-            this.empty()
-            
-        }
-    },
-    
-
-})
-Beast.decl({
-    Link: {
-        tag: 'a',
-        
-        expand: function () {
-            this.domAttr('href', this.param('href'))
-
-            if (this.mod('New')) {
-                this.domAttr('target', '_blank')
-            }
-
-        }
-    }  
-})
-Beast.decl({
-    
-    List: {
-        expand: function () {
-            
-        }
-    },
-    
-    List__item: {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', this.param('href'))
-        }
-    },
-
-    List__title: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'L',
-            Line: 'L'
-        }
-    },
-
-    List__hint: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'M',
-            Line: 'L'
-        }
-    },
-})
-/**
- * @block Overlay Интерфейс модальных окон
- * @dep UINavigation grid Typo Control
- * @tag base
- * @ext UINavigation grid
- */
-Beast.decl({
-    Overlay: {
-        inherits: ['Grid', 'UINavigation'],
-        mod: {
-            Type: 'side', // modal, partsideleft, bottom, top, expand, custom
-        },
-        onMod: {
-            State: {
-                active: function (callback) {
-                    if (this.mod('Type') === 'expand') {
-                        this.moveContextInside()
-                    }
-
-                    this.param('activeCallback', callback)
-                },
-                release: function (callback) {
-                    if (this.mod('Type') === 'expand') {
-                        this.moveContextOutside()
-                    }
-
-                    this.param('releaseCallback', callback)
-                },
-            }
-        },
-        param: {
-            activeCallback: function () {},
-            releaseCallback: function () {},
-            title: '',
-            subtitle: '',
-            topBar: true,
-            background: true,
-        },
-        expand: function () {
-            if (this.param('topBar')) {
-                this.append(Beast.node("topBar",{__context:this}))
-                    .mod('HasTopBar', true)
-            }
-
-            if (this.param('bottomBar')) {
-                var price = this.parentBlock().param('price')
-                this.append(
-                    Beast.node("bottomBar",{__context:this})   
-                )
-                    .mod('HasTopBar', true)
-            }
-
-            if (this.param('background')) {
-                this.append(Beast.node("background",{__context:this}))
-            }
-
-            if (this.mod('Type') === 'partsideleft') {
-                this.mod('Col', '1LeftMargins')
-            }
-
-            this.append(
-                Beast.node("content",{__context:this},this.get())
-            )
-        },
-        on: {
-            animationstart: function () {
-                if (this.mod('Type') === 'modal') {
-                    var overlayHeight = this.domNode().offsetHeight
-                    var parentHeight = this.parentNode().domNode().offsetHeight
-                    var marginTop = overlayHeight < (parentHeight - 200)
-                        ? this.domNode().offsetHeight / -2
-                        : undefined
-
-                    this.css({
-                        marginLeft: this.domNode().offsetWidth / -2
-                    })
-
-                    if (marginTop !== undefined) {
-                        this.css({
-                            marginTop: marginTop,
-                            marginBottom: 0,
-                            top: '50%',
-                        })
-                    }
-                }
-            },
-            animationend: function () {
-                if (this.mod('Type') === 'expand' && this.param('scrollContent')) {
-                    requestAnimationFrame(function () {
-                        if (this.elem('content')[0].domNode().scrollTop === 0) {
-                            this.param('options').context.css('transform', 'translate3d(0px,0px,0px)')
-                            this.elem('content')[0].domNode().scrollTop = -this.param('scrollContent')
-                            this.param('scrollContent', false)
-                        }
-                    }.bind(this))
-                }
-
-                if (this.mod('State') === 'release') {
-                    this.param('releaseCallback')()
-                } else {
-                    this.param('activeCallback')()
-                }
-            }
-        },
-        moveContextInside: function () {
-            var context = this.param('options').context
-
-            // Calculate Global Offset
-            var offsetParent = context.domNode()
-            var offsetTop = offsetParent.offsetTop
-            while (offsetParent = offsetParent.offsetParent) {
-                offsetTop += offsetParent.offsetTop
-            }
-
-            // Placeholder
-            var placeholder = Beast.node("OverlayPlaceholder",{__context:this})
-            this.param('placeholder', placeholder)
-            context.parentNode().insertChild([placeholder], context.index(true))
-            placeholder
-                .css('height', context.domNode().offsetHeight)
-                .domNode().className = context.domNode().className
-
-            context.appendTo(
-                this.elem('content')[0]
-            )
-
-            offsetTop -= 44
-            context.css({
-                transform: 'translate3d(0px,' + offsetTop + 'px, 0px)'
-            })
-
-            // Context is under of the screen top
-            if (offsetTop > 0) {
-                requestAnimationFrame(function () {
-                    context.css({
-                        transition: 'transform 300ms',
-                        transform: 'translate3d(0px,0px,0px)',
-                    })
-                })
-            }
-            // Context is above of the screen top
-            else {
-                this.param({
-                    scrollContent: offsetTop
-                })
-            }
-        },
-        moveContextOutside: function () {
-            this.param('placeholder').parentNode().insertChild(
-                [this.param('options').context], this.param('placeholder').index(true)
-            )
-            this.param('placeholder').remove()
-
-            this.param('options').context.css({
-                transition: ''
-            })
-        },
-    },
-    Overlay__topBar: {
-        expand: function () {
-            var layerIndex = this.parentBlock().parentNode().index()
-
-            if (this.parentBlock().mod('type') === 'side') {
-                this.append(
-                    Beast.node("topBarActionBack",{__context:this}),
-                    layerIndex > 1 && Beast.node("topBarActionClose",{__context:this})
-                )
-            }
-
-            if (this.parentBlock().mod('type') === 'sideBottom') {
-                this.append(
-                    Beast.node("topBarActionClose",{__context:this})
-                )
-            }
-
-            var title = this.parentBlock().param('title')
-            var subtitle = this.parentBlock().param('subtitle')
-
-            if (title) {
-                var titles = Beast.node("topBarTitles",{__context:this}).append(
-                    Beast.node("topBarTitle",{__context:this},title)
-                )
-
-                if (subtitle) {
-                    titles.append(
-                        Beast.node("topBarSubtitle",{__context:this},subtitle)
-                    )
-                }
-
-                this.append(titles)
-            }
-        }
-    },
-
-    Overlay__bottomBar: {
-        expand: function () {
-
-            var layerIndex = this.parentBlock().parentNode().index()
-            var price = this.parentBlock().param('price')
-
-            this.append(
-                Beast.node("Reserve",{__context:this},"\n                    ",Beast.node("price",undefined,price),"   \n                ")
-            )
-
-            
-        }
-    },
-
-    Overlay__topBarTitle: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'M',
-            Line: 'M',
-        },
-    },
-    Overlay__topBarSubtitle: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'S',
-        },
-    },
-    Overlay__topBarAction: {
-        inherits: ['Control', 'Typo'],
-        mod: {
-            Text: 'M',
-            Medium: true,
-        },
-    },
-    Overlay__topBarActionBack: {
-        inherits: 'Overlay__topBarAction',
-        expand: function fn () {
-            this.inherited(fn)
-                .append(
-                    Beast.node("Icon",{__context:this,"Name":"arrow-back"})
-                )
-        },
-        on: {
-            Release: function () {
-                this.parentBlock().popFromStackNavigation()
-            }
-        }
-    },
-    Overlay__topBarActionClose: {
-        inherits: 'Overlay__topBarAction',
-        expand: function fn () {
-            this.inherited(fn)
-                .append(
-                    '+'
-                )
-        },
-        on: {
-            click: function () {
-                this.parentBlock().popAllFromStackNavigation()
-            }
-        }
-    },
-
-    
-})
-
 // global variables for calculations
 let price;
 let characterNumber = 2500;
@@ -7729,16 +7201,6 @@ Beast.decl({
 
 
 Beast.decl({
-    Contact: {
-        expand: function () {
-            
-            this.domAttr('id', 'contact')
-            
-
-        }
-    }
-})
-Beast.decl({
     Gallery: {
         inherits: 'Typo',
         mod: {
@@ -7779,6 +7241,562 @@ Beast.decl({
     }  
 })
 Beast.decl({
+    Head: {
+        expand: function () {
+            this.append(
+                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
+                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"/"},"Все продукты"),"\n                    ",Beast.node("menu-item",{"href":"about.html"},"О нас"),"\n                    ",Beast.node("menu-item",{"href":"about.html#contact"},"Связь"),"\n                ")
+            )
+
+        }
+    },
+
+    Head__link: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', 'main.html')
+
+
+        }
+    },
+
+    'Head__menu-item': {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+
+        }
+    },
+
+    Head__logo: {
+        expand: function () {
+            this.empty()
+            
+        }
+    },
+    
+
+})
+
+const emailJsTemplateGeneric = "template_al17i86";
+
+const emailContent = {
+  web : {
+    title: "Сайты и стиль",
+    message: "Вы отправили заявку на сайты и стиль. Мы свяжемся с вами в течение двух рабочих дней, чтобы обсудить детали."
+  },
+  support : {
+    title: "Дизайн-поддержка",
+    message: "Вы отправили заявку на дизайн-поддержку по подписке. Мы свяжемся с вами в течение двух рабочих дней, чтобы обсудить детали."
+  },
+  presentation : {
+    title: "Дизайн презентации",
+    message: "Вы отправили заявку на дизайн презентации. У вас уже есть текст или слайды? Пожалуйста, отправьте их ответным письмом, чтобы мы смогли оценить объем работы."
+  },
+  tailored : {
+    title: "Индивидуальный дизайн",
+    message: "Вы отправили заявку на индивидуальный дизайн. Мы свяжемся с вами в течение двух рабочих дней, чтобы обсудить детали."
+  },
+}
+
+Beast.decl({
+    FormLight: {
+
+        expand: function () {
+
+            this.append(
+                Beast.node("form",{__context:this},"\n                    ",this.get('head', 'item'),"\n                ")
+                
+            )
+
+        },
+
+        domInit: function () {
+            let requestForm = document.querySelector(".formLight__action");
+            var typeName = this.param('typeName')
+            var self = this;
+
+            console.log(typeName)
+
+            requestForm.onclick = function(event) {
+              
+              event.preventDefault();
+
+              // if all validation goes well
+              if (validateForm()) {
+                this.value = 'Отправляю...';
+                this.disabled = true;
+                this.classList.add("button-loading");  
+                 
+                sendEmail();
+                
+              } else return false;
+            }
+
+            function sendRquestEmail(name, email, phone) {
+
+              emailjs.send(emailJsService, emailJsTemplate, {
+                name: name,
+                email: email,
+                phone: phone,
+                type: typeName,
+                link: '—',
+                price: '0'
+              })
+              .then(function() {
+                  //alert('Ваша заявка успешно оправлена');
+                  //location.reload();
+
+                  sendEmailClient();
+              }, function(error) {
+                  console.log('Failed sendig email', error);
+              });
+            }
+
+            function sendEmailClient() {
+              let clientEmail = document.querySelector("#email").value;
+              
+
+              emailjs.send(emailJsService, emailJsTemplateGeneric, {
+                sender: clientEmail,
+                subject: emailContent[self.param('type')].title,
+                message: emailContent[self.param('type')].message
+              })
+              .then(function() {
+                  
+              }, function(error) {
+                  console.log('Failed sendig email', error);
+              });
+          }
+
+            function sendEmail() {
+              //if all files were uploaded
+              if (uploadedFilesProgress == uploadedFiles.length) {
+                sendRquestEmail(
+                  document.querySelector("#name").value,
+                  document.querySelector("#email").value,
+                  document.querySelector("#phone").value
+                );
+                uploadedFilesProgress = 0;
+                
+                let btnSend = document.querySelector(".formLight__action");
+                btnSend.value = 'Отправлено успешно';
+                btnSend.className = "formLight__action";
+
+              } else {
+                setTimeout(function(){ sendEmail() }, 500);
+              }
+            }
+
+            //validation of all input fields
+            function validateForm() {
+
+              let nameField = document.querySelector("#name");
+              if (nameField.value.trim() == "") {
+                alert('Пожалуйста, укажите ваше имя, чтобы мы знали как к вам обращаться');
+                return false;
+              }
+
+              let emailField = document.querySelector("#email");
+              if (emailField.value.trim() == "") {
+                alert('Укажите адрес электронной почты, чтобы мы знали, как с вами связаться');
+                return false;
+              }
+
+              let phoneField = document.querySelector("#phone");
+              if (phoneField.value.trim() == "") {
+                alert('Укажите номер телефона, чтобы мы знали, как с вами связаться');
+                return false;
+              }
+
+              return true;
+            }
+
+            
+            
+
+        }
+    },
+
+    FormLight__form: {
+        tag: 'div',
+        expand: function () {
+
+            this.domAttr('action', this.parentBlock().param('action'))
+            this.domAttr('id', this.parentBlock().param('id'))
+
+        }
+    },
+
+    FormLight__item: {
+        expand: function () {
+            this.domAttr('param', this.param('param'))
+        }
+    },
+
+    FormLight__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
+    },
+
+    FormLight__hint: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        },
+        
+    },
+
+    FormLight__button: {
+        expand: function () {
+            this.domAttr('data-param', this.param('data-param'))
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+        }
+    },
+
+    FormLight__action: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', 'submit')
+            this.domAttr('value', this.text())
+            this.css('background', this.parentBlock().param('action'))
+            this.css('color', this.parentBlock().param('actionText'))
+        }
+    },
+
+    FormLight__input: {
+        tag: 'input',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            this.css('background', this.parentBlock().param('color'))
+            this.css('color', this.parentBlock().param('text'))
+
+            let root = document.documentElement;
+            root.style.setProperty('--formHighlight', this.parentBlock().param('highlight'));
+            root.style.setProperty('--formPlaceholder', this.parentBlock().param('text'));
+            
+        }
+    },
+
+    
+})
+
+
+Beast.decl({
+    Link: {
+        tag: 'a',
+        
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+
+            if (this.mod('New')) {
+                this.domAttr('target', '_blank')
+            }
+
+        }
+    }  
+})
+/**
+ * @block Overlay Интерфейс модальных окон
+ * @dep UINavigation grid Typo Control
+ * @tag base
+ * @ext UINavigation grid
+ */
+Beast.decl({
+    Overlay: {
+        inherits: ['Grid', 'UINavigation'],
+        mod: {
+            Type: 'side', // modal, partsideleft, bottom, top, expand, custom
+        },
+        onMod: {
+            State: {
+                active: function (callback) {
+                    if (this.mod('Type') === 'expand') {
+                        this.moveContextInside()
+                    }
+
+                    this.param('activeCallback', callback)
+                },
+                release: function (callback) {
+                    if (this.mod('Type') === 'expand') {
+                        this.moveContextOutside()
+                    }
+
+                    this.param('releaseCallback', callback)
+                },
+            }
+        },
+        param: {
+            activeCallback: function () {},
+            releaseCallback: function () {},
+            title: '',
+            subtitle: '',
+            topBar: true,
+            background: true,
+        },
+        expand: function () {
+            if (this.param('topBar')) {
+                this.append(Beast.node("topBar",{__context:this}))
+                    .mod('HasTopBar', true)
+            }
+
+            if (this.param('bottomBar')) {
+                var price = this.parentBlock().param('price')
+                this.append(
+                    Beast.node("bottomBar",{__context:this})   
+                )
+                    .mod('HasTopBar', true)
+            }
+
+            if (this.param('background')) {
+                this.append(Beast.node("background",{__context:this}))
+            }
+
+            if (this.mod('Type') === 'partsideleft') {
+                this.mod('Col', '1LeftMargins')
+            }
+
+            this.append(
+                Beast.node("content",{__context:this},this.get())
+            )
+        },
+        on: {
+            animationstart: function () {
+                if (this.mod('Type') === 'modal') {
+                    var overlayHeight = this.domNode().offsetHeight
+                    var parentHeight = this.parentNode().domNode().offsetHeight
+                    var marginTop = overlayHeight < (parentHeight - 200)
+                        ? this.domNode().offsetHeight / -2
+                        : undefined
+
+                    this.css({
+                        marginLeft: this.domNode().offsetWidth / -2
+                    })
+
+                    if (marginTop !== undefined) {
+                        this.css({
+                            marginTop: marginTop,
+                            marginBottom: 0,
+                            top: '50%',
+                        })
+                    }
+                }
+            },
+            animationend: function () {
+                if (this.mod('Type') === 'expand' && this.param('scrollContent')) {
+                    requestAnimationFrame(function () {
+                        if (this.elem('content')[0].domNode().scrollTop === 0) {
+                            this.param('options').context.css('transform', 'translate3d(0px,0px,0px)')
+                            this.elem('content')[0].domNode().scrollTop = -this.param('scrollContent')
+                            this.param('scrollContent', false)
+                        }
+                    }.bind(this))
+                }
+
+                if (this.mod('State') === 'release') {
+                    this.param('releaseCallback')()
+                } else {
+                    this.param('activeCallback')()
+                }
+            }
+        },
+        moveContextInside: function () {
+            var context = this.param('options').context
+
+            // Calculate Global Offset
+            var offsetParent = context.domNode()
+            var offsetTop = offsetParent.offsetTop
+            while (offsetParent = offsetParent.offsetParent) {
+                offsetTop += offsetParent.offsetTop
+            }
+
+            // Placeholder
+            var placeholder = Beast.node("OverlayPlaceholder",{__context:this})
+            this.param('placeholder', placeholder)
+            context.parentNode().insertChild([placeholder], context.index(true))
+            placeholder
+                .css('height', context.domNode().offsetHeight)
+                .domNode().className = context.domNode().className
+
+            context.appendTo(
+                this.elem('content')[0]
+            )
+
+            offsetTop -= 44
+            context.css({
+                transform: 'translate3d(0px,' + offsetTop + 'px, 0px)'
+            })
+
+            // Context is under of the screen top
+            if (offsetTop > 0) {
+                requestAnimationFrame(function () {
+                    context.css({
+                        transition: 'transform 300ms',
+                        transform: 'translate3d(0px,0px,0px)',
+                    })
+                })
+            }
+            // Context is above of the screen top
+            else {
+                this.param({
+                    scrollContent: offsetTop
+                })
+            }
+        },
+        moveContextOutside: function () {
+            this.param('placeholder').parentNode().insertChild(
+                [this.param('options').context], this.param('placeholder').index(true)
+            )
+            this.param('placeholder').remove()
+
+            this.param('options').context.css({
+                transition: ''
+            })
+        },
+    },
+    Overlay__topBar: {
+        expand: function () {
+            var layerIndex = this.parentBlock().parentNode().index()
+
+            if (this.parentBlock().mod('type') === 'side') {
+                this.append(
+                    Beast.node("topBarActionBack",{__context:this}),
+                    layerIndex > 1 && Beast.node("topBarActionClose",{__context:this})
+                )
+            }
+
+            if (this.parentBlock().mod('type') === 'sideBottom') {
+                this.append(
+                    Beast.node("topBarActionClose",{__context:this})
+                )
+            }
+
+            var title = this.parentBlock().param('title')
+            var subtitle = this.parentBlock().param('subtitle')
+
+            if (title) {
+                var titles = Beast.node("topBarTitles",{__context:this}).append(
+                    Beast.node("topBarTitle",{__context:this},title)
+                )
+
+                if (subtitle) {
+                    titles.append(
+                        Beast.node("topBarSubtitle",{__context:this},subtitle)
+                    )
+                }
+
+                this.append(titles)
+            }
+        }
+    },
+
+    Overlay__bottomBar: {
+        expand: function () {
+
+            var layerIndex = this.parentBlock().parentNode().index()
+            var price = this.parentBlock().param('price')
+
+            this.append(
+                Beast.node("Reserve",{__context:this},"\n                    ",Beast.node("price",undefined,price),"   \n                ")
+            )
+
+            
+        }
+    },
+
+    Overlay__topBarTitle: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'M',
+            Line: 'M',
+        },
+    },
+    Overlay__topBarSubtitle: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'S',
+        },
+    },
+    Overlay__topBarAction: {
+        inherits: ['Control', 'Typo'],
+        mod: {
+            Text: 'M',
+            Medium: true,
+        },
+    },
+    Overlay__topBarActionBack: {
+        inherits: 'Overlay__topBarAction',
+        expand: function fn () {
+            this.inherited(fn)
+                .append(
+                    Beast.node("Icon",{__context:this,"Name":"arrow-back"})
+                )
+        },
+        on: {
+            Release: function () {
+                this.parentBlock().popFromStackNavigation()
+            }
+        }
+    },
+    Overlay__topBarActionClose: {
+        inherits: 'Overlay__topBarAction',
+        expand: function fn () {
+            this.inherited(fn)
+                .append(
+                    '+'
+                )
+        },
+        on: {
+            click: function () {
+                this.parentBlock().popAllFromStackNavigation()
+            }
+        }
+    },
+
+    
+})
+
+Beast.decl({
+    
+    List: {
+        expand: function () {
+            
+        }
+    },
+    
+    List__item: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+        }
+    },
+
+    List__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        }
+    },
+
+    List__hint: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'M',
+            Line: 'L'
+        }
+    },
+})
+Beast.decl({
     Screen: {
         
         expand: function fn () {
@@ -7800,34 +7818,6 @@ Beast.decl({
         },
         
     },
-})
-Beast.decl({
-    Showcase: {
-
-        expand: function () {
-            this.append(
-                
-                    this.get('items')
-                
-            )
-
-        }
-    },
-    
-    Showcase__item: {
-
-        expand: function () {
-            this.css('background', this.parentBlock().param('color'))
-            
-            this.append(
-                
-                Beast.node("Thumb",{__context:this,"Ratio":this.parentBlock().mod('Ratio')},this.text())
-                
-            )
-
-        }
-    },
-  
 })
 Beast.decl({
     Shelf: {
@@ -7895,6 +7885,34 @@ Beast.decl({
 
 
 
+Beast.decl({
+    Showcase: {
+
+        expand: function () {
+            this.append(
+                
+                    this.get('items')
+                
+            )
+
+        }
+    },
+    
+    Showcase__item: {
+
+        expand: function () {
+            this.css('background', this.parentBlock().param('color'))
+            
+            this.append(
+                
+                Beast.node("Thumb",{__context:this,"Ratio":this.parentBlock().mod('Ratio')},this.text())
+                
+            )
+
+        }
+    },
+  
+})
 Beast.decl({
     Steps: {
 
@@ -8240,24 +8258,6 @@ Beast.decl({
 // @example <Thumb Ratio="1x1" Col="3" Shadow src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Grid src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Rounded src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
-/**
- * @block Typo Типографика
- * @tag base
- */
-
-Beast.decl({
-    Typo: {
-        // finalMod: true,
-        mod: {
-            text: '',       // @mod Text    {S M L XL}  Размер текста
-            line: '',       // @mod Line    {S M L}     Высота строки
-            caps: false,    // @mod Caps    {boolean}   Капслок
-            light: false,   // @mod Light   {boolean}   Light-начертание
-            medium: false,  // @mod Medium  {boolean}   Medium-начертание
-            bold: false,    // @mod Bold    {boolean}   Bold-начертание
-        }
-    }
-})
 Beast.decl({
 
     /**
