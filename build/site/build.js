@@ -5930,146 +5930,10 @@ BemNode.prototype = {
 }
 
 })();
-/**
- * @block Grid Динамическая сетка
- * @tag base
- */
-Beast.decl({
-    Grid: {
-        // finalMod: true,
-        mod: {
-            Col: '',                // @mod Col {number} Ширина в колонках
-            Wrap: false,            // @mod Wrap {boolean} Основной контейнер сетки
-            Margin: false,          // @mod Margin {boolean} Поля
-            MarginX: false,         // @mod MarginX {boolean} Горизонтальные поля
-            MarginY: false,         // @mod MarginY {boolean} Вертикальные поля
-            Unmargin: false,        // @mod Unmargin {boolean} Отрицательные поля
-            UnmarginX: false,       // @mod UnmarginX {boolean} Отрицательные горизоантальные поля
-            UnmarginY: false,       // @mod UnmarginY {boolean} Отрацательные вертикальные поля
-            MarginRightGap: false,  // @mod MarginRightGap {boolean} Правый отступ равен — горизоантальное поле
-            MarginLeftGap: false,   // @mod MarginLeftGap {boolean} Левый отступ равен — горизоантальное поле
-            Cell: false,            // @mod Cell {boolean} Горизонтальный отступ между соседями — межколонник
-            Row: false,             // @mod Row {boolean} Вертикальынй отступ между соседями — межколонник
-            Rows: false,            // @mod Rows {boolean} Дочерние компоненты отступают на горизонтальное поле
-            Tile: false,            // @mod Tile {boolean} Модификатор дочернего компонента (для модификатора Tiles)
-            Tiles: false,           // @mod Tiles {boolean} Дочерние компоненты плиткой с отступами в поле
-            Center: false,          // @mod Center {boolean} Выравнивание по центру
-            Hidden: false,          // @mod Hidden {boolean} Спрятать компонент
-            ColCheck: false,        // @mod ColCheck {boolean} Считать ширину в колонках
-            Ratio: '',              // @mod Ratio {1x1 1x2 3x4 ...} Пропорция
-        },
-        param: {
-            isMaxCol: false,
-        },
-        onMod: {
-            Col: {
-                '*': function (fromParentGrid) {
-                    if (fromParentGrid === undefined) {
-                        this.param('isMaxCol', this.mod('col') === 'max')
-                    }
-                }
-            }
-        },
-        onCol: undefined,
-        domInit: function () {
-            this.param('isMaxCol', this.mod('col') === 'max')
-
-            if (this.mod('ColCheck')) {
-                this.onWin('resize', this.checkColWidth)
-                requestAnimationFrame(function () {
-                    this.checkColWidth()
-                }.bind(this))
-            }
-        },
-        onAttach: function (firstTime) {
-            this.setParentGrid(!firstTime)
-        },
-        checkColWidth: function () {
-            var prop = this.css('content').slice(1,-1).split(' ')
-            var col = parseInt(prop[0])
-            var gap = parseInt(prop[1])
-            var maxCol = parseInt(prop[2])
-            var marginX = parseInt(prop[3])
-            var marginY = parseFloat(prop[4])
-
-            if (isNaN(col)) {
-                return
-            }
-
-            var width = this.domNode().offsetWidth
-            var colNum = Math.floor((width + gap) / (col + gap))
-
-            if (colNum > maxCol) {
-                colNum = maxCol
-            }
-
-            this.trigger('Col', {
-                num: colNum,
-                edge: window.innerWidth === (colNum * col + (colNum-1) * gap + marginX * 2),
-                col: col,
-                gap: gap,
-                marginX: marginX,
-                marginY: marginY,
-            })
-        },
-        setParentGrid: function (recursive, parentGrid) {
-            if (this.onCol !== undefined || this.onEdge !== undefined || this.param('isMaxCol')) {
-                var that = this
-
-                if (parentGrid === undefined) {
-                    parentGrid = this._parentNode
-                    while (parentGrid !== undefined && !(parentGrid.isKindOf('Grid') && parentGrid.mod('ColCheck'))) {
-                        parentGrid = parentGrid._parentNode
-                    }
-                }
-
-                if (parentGrid !== undefined) {
-                    if (this.onCol || this.param('isMaxCol')) {
-                        parentGrid.on('Col', function (e, data) {
-                            that.onCol && that.onCol(data.num, data.edge, data)
-                            that.param('isMaxCol') && that.mod('Col', data.num, true)
-                        })
-                    }
-                }
-            }
-
-            if (recursive !== undefined) {
-                var children = this.get('/')
-                for (var i = 0, ii = children.length; i < ii; i++) {
-                    if (children[i].isKindOf('grid') && !children[i].mod('ColCheck')) {
-                        children[i].setParentGrid(recursive, parentGrid)
-                    }
-                }
-            }
-        }
-    }
-})
-
-function grid (num, col, gap, margin) {
-    var gridWidth = col * num + gap * (num - 1) + margin * 2
-    return gridWidth
-}
-/**
- * @block Typo Типографика
- * @tag base
- */
-
-Beast.decl({
-    Typo: {
-        // finalMod: true,
-        mod: {
-            text: '',       // @mod Text    {S M L XL}  Размер текста
-            line: '',       // @mod Line    {S M L}     Высота строки
-            caps: false,    // @mod Caps    {boolean}   Капслок
-            light: false,   // @mod Light   {boolean}   Light-начертание
-            medium: false,  // @mod Medium  {boolean}   Medium-начертание
-            bold: false,    // @mod Bold    {boolean}   Bold-начертание
-        }
-    }
-})
 const emailJsService2 = "service_5zbkh3r";
-const emailJsTemplate2 = "template_mjdi55g";
-
+const emailJsTemplate2 = "template_vnytodl";
+//repalce name, details, volume, duration, price
+const serviceHTMLTemplate = '<tr><td valign="top" class="preheaderContent"><table border="0" cellpadding="20" cellspacing="0" width="100%" style="color: #5B5B5B;"><tr><td valign="top"><span style="color: #737373">{{name}}</span><br/><br/><span style="color: #737373; letter-spacing: -0.2px">Особые пожелания:</span></span> {{details}}<br/><span style="color: #737373; letter-spacing: -0.2px">Объем исходного документа:</span> {{volume}}<br/><span style="color: #737373; letter-spacing: -0.2px">Срок выполнения:</span> {{duration}}</td><!-- *|IFNOT:ARCHIVE_PAGE|* --><td valign="top" align="right" width="190">{{price}}₽</td><!-- *|END:IF|* --></tr></table><!-- // End Module: Standard Preheader \ --></td></tr><tr><td align="center" valign="top"><hr noshade style="opacity: 0.3;background-color: #fff;height: 1px;border: none;"></hr></td></tr>';
 Beast.decl({
     Admin: {
 		expand: function () {
@@ -6080,6 +5944,7 @@ Beast.decl({
         },
 		domInit: function () {
 			let requestForm = document.querySelector(".admin__action");
+            let servicesString = "";
 
             requestForm.onclick = function(event) {
 
@@ -6087,19 +5952,58 @@ Beast.decl({
 				btnTitle.innerHTML = 'Отправляю...';
                 this.disabled = true;
                 this.classList.add("button-loading");
+
+                prepareEmail();
 			}
 
-			function sendEmail() {
+            function prepareEmail() {
+                servicesString = "";
+                let services = document.querySelectorAll(".admin__service");
+                if (services) {
+                    for (var i = 0; i < services.length; i++) {
+                        let serviceName = services[i].querySelector(".admin__servicename").value;
+                        let serviceDetails = services[i].querySelectorAll(".admin__detailsvalue")[0].value;
+                        let serviceVolume = services[i].querySelectorAll(".admin__detailsvalue")[1].value;
+                        let serviceDuration = services[i].querySelectorAll(".admin__detailsvalue")[2].value;
+
+                        let servicePrice = services[i].querySelector(".admin__serviceprice").value;
+                        
+                        servicesString += serviceHTMLTemplate.replace("{{name}}", serviceName).replace("{{details}}", serviceDetails).replace("{{volume}}", serviceVolume).replace("{{duration}}", serviceDuration).replace("{{price}}", servicePrice);
+                    }
+                    
+                    let emailAddress = document.getElementById("email").value;
+                    let finalPrice = document.querySelector(".admin__summaryprice").value;
+                    let deadline = document.querySelector(".admin__deadlinedate").value;
+                    
+                    if (emailAddress && finalPrice && deadline) {
+                        sendEmail(emailAddress, servicesString, finalPrice, deadline);
+                    }
+                    else {
+                        informError();
+                    }
+                } else {
+                    informError();
+                }
+            }
+
+            function informError() {
+                alert("Письмо не может быть отправлено, так как остутствуют необходимые поля. Проверьте заполненность формы и повторите попытку.")
+            }
+
+			function sendEmail(email, productsString, finalPrice, deadline) {
 
 				emailjs.send(emailJsService2, emailJsTemplate2, {
-					
+                    contact: email,
+					products: productsString,
+                    final_price: finalPrice,
+                    deadline: deadline
 				})
 				.then(function() {
+                    alert('Письмо успешно отправлено.')
 					let btnSend = document.querySelector(".admin__action-title");
-					btnSend.innerHTML = 'Отправлено успешно';
-					btnSend.parentNode.className = "admin__action admin__disabled";
+					btnSend.innerHTML = 'Отправить письмо';
+				    btnSend.parentNode.className = "admin__action";
 
-                	$(".admin__action").attr("disabled", "disabled").off('click');
 				}, function(error) {
 					console.log('Failed sendig email', error);
 				});
@@ -6510,6 +6414,53 @@ Beast.decl({
 
 
 
+
+
+Beast.decl({
+
+    Check: {
+        
+        expand: function fn () {
+            let text = this.text();
+            this.inherited(fn)
+                .append(
+                    Beast.node("label",{__context:this},"\n                        ",text,"\n                        ",Beast.node("input",{"value":text}),"\n                        ",Beast.node("mark"),"\n                    ")
+                )
+        }
+    },
+    Check__label: {
+        tag:'label',
+        expand: function () {
+            this.domAttr('for', this.parentBlock().param('name'))
+        }
+    },
+
+    Check__mark: {
+        expand: function () {
+            
+        }
+    },
+    
+    Check__input: {
+        tag:'input',
+        expand: function () {
+            this.domAttr('type', 'checkbox')
+            this.domAttr('id', this.parentBlock().param('name'))
+            this.domAttr('value', this.param('value'))
+            this.domAttr('name', this.parentBlock().param('name'))
+        }
+    }
+})
+
+/**
+ * @example
+ * <Select>
+ *     <option value="Mazda">Mazda</option>
+ *     <option value="Opel">Opel</option>
+ *     <option value="BMW">BMW</option>
+ *     <option value="Lada">Lada</option>
+ * </Select>
+ */
 
 Beast.decl({
     Contact: {
@@ -7444,6 +7395,125 @@ Beast.decl({
     
 
 })
+/**
+ * @block Grid Динамическая сетка
+ * @tag base
+ */
+Beast.decl({
+    Grid: {
+        // finalMod: true,
+        mod: {
+            Col: '',                // @mod Col {number} Ширина в колонках
+            Wrap: false,            // @mod Wrap {boolean} Основной контейнер сетки
+            Margin: false,          // @mod Margin {boolean} Поля
+            MarginX: false,         // @mod MarginX {boolean} Горизонтальные поля
+            MarginY: false,         // @mod MarginY {boolean} Вертикальные поля
+            Unmargin: false,        // @mod Unmargin {boolean} Отрицательные поля
+            UnmarginX: false,       // @mod UnmarginX {boolean} Отрицательные горизоантальные поля
+            UnmarginY: false,       // @mod UnmarginY {boolean} Отрацательные вертикальные поля
+            MarginRightGap: false,  // @mod MarginRightGap {boolean} Правый отступ равен — горизоантальное поле
+            MarginLeftGap: false,   // @mod MarginLeftGap {boolean} Левый отступ равен — горизоантальное поле
+            Cell: false,            // @mod Cell {boolean} Горизонтальный отступ между соседями — межколонник
+            Row: false,             // @mod Row {boolean} Вертикальынй отступ между соседями — межколонник
+            Rows: false,            // @mod Rows {boolean} Дочерние компоненты отступают на горизонтальное поле
+            Tile: false,            // @mod Tile {boolean} Модификатор дочернего компонента (для модификатора Tiles)
+            Tiles: false,           // @mod Tiles {boolean} Дочерние компоненты плиткой с отступами в поле
+            Center: false,          // @mod Center {boolean} Выравнивание по центру
+            Hidden: false,          // @mod Hidden {boolean} Спрятать компонент
+            ColCheck: false,        // @mod ColCheck {boolean} Считать ширину в колонках
+            Ratio: '',              // @mod Ratio {1x1 1x2 3x4 ...} Пропорция
+        },
+        param: {
+            isMaxCol: false,
+        },
+        onMod: {
+            Col: {
+                '*': function (fromParentGrid) {
+                    if (fromParentGrid === undefined) {
+                        this.param('isMaxCol', this.mod('col') === 'max')
+                    }
+                }
+            }
+        },
+        onCol: undefined,
+        domInit: function () {
+            this.param('isMaxCol', this.mod('col') === 'max')
+
+            if (this.mod('ColCheck')) {
+                this.onWin('resize', this.checkColWidth)
+                requestAnimationFrame(function () {
+                    this.checkColWidth()
+                }.bind(this))
+            }
+        },
+        onAttach: function (firstTime) {
+            this.setParentGrid(!firstTime)
+        },
+        checkColWidth: function () {
+            var prop = this.css('content').slice(1,-1).split(' ')
+            var col = parseInt(prop[0])
+            var gap = parseInt(prop[1])
+            var maxCol = parseInt(prop[2])
+            var marginX = parseInt(prop[3])
+            var marginY = parseFloat(prop[4])
+
+            if (isNaN(col)) {
+                return
+            }
+
+            var width = this.domNode().offsetWidth
+            var colNum = Math.floor((width + gap) / (col + gap))
+
+            if (colNum > maxCol) {
+                colNum = maxCol
+            }
+
+            this.trigger('Col', {
+                num: colNum,
+                edge: window.innerWidth === (colNum * col + (colNum-1) * gap + marginX * 2),
+                col: col,
+                gap: gap,
+                marginX: marginX,
+                marginY: marginY,
+            })
+        },
+        setParentGrid: function (recursive, parentGrid) {
+            if (this.onCol !== undefined || this.onEdge !== undefined || this.param('isMaxCol')) {
+                var that = this
+
+                if (parentGrid === undefined) {
+                    parentGrid = this._parentNode
+                    while (parentGrid !== undefined && !(parentGrid.isKindOf('Grid') && parentGrid.mod('ColCheck'))) {
+                        parentGrid = parentGrid._parentNode
+                    }
+                }
+
+                if (parentGrid !== undefined) {
+                    if (this.onCol || this.param('isMaxCol')) {
+                        parentGrid.on('Col', function (e, data) {
+                            that.onCol && that.onCol(data.num, data.edge, data)
+                            that.param('isMaxCol') && that.mod('Col', data.num, true)
+                        })
+                    }
+                }
+            }
+
+            if (recursive !== undefined) {
+                var children = this.get('/')
+                for (var i = 0, ii = children.length; i < ii; i++) {
+                    if (children[i].isKindOf('grid') && !children[i].mod('ColCheck')) {
+                        children[i].setParentGrid(recursive, parentGrid)
+                    }
+                }
+            }
+        }
+    }
+})
+
+function grid (num, col, gap, margin) {
+    var gridWidth = col * num + gap * (num - 1) + margin * 2
+    return gridWidth
+}
 Beast.decl({
     Link: {
         tag: 'a',
@@ -8211,6 +8281,24 @@ Beast.decl({
 // @example <Thumb Ratio="1x1" Col="3" Shadow src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Grid src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
 // @example <Thumb Ratio="1x1" Col="3" Rounded src="https://jing.yandex-team.ru/files/kovchiy/2017-03-23_02-14-26.png"/>
+/**
+ * @block Typo Типографика
+ * @tag base
+ */
+
+Beast.decl({
+    Typo: {
+        // finalMod: true,
+        mod: {
+            text: '',       // @mod Text    {S M L XL}  Размер текста
+            line: '',       // @mod Line    {S M L}     Высота строки
+            caps: false,    // @mod Caps    {boolean}   Капслок
+            light: false,   // @mod Light   {boolean}   Light-начертание
+            medium: false,  // @mod Medium  {boolean}   Medium-начертание
+            bold: false,    // @mod Bold    {boolean}   Bold-начертание
+        }
+    }
+})
 Beast.decl({
 
     /**
@@ -8508,50 +8596,3 @@ Beast.decl({
         }
     }
 })
-
-
-Beast.decl({
-
-    Check: {
-        
-        expand: function fn () {
-            let text = this.text();
-            this.inherited(fn)
-                .append(
-                    Beast.node("label",{__context:this},"\n                        ",text,"\n                        ",Beast.node("input",{"value":text}),"\n                        ",Beast.node("mark"),"\n                    ")
-                )
-        }
-    },
-    Check__label: {
-        tag:'label',
-        expand: function () {
-            this.domAttr('for', this.parentBlock().param('name'))
-        }
-    },
-
-    Check__mark: {
-        expand: function () {
-            
-        }
-    },
-    
-    Check__input: {
-        tag:'input',
-        expand: function () {
-            this.domAttr('type', 'checkbox')
-            this.domAttr('id', this.parentBlock().param('name'))
-            this.domAttr('value', this.param('value'))
-            this.domAttr('name', this.parentBlock().param('name'))
-        }
-    }
-})
-
-/**
- * @example
- * <Select>
- *     <option value="Mazda">Mazda</option>
- *     <option value="Opel">Opel</option>
- *     <option value="BMW">BMW</option>
- *     <option value="Lada">Lada</option>
- * </Select>
- */

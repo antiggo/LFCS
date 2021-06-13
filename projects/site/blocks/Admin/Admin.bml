@@ -1,6 +1,7 @@
 const emailJsService2 = "service_5zbkh3r";
-const emailJsTemplate2 = "template_mjdi55g";
-
+const emailJsTemplate2 = "template_vnytodl";
+//repalce name, details, volume, duration, price
+const serviceHTMLTemplate = '<tr><td valign="top" class="preheaderContent"><table border="0" cellpadding="20" cellspacing="0" width="100%" style="color: #5B5B5B;"><tr><td valign="top"><span style="color: #737373">{{name}}</span><br/><br/><span style="color: #737373; letter-spacing: -0.2px">Особые пожелания:</span></span> {{details}}<br/><span style="color: #737373; letter-spacing: -0.2px">Объем исходного документа:</span> {{volume}}<br/><span style="color: #737373; letter-spacing: -0.2px">Срок выполнения:</span> {{duration}}</td><!-- *|IFNOT:ARCHIVE_PAGE|* --><td valign="top" align="right" width="190">{{price}}₽</td><!-- *|END:IF|* --></tr></table><!-- // End Module: Standard Preheader \ --></td></tr><tr><td align="center" valign="top"><hr noshade style="opacity: 0.3;background-color: #fff;height: 1px;border: none;"></hr></td></tr>';
 Beast.decl({
     Admin: {
 		expand: function () {
@@ -11,6 +12,7 @@ Beast.decl({
         },
 		domInit: function () {
 			let requestForm = document.querySelector(".admin__action");
+            let servicesString = "";
 
             requestForm.onclick = function(event) {
 
@@ -18,19 +20,58 @@ Beast.decl({
 				btnTitle.innerHTML = 'Отправляю...';
                 this.disabled = true;
                 this.classList.add("button-loading");
+
+                prepareEmail();
 			}
 
-			function sendEmail() {
+            function prepareEmail() {
+                servicesString = "";
+                let services = document.querySelectorAll(".admin__service");
+                if (services) {
+                    for (var i = 0; i < services.length; i++) {
+                        let serviceName = services[i].querySelector(".admin__servicename").value;
+                        let serviceDetails = services[i].querySelectorAll(".admin__detailsvalue")[0].value;
+                        let serviceVolume = services[i].querySelectorAll(".admin__detailsvalue")[1].value;
+                        let serviceDuration = services[i].querySelectorAll(".admin__detailsvalue")[2].value;
+
+                        let servicePrice = services[i].querySelector(".admin__serviceprice").value;
+                        
+                        servicesString += serviceHTMLTemplate.replace("{{name}}", serviceName).replace("{{details}}", serviceDetails).replace("{{volume}}", serviceVolume).replace("{{duration}}", serviceDuration).replace("{{price}}", servicePrice);
+                    }
+                    
+                    let emailAddress = document.getElementById("email").value;
+                    let finalPrice = document.querySelector(".admin__summaryprice").value;
+                    let deadline = document.querySelector(".admin__deadlinedate").value;
+                    
+                    if (emailAddress && finalPrice && deadline) {
+                        sendEmail(emailAddress, servicesString, finalPrice, deadline);
+                    }
+                    else {
+                        informError();
+                    }
+                } else {
+                    informError();
+                }
+            }
+
+            function informError() {
+                alert("Письмо не может быть отправлено, так как остутствуют необходимые поля. Проверьте заполненность формы и повторите попытку.")
+            }
+
+			function sendEmail(email, productsString, finalPrice, deadline) {
 
 				emailjs.send(emailJsService2, emailJsTemplate2, {
-					
+                    contact: email,
+					products: productsString,
+                    final_price: finalPrice,
+                    deadline: deadline
 				})
 				.then(function() {
+                    alert('Письмо успешно отправлено.')
 					let btnSend = document.querySelector(".admin__action-title");
-					btnSend.innerHTML = 'Отправлено успешно';
-					btnSend.parentNode.className = "admin__action admin__disabled";
+					btnSend.innerHTML = 'Отправить письмо';
+				    btnSend.parentNode.className = "admin__action";
 
-                	$(".admin__action").attr("disabled", "disabled").off('click');
 				}, function(error) {
 					console.log('Failed sendig email', error);
 				});
