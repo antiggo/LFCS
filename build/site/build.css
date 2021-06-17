@@ -911,6 +911,57 @@ html {
   width: 100%;
 }
 /* CUT THE FILE HERE */
+.Check {
+  font-size: 20px;
+  padding: 14px 0;
+  position: relative;
+  border-bottom: 2px solid #dedede;
+  text-align: left;
+}
+.Check:last-child {
+  border-bottom: 0;
+}
+.Check :hover input ~ .check__mark {
+  background-color: #ccc;
+}
+.Check input:checked ~ .check__mark {
+  background-color: #222;
+}
+.Check__label {
+  margin-left: 44px;
+  margin-top: 4px;
+  cursor: pointer;
+  display: block;
+}
+.Check__mark {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  height: 35px;
+  width: 35px;
+  background-color: #acacac;
+  border-radius: 100%;
+}
+.Check__mark:after {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 5px;
+  width: 5px;
+  height: 17px;
+  border: solid #acacac;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.Check input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+/* CUT THE FILE HERE */
 .Example {
   background: #b7b7b7;
   font-family: input-mono, monospace;
@@ -2701,57 +2752,6 @@ overlay__background {
 .Work .Text__b {
   background: #aeaeae;
   color: #fff;
-}
-/* CUT THE FILE HERE */
-.Check {
-  font-size: 20px;
-  padding: 14px 0;
-  position: relative;
-  border-bottom: 2px solid #dedede;
-  text-align: left;
-}
-.Check:last-child {
-  border-bottom: 0;
-}
-.Check :hover input ~ .check__mark {
-  background-color: #ccc;
-}
-.Check input:checked ~ .check__mark {
-  background-color: #222;
-}
-.Check__label {
-  margin-left: 44px;
-  margin-top: 4px;
-  cursor: pointer;
-  display: block;
-}
-.Check__mark {
-  position: absolute;
-  top: 12px;
-  left: 0;
-  height: 35px;
-  width: 35px;
-  background-color: #acacac;
-  border-radius: 100%;
-}
-.Check__mark:after {
-  content: '';
-  position: absolute;
-  left: 13px;
-  top: 5px;
-  width: 5px;
-  height: 17px;
-  border: solid #acacac;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  transform: rotate(45deg);
-}
-.Check input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
 }
 @-webkit-keyframes fadein {
   0% {

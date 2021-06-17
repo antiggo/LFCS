@@ -6154,7 +6154,7 @@ Beast.decl({
         expand: function () {
             this.append(
                 Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
-                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"main.html"},"Выход"),"\n                ")
+                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"https://www.lfcs.design/"},"Выход"),"\n                ")
             )
 
         }
@@ -6163,7 +6163,7 @@ Beast.decl({
     AdminHead__link: {
         tag: 'a',
         expand: function () {
-            this.domAttr('href', 'main.html')
+            this.domAttr('href', 'https://www.lfcs.design/')
 
 
         }
@@ -7358,43 +7358,6 @@ Beast.decl({
         }
     }  
 })
-Beast.decl({
-    Head: {
-        expand: function () {
-            this.append(
-                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
-                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"/"},"Все продукты"),"\n                    ",Beast.node("menu-item",{"href":"about.html"},"О нас"),"\n                    ",Beast.node("menu-item",{"href":"about.html#contact"},"Связь"),"\n                ")
-            )
-
-        }
-    },
-
-    Head__link: {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', 'main.html')
-
-
-        }
-    },
-
-    'Head__menu-item': {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', this.param('href'))
-
-        }
-    },
-
-    Head__logo: {
-        expand: function () {
-            this.empty()
-            
-        }
-    },
-    
-
-})
 /**
  * @block Grid Динамическая сетка
  * @tag base
@@ -7515,6 +7478,43 @@ function grid (num, col, gap, margin) {
     return gridWidth
 }
 Beast.decl({
+    Head: {
+        expand: function () {
+            this.append(
+                Beast.node("link",{__context:this},"\n                    ",this.get('logo'),"\n                "),
+                Beast.node("menu",{__context:this},"\n                    ",Beast.node("menu-item",{"Main":true,"href":"/"},"Все продукты"),"\n                    ",Beast.node("menu-item",{"href":"about.html"},"О нас"),"\n                    ",Beast.node("menu-item",{"href":"about.html#contact"},"Связь"),"\n                ")
+            )
+
+        }
+    },
+
+    Head__link: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', 'main.html')
+
+
+        }
+    },
+
+    'Head__menu-item': {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+
+        }
+    },
+
+    Head__logo: {
+        expand: function () {
+            this.empty()
+            
+        }
+    },
+    
+
+})
+Beast.decl({
     Link: {
         tag: 'a',
         
@@ -7527,37 +7527,6 @@ Beast.decl({
 
         }
     }  
-})
-Beast.decl({
-    
-    List: {
-        expand: function () {
-            
-        }
-    },
-    
-    List__item: {
-        tag: 'a',
-        expand: function () {
-            this.domAttr('href', this.param('href'))
-        }
-    },
-
-    List__title: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'L',
-            Line: 'L'
-        }
-    },
-
-    List__hint: {
-        inherits: 'Typo',
-        mod: {
-            Text: 'M',
-            Line: 'L'
-        }
-    },
 })
 /**
  * @block Overlay Интерфейс модальных окон
@@ -7819,6 +7788,37 @@ Beast.decl({
     
 })
 
+Beast.decl({
+    
+    List: {
+        expand: function () {
+            
+        }
+    },
+    
+    List__item: {
+        tag: 'a',
+        expand: function () {
+            this.domAttr('href', this.param('href'))
+        }
+    },
+
+    List__title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'L',
+            Line: 'L'
+        }
+    },
+
+    List__hint: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'M',
+            Line: 'L'
+        }
+    },
+})
 Beast.decl({
     Screen: {
         

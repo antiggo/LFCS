@@ -6,7 +6,7 @@ Beast.decl({
                     {this.get('logo')}
                 </link>,
                 <menu>
-                    <menu-item Main href="main.html">Выход</menu-item>
+                    <menu-item Main href="https://www.lfcs.design/">Выход</menu-item>
                 </menu>
             )
 
@@ -16,7 +16,7 @@ Beast.decl({
     AdminHead__link: {
         tag: 'a',
         expand: function () {
-            this.domAttr('href', 'main.html')
+            this.domAttr('href', 'https://www.lfcs.design/')
 
 
         }
