@@ -341,317 +341,6 @@
   font-style: normal;
 }
 /* CUT THE FILE HERE */
-.Admin {
-  margin: 80px 0 80px 0;
-  font-family: Arial;
-  letter-spacing: -0.4px;
-  font-size: 20px;
-  line-height: 25px;
-  letter-spacing: -1.4px;
-}
-@media screen and (max-width: 599px) {
-  .Admin {
-    font-size: 22px;
-  }
-}
-@media screen and (max-width: 599px) {
-  .Admin {
-    margin: 60px 2px 2px 2px;
-  }
-}
-.Admin ::-webkit-input-placeholder {
-  color: var(--formPlaceholder);
-}
-.Admin ::placeholder {
-  color: var(--formPlaceholder);
-}
-.Admin :-ms-input-placeholder {
-  color: var(--formPlaceholder);
-}
-.Admin ::-ms-input-placeholder {
-  color: var(--formPlaceholder);
-}
-.Admin form {
-  margin: 70px 20px 20px 20px;
-}
-.Admin input {
-  border: 0;
-  outline: 0;
-  font-size: 20px;
-  -webkit-appearance: none;
-}
-@media screen and (max-width: 599px) {
-  .Admin input {
-    font-size: 22px;
-  }
-}
-.Admin input:focus,
-.Admin input:active {
-  border: 0;
-  outline: 0;
-}
-.Admin input.form__upload-input[type="file"] {
-  display: none;
-}
-.Admin__form {
-  position: relative;
-  padding: 40px;
-  background: rgba(255,255,255,0.122);
-  max-width: 860px;
-  border-radius: 30px;
-  margin: 0 auto;
-}
-.Admin__head {
-  margin: 8px 20px;
-  position: relative;
-}
-.Admin__hint {
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-@media screen and (max-width: 599px) {
-  .Admin__hint {
-    position: relative;
-    opacity: 0.6;
-  }
-}
-.Admin__input {
-  width: 100%;
-  height: 100px;
-  line-height: 100px;
-  text-align: left;
-  padding: 0 16px;
-}
-@media screen and (max-width: 599px) {
-  .Admin__input {
-    height: 80px;
-    line-height: 80px;
-  }
-}
-.Admin__input + .Admin__input {
-  margin-left: 2px;
-}
-@media screen and (max-width: 599px) {
-  .Admin__input + .Admin__input {
-    margin-left: 0;
-    margin-top: 2px;
-  }
-}
-.Admin__button {
-  width: 50%;
-  height: 100px;
-  text-align: center;
-  line-height: 100px;
-  cursor: pointer;
-}
-@media screen and (max-width: 599px) {
-  .Admin__button {
-    width: initial;
-  }
-}
-@media screen and (max-width: 599px) {
-  .Admin__button {
-    height: 80px;
-    line-height: 80px;
-  }
-}
-.Admin__button_select[active="true"] {
-  background: var(--formHighlight) !important;
-  color: #fff !important;
-}
-.Admin__button + .Admin__button {
-  margin-left: 2px;
-}
-@media screen and (max-width: 599px) {
-  .Admin__button + .Admin__button {
-    margin-left: 0;
-    margin-top: 2px;
-  }
-}
-.Admin__item {
-  display: -webkit-inline-flex;
-  display: inline-flex;
-  width: 100%;
-}
-.Admin__item .Link {
-  border: 0;
-}
-@media screen and (max-width: 599px) {
-  .Admin__item {
-    display: block;
-  }
-}
-.Admin__item + .Admin__item {
-  margin-top: 2px;
-}
-.Admin__item_color {
-  background: #f2f2f2;
-  padding: 15px 14px;
-}
-.Admin__action {
-  padding: 70px 0;
-  background-color: #222;
-  color: #d4d4d4;
-  width: 100%;
-  border-radius: 20px;
-  text-align: center;
-  margin: 0 2px 2px 2px;
-  cursor: pointer;
-}
-.Admin__action-subtitle {
-  opacity: 0.3;
-  margin-top: 5px;
-}
-@media screen and (max-width: 599px) {
-  .Admin__action {
-    margin: 0;
-  }
-}
-.Admin__disabled {
-  cursor: default !important;
-  opacity: 0.5;
-}
-__logo {
-  margin-top: 64px;
-  height: 60px;
-  margin-left: 20px;
-  -webkit-mask-image: url("/assets/logo.svg");
-  mask-image: url("/assets/logo.svg");
-  -webkit-mask-size: 180px;
-  mask-size: 180px;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  background-color: var(--text);
-}
-.admin__serviceTitle {
-  margin-left: 20px;
-}
-.admin__priceTitle {
-  position: absolute;
-  right: 20px;
-}
-.admin__separator {
-  width: 100%;
-  position: block;
-  height: 1px;
-  background: #fff;
-  opacity: 0.3;
-  margin: 20px;
-  box-sizing: border-box;
-}
-.admin__addservice {
-  background: #fff;
-  color: #aaa;
-  text-align: center;
-  padding: 24px;
-  border-radius: 48px;
-  z-index: 9;
-  position: fixed;
-  letter-spacing: -1.4px;
-  bottom: 100px;
-  font-size: 28px;
-  right: 50px;
-  font-family: 'GT Walsheim Pro';
-}
-.admin__addservice:hover {
-  cursor: pointer;
-}
-.admin__services {
-  display: block;
-  width: 100%;
-}
-.admin__service {
-  margin: 20px;
-  width: 100%;
-  position: relative;
-  border-bottom: 1px solid rgba(255,255,255,0.3);
-  padding-bottom: 40px;
-  -webkit-flex-shrink: 0;
-  flex-shrink: 0;
-}
-.admin__service:first-child {
-  margin-top: 60px;
-}
-input.admin__servicename,
-input.admin__servicename:focus,
-input.admin__detailsvalue,
-input.admin__detailsvalue:focus,
-input.admin__serviceprice,
-input.admin__serviceprice:focus,
-input.admin__summaryprice,
-input.admin__summaryprice:focus,
-input.admin__deadlinedate,
-input.admin__deadlinedate:focus {
-  color: #fff;
-  background: rgba(255,255,255,0.102);
-  width: 50%;
-  padding: 14px 22px;
-  border-radius: 40px;
-}
-input.admin__servicename {
-  margin-top: 10px;
-  margin-bottom: 40px;
-}
-input.admin__serviceprice,
-input.admin__serviceprice:focus {
-  width: 20%;
-  position: absolute;
-  right: 40px;
-  text-align: right;
-}
-input.admin__deadlinedate,
-input.admin__deadlinedate:focus {
-  width: 300px;
-}
-input.admin__summaryprice,
-input.admin__summaryprice:focus {
-  width: 20%;
-  position: absolute;
-  right: 20px;
-  margin-top: 60px;
-  text-align: right;
-}
-.admin__detailstitle,
-input.admin__detailsvalue {
-  display: block;
-}
-.admin__deadlinedate,
-input.admin__deadlinedate {
-  display: inline-block;
-}
-input.admin__detailsvalue {
-  margin-top: 10px;
-  margin-bottom: 40px;
-}
-.admin__details {
-  margin-top: 40px;
-}
-.admin__row {
-  margin: 10px 0;
-}
-.admin__summary {
-  display: -webkit-inline-flex;
-  display: inline-flex;
-  width: 100%;
-}
-.admin__summarytitle {
-  position: absolute;
-  right: 20px;
-}
-.admin__deadline {
-  margin-top: 150px;
-  margin-bottom: 40px;
-  padding-left: 20px;
-}
-.admin__deadlinetitle {
-  display: inline-block;
-}
-.admin__serviceremove:hover {
-  cursor: pointer;
-  text-decoration: underline;
-}
-/* CUT THE FILE HERE */
 table {
   border-collapse: collapse;
   border-spacing: 0;
@@ -2227,30 +1916,6 @@ overlay__background {
   }
 }
 /* CUT THE FILE HERE */
-.Photo {
-  margin: 0 20px;
-}
-.Photo__hint {
-  margin-top: 9px;
-  text-transform: uppercase;
-  font-size: 12px;
-}
-.Photo .Thumb {
-  width: 100%;
-  border-radius: 30px;
-}
-.Photo + .Photo {
-  margin-top: 40px;
-}
-.Photo .Thumb {
-  -webkit-filter: grayscale(100%);
-  filter: grayscale(100%);
-}
-.Photo .Thumb:hover {
-  -webkit-filter: grayscale(0);
-  filter: grayscale(0);
-}
-/* CUT THE FILE HERE */
 .Person {
   display: -webkit-inline-flex;
   display: inline-flex;
@@ -2296,6 +1961,30 @@ overlay__background {
 .Person .Thumb {
   width: 100%;
   border-radius: 20px;
+}
+/* CUT THE FILE HERE */
+.Photo {
+  margin: 0 20px;
+}
+.Photo__hint {
+  margin-top: 9px;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+.Photo .Thumb {
+  width: 100%;
+  border-radius: 30px;
+}
+.Photo + .Photo {
+  margin-top: 40px;
+}
+.Photo .Thumb {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
+.Photo .Thumb:hover {
+  -webkit-filter: grayscale(0);
+  filter: grayscale(0);
 }
 /* CUT THE FILE HERE */
 .Screen {

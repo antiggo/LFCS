@@ -190,20 +190,20 @@ Beast.decl({
 					<service>
 						<servicePrice placeholder="Цена, ₽"></servicePrice>
 						<naming>
-							<serviceType>Юридический дизайн документа </serviceType>
+							<serviceType>Описание продукта </serviceType>
 							<serviceName placeholder="Наименование документа"></serviceName>
 						</naming>
 						<details>
 							<row>
-								<detailsTitle>Особые пожелания: </detailsTitle>
+								<detailsTitle>Особые пожелания </detailsTitle>
 								<detailsValue></detailsValue>
 							</row>
 							<row>
-								<detailsTitle>Объем исходного документа: </detailsTitle>
+								<detailsTitle>Объем документа </detailsTitle>
 								<detailsValue></detailsValue>
 							</row>
 							<row>
-								<detailsTitle>Срок выполнения: </detailsTitle>
+								<detailsTitle>Срок выполнения </detailsTitle>
 								<detailsValue></detailsValue>
 							</row>
 						</details>
