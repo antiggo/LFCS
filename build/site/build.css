@@ -652,51 +652,6 @@ input.admin__detailsvalue {
   text-decoration: underline;
 }
 /* CUT THE FILE HERE */
-.AdminHead {
-  padding-top: 20px;
-  background: rgba(17,17,17,0.067) 1;
-  z-index: 300;
-}
-.AdminHead_Main .Head__menu-item_Main {
-  display: none;
-}
-.AdminHead a {
-  text-decoration: none;
-}
-.AdminHead__menu {
-  font-size: 18px;
-  position: absolute;
-  right: 60px;
-  top: 8px;
-}
-@media screen and (max-width: 599px) {
-  .AdminHead__menu {
-    display: none;
-  }
-}
-.AdminHead__menu-item {
-  display: inline-block;
-  cursor: pointer;
-  color: inherit;
-  letter-spacing: -1px;
-  line-height: 80px;
-}
-.AdminHead__menu-item + .AdminHead__menu-item {
-  margin-left: 44px;
-}
-.AdminHead__logo {
-  margin-top: 12px;
-  height: 60px;
-  margin-left: 20px;
-  -webkit-mask-image: url("/assets/logo.svg");
-  mask-image: url("/assets/logo.svg");
-  -webkit-mask-size: 180px;
-  mask-size: 180px;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  background-color: var(--text);
-}
-/* CUT THE FILE HERE */
 table {
   border-collapse: collapse;
   border-spacing: 0;
@@ -2272,6 +2227,30 @@ overlay__background {
   }
 }
 /* CUT THE FILE HERE */
+.Photo {
+  margin: 0 20px;
+}
+.Photo__hint {
+  margin-top: 9px;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+.Photo .Thumb {
+  width: 100%;
+  border-radius: 30px;
+}
+.Photo + .Photo {
+  margin-top: 40px;
+}
+.Photo .Thumb {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
+.Photo .Thumb:hover {
+  -webkit-filter: grayscale(0);
+  filter: grayscale(0);
+}
+/* CUT THE FILE HERE */
 .Person {
   display: -webkit-inline-flex;
   display: inline-flex;
@@ -2317,30 +2296,6 @@ overlay__background {
 .Person .Thumb {
   width: 100%;
   border-radius: 20px;
-}
-/* CUT THE FILE HERE */
-.Photo {
-  margin: 0 20px;
-}
-.Photo__hint {
-  margin-top: 9px;
-  text-transform: uppercase;
-  font-size: 12px;
-}
-.Photo .Thumb {
-  width: 100%;
-  border-radius: 30px;
-}
-.Photo + .Photo {
-  margin-top: 40px;
-}
-.Photo .Thumb {
-  -webkit-filter: grayscale(100%);
-  filter: grayscale(100%);
-}
-.Photo .Thumb:hover {
-  -webkit-filter: grayscale(0);
-  filter: grayscale(0);
 }
 /* CUT THE FILE HERE */
 .Screen {

@@ -3,16 +3,8 @@
 <meta property="og:title" content="LFCS — Legal Design Studio">
 <link rel="icon" href="../../../assets/favicon.png"/>
 
-<script type="text/javascript" src="../../../build/site/build.js"></script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TE03R75GWF"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-TE03R75GWF');
-</script>
-<link type="text/css" rel="stylesheet" href="../../../build/site/build.css">
+<script type="text/javascript" src="../../../build/admin/build.js"></script>
+<link type="text/css" rel="stylesheet" href="../../../build/admin/build.css">
 
 <script type="text/javascript">
 	(function() {
@@ -25,26 +17,31 @@
 <script type="bml">
     <App color="#7D7D7D" text="#D8D8D8">
 
-        <Title>Новый счет</Title>
+        <Title>Новый счет $$$</Title>
 		<Admin>
 			<form>
 				<item>
 					<input type="email" id="email" requred placeholder="Кому (почта)"></input>
 				</item>
+
+				<letter>
+
+				<logo/>
+				<dot/>
 				<item>
-					<Text Gap="M" Size="M">
+					<text>
 						Данное письмо повторяет существенные условия договора, указанные в счете, который вам отправил наш агент, ЮКасса. Оплачивая счет, вы заключаете с ООО «ЮФКР» договор оказания услуг на условиях, изложенных на странице lfcs.design/terms.
-					</Text>
+					</text>
 				</item>
 				<item>
 					<separator></separator>
 				</item>
 				<services>
-					<addservice>Добавить услугу</addservice>
+					<addservice>добавить продукт</addservice>
 					<service>
 						<servicePrice placeholder="Цена, ₽"></servicePrice>
 						<naming>
-							<serviceType>Продукт </serviceType>
+							<serviceType>Описание продукта </serviceType>
 							<serviceName placeholder="Продукт"></serviceName>
 						</naming>
 						<details>
@@ -53,7 +50,7 @@
 								<detailsValue></detailsValue>
 							</row>
 							<row>
-								<detailsTitle>Объем исходного документа </detailsTitle>
+								<detailsTitle>Объем документа</detailsTitle>
 								<detailsValue></detailsValue>
 							</row>
 							<row>
@@ -61,7 +58,7 @@
 								<detailsValue></detailsValue>
 							</row>
 						</details>
-						<serviceRemove>Удалить </serviceRemove>
+						<serviceRemove>удалить</serviceRemove>
 					</service>
 				</services>
 				<summary>
@@ -73,8 +70,9 @@
 					<deadlineDate placeholder="Дата"></deadlineDate>
 				</deadline>
 				<item>
-					<action>Отправить письмо</action>
+					<action>отправить</action>
 				</item>
+				</letter>
 			</form>
 		</Admin>
         

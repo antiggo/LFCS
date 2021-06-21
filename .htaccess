@@ -1,0 +1,29 @@
+<IfModule mod_rewrite.c>
+	Options +FollowSymLinks -MultiViews
+	RewriteEngine On
+
+	RewriteCond %{HTTPS} !on
+	RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+	RewriteCond %{HTTP_HOST} !^www\.
+	RewriteRule ^(.*)$ http://www.%{HTTP_HOST}/$1 [R=301,L]
+
+
+	RewriteRule ^$ /main.html [L]
+	RewriteRule ^documents$ /documents.html [L]
+	RewriteRule ^web-and-brand$ /web-and-brand.html [L]
+	RewriteRule ^presentation$ /presentation.html [L]
+	RewriteRule ^silver$ /silver.html [L]
+	RewriteRule ^gold$ /gold.html [L]
+	RewriteRule ^tailored$ /tailored.html [L]
+	RewriteRule ^about$ /about.html [L]
+	RewriteRule ^politics$ /politics.html [L]
+	RewriteRule ^terms$ /terms.html [L]
+	RewriteRule ^support$ /support.html [L]
+
+	RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+projects/site/pages/([^\s]+) [NC]
+	RewriteRule ^ %1 [R=301,L]
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule (?!^projects/site/pages/)^(.*)$ /projects/site/pages/$1 [L,NC]
+	
+</ifModule>

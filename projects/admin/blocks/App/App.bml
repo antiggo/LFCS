@@ -1,0 +1,94 @@
+/**
+ * @block App Корневой компонент всех страниц
+ * @dep UINavigation DocInspector DocConsole
+ * @tag base
+ * @ext UIStackNavigation
+ */
+Beast.decl({
+    App: {
+        inherits: ['Grid', 'UIStackNavigation'],
+        tag:'body',
+        mod: {
+            platform: '',
+            device: '',
+            ColCheck:true,
+        },
+        expand: function fn () {
+            this.inherited(fn)
+
+            if (this.param('color')) {
+                this.css('background', this.param('color'))
+                let root = document.documentElement;
+                root.style.setProperty('--text', this.param('text'));
+                root.style.setProperty('--ground', this.param('color'));
+            }
+
+            if (this.param('text')) {
+                this.css('color', this.param('text'))
+            }
+
+            if (MissEvent.mobile) {
+                this.mix('mobile')
+            }
+
+            if (MissEvent.android) {
+                this.mix('android')
+            }
+
+            if (MissEvent.ios) {
+                this.mix('ios')
+            }
+
+            if (MissEvent.qs('exp')) {
+                MissEvent.qs('exp').split(',').forEach(function (expName) {
+                    this.mix('exp_' + expName)
+                }.bind(this))
+            }
+        },
+        domInit: function fn () {
+            this.inherited(fn)
+            // history.pushState({}, '', '')
+            
+        }
+    },
+})
+
+
+
+
+
+Beast.decl({
+    Text: {
+        inherits: 'Typo',
+        mod: {
+            Line: 'L'
+        },
+        expand: function () {
+            this.mod('Text', this.mod('Size'))
+        }
+    },
+})
+
+Beast.decl({
+    Title: {
+        inherits: 'Typo',
+        mod: {
+            Text: 'XXL',
+            Line: 'L'
+        },
+        expand: function () {
+            if (this.mod('Size') === 'M') {
+                this.mod('Text', 'L')
+            }
+
+            if (this.mod('Size') === 'S') {
+                this.mod('Text', 'M')
+            }
+        }
+
+    },
+})
+
+
+
+
