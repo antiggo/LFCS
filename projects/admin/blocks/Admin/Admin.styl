@@ -6,7 +6,8 @@
 	gap = 2px
 	control = 100px
 
-	margin 64px 0 80px 0
+	@media screen-phone
+	    margin 20px !important
 	// font-size 28px
 		
 	font-family GT Walsheim Pro
@@ -48,6 +49,8 @@
 	textarea
 		border-radius 20px
 		padding 22px
+		@media screen-phone
+			width 100%	
 		
 	input, textarea
 		border 0
@@ -77,6 +80,9 @@
 		padding 40px
 		border-radius 30px
 		position relative
+		@media screen-phone
+			padding 32px 10px
+			margin-bottom 180px
 		
 		
 	&__form
@@ -144,6 +150,10 @@
 				margin-top gap
 	&__text
 		margin 80px 17px 20px 17px
+		@media screen-phone
+			font-size 16px
+			line-height 18px
+			margin 0px 17px 30px 17px
 	&__item
 		display inline-flex
 		width 100%
@@ -173,6 +183,8 @@
 		width initial
 		right 10px
 		font-family 'GT Walsheim Pro'
+		@media screen-phone
+			left 10px
 
 		&-subtitle
 			opacity .3
@@ -201,8 +213,13 @@
 		mask-size 180px
 		mask-repeat no-repeat
 		background-color var(--text)
+		@media screen-phone
+			mask-size 140px
+			height 48px
 		
 	&__dot
+		@media screen-phone
+			display none
 		background #d8d8d8
 		height 100px
 		width 100px
@@ -220,6 +237,8 @@
 
 	.admin__separator
 		width 100%
+		@media screen-phone
+			width initial
 		position block
 		height 1px
 		background #fff
@@ -240,6 +259,8 @@
 		font-size 22px
 		right 10px
 		font-family 'GT Walsheim Pro'
+		@media screen-phone
+			left 10px
 		
 		&:hover
 			cursor pointer
@@ -284,13 +305,17 @@
 		
 
 	input.admin__serviceprice,
-	input.admin__serviceprice:focus,{
-		width: 20%
+	input.admin__serviceprice:focus
+		@media screen-phone
+			width 100%
+			position relative
+			left 0
+			text-align left
+		width 20%
 		position absolute
 		right 0
 		margin-top 32px
 		text-align right
-	}
 
 	input.admin__deadlinedate,
 	input.admin__deadlinedate:focus  {
@@ -298,13 +323,18 @@
 	}
 
 	input.admin__summaryprice,
-	input.admin__summaryprice:focus, {
-		width: 20%
+	input.admin__summaryprice:focus
+		@media screen-phone
+			width initial
+			margin 0
+			position relative
+			text-align left
+			right 0
+		width 20%
 		position absolute
 		right 60px
 		margin-top 36px
 		text-align right
-	}
 
 	.admin__detailstitle,
 	input.admin__detailsvalue
@@ -325,13 +355,17 @@
 		margin 10px 0
 
 	.admin__summary
-		display: -webkit-inline-flex;
-		display: inline-flex;
-		width: 100%;
+		// display inline-flex
+		// width 100%
+		margin 0 20px
 
 	.admin__summarytitle
 		position absolute
 		right 60px
+		@media screen-phone
+			position relative
+			right 0
+			margin-bottom 6px
 	
 	.admin__deadline
 		margin-top 150px
