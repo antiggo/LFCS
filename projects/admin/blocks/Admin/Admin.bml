@@ -112,7 +112,7 @@ Beast.decl({
     },
 
 	Admin__serviceName: {
-        tag: 'textarea',
+         tag: 'textarea',
         expand: function () {
             this.domAttr('type', this.param('type'))
             this.domAttr('id', this.param('id'))
@@ -128,7 +128,21 @@ Beast.decl({
 
 	
 
-	Admin__detailsValue: {
+	Admin__detailsText: {
+        tag: 'textarea',
+        expand: function () {
+            this.domAttr('type', this.param('type'))
+            this.domAttr('id', this.param('id'))
+
+            this.domAttr('placeholder', this.param('placeholder'))
+            this.domAttr('required', true)
+            this.domAttr('rows', 6)
+            this.domAttr('cols', 40)
+            
+        }
+    },
+
+    Admin__detailsValue: {
         tag: 'input',
         expand: function () {
             this.domAttr('type', this.param('type'))

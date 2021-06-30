@@ -47,7 +47,7 @@
 						<details>
 							<row>
 								<detailsTitle>Особые пожелания </detailsTitle>
-								<detailsValue></detailsValue>
+								<detailsText></detailsText>
 							</row>
 							<row>
 								<detailsTitle>Объем документа</detailsTitle>
